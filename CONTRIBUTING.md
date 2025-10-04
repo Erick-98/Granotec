@@ -14,7 +14,7 @@ Nuestro stack: **Spring Boot + Angular + MySQL**, con ramas organizadas para un 
 - **`feature/...`** → Ramas **individuales de desarrollo**.  
   Cada desarrollador crea una rama por tarea/feature (ejemplo: `feature/login`, `feature/productos`).
 
----
+-----------------------------------------------------------
 
 
 # --- PRIMERA VEZ (solo la primera vez) ---
@@ -26,8 +26,10 @@ cd Granotec
 git checkout develop
 
 # --- PARA CREAR UNA NUEVA TAREA ---
-# Asegurarse de estar en develop y actualizar
+# Asegurarse de estar en develop y actualizar 
 git checkout develop
+
+# Traer lo último desde Github  
 git pull origin develop
 
 # Crear una nueva rama de tarea (ejemplo: login de usuarios)
@@ -39,8 +41,6 @@ feature/productos
 feature/api-clientes
 
 # ---Realiza tus cambios en esa rama. ---
-
-
 # --- CUANDO HAGAN CAMBIOS ---
 # Agregar archivos al commit
 git add .
@@ -51,12 +51,23 @@ git commit -m "feat(login): implementar pantalla de login"
 # Subir la rama al remoto (GitHub)
 git push -u origin feature/login
 
+# CUANDO TEMRMINEN UNA FUNCIONALIDAD
+1. Ir a github y abrir un pull request (PR)
+    - De su rama a develop
+    - Agregar descripción del cambio
+2. Avisar por el grupo de whastapp para aceptar
+3. Una vez aceptado
+4. Eliminar rama local 
+    - git checkout develop
+    - git pull origin develop
+    - git branch -d nombre-de-rama
+5. Eliminar rama en github (si les deja hacerlo)
+    - git push origin --delete nombre-de-rama
+
 # --- ANTES DE EMPEZAR UN NUEVO DÍA DE TRABAJO ---
 git checkout develop
 git pull origin develop
 
-
---
 
 # ---Reglas generales ---
 
