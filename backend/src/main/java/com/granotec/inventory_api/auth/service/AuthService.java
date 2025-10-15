@@ -10,10 +10,13 @@ import com.granotec.inventory_api.user.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -41,21 +44,66 @@ public class AuthService {
         return new TokenResponse(jwtToken, refreshToken);
     }
 
-    public TokenResponse authenticate(final AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
+//    public TokenResponse authenticate(final AuthRequest request) {
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        request.email(),
+//                        request.password()
+//                )
+//        );
+//        final User user = repository.findByEmail(request.email())
+//                .orElseThrow();
+//        final String accessToken = jwtService.generateToken(user);
+//        final String refreshToken = jwtService.generateRefreshToken(user);
+//        revokeAllUserTokens(user);
+//        saveUserToken(user, accessToken);
+//        return new TokenResponse(accessToken, refreshToken);
+//    }
+
+    public TokenResponse authenticate(final AuthRequest request){
         final User user = repository.findByEmail(request.email())
-                .orElseThrow();
+                .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
+
+        if(user.getLockTime() != null && user.getLockTime().isAfter(LocalDateTime.now())){
+            throw new RuntimeException("Cuenta bloqueada. Intenta nuevamente en 1 minuto");
+        }
+
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    )
+            );
+
+        }catch (BadCredentialsException e){
+            handleFailedLogin(user);
+            throw new RuntimeException("Credenciales incorrectas");
+        }
+
+        resetFailedAttempts(user);
         final String accessToken = jwtService.generateToken(user);
         final String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, accessToken);
         return new TokenResponse(accessToken, refreshToken);
     }
+
+    private void handleFailedLogin(User user) {
+        user.setFailedAttempts(user.getFailedAttempts() + 1);
+        if (user.getFailedAttempts() >= 3) {
+            user.setLockTime(LocalDateTime.now().plusMinutes(1));
+            user.setFailedAttempts(0);
+        }
+        repository.save(user);
+    }
+
+    private void resetFailedAttempts(User user) {
+        user.setFailedAttempts(0);
+        user.setLockTime(null);
+        repository.save(user);
+    }
+
 
     private void saveUserToken(User user, String jwtToken) {
         final Token token = Token.builder()
