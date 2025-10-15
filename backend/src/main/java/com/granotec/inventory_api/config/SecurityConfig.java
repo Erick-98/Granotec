@@ -18,6 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 
 @Configuration
@@ -48,6 +51,14 @@ public class SecurityConfig {
                                 .addLogoutHandler(this::logout)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )
+                .cors(cors-> cors.configurationSource(request -> {
+                    var corsConfig =    new CorsConfiguration();
+                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200")); // Angular
+                    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfig.setAllowedHeaders(List.of("*"));
+                    corsConfig.setAllowCredentials(true);
+                    return corsConfig;
+                }))
         ;
 
         return http.build();
