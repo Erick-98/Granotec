@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.user;
 
 import com.granotec.inventory_api.auth.repository.Token;
+import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,18 +44,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
-    private Boolean isDeleted = false;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
-
     private Integer failedAttempts = 0;
     private LocalDateTime lockTime;
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
 
 }
