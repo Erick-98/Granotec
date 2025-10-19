@@ -44,21 +44,6 @@ public class AuthService {
         return new TokenResponse(jwtToken, refreshToken);
     }
 
-//    public TokenResponse authenticate(final AuthRequest request) {
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        request.email(),
-//                        request.password()
-//                )
-//        );
-//        final User user = repository.findByEmail(request.email())
-//                .orElseThrow();
-//        final String accessToken = jwtService.generateToken(user);
-//        final String refreshToken = jwtService.generateRefreshToken(user);
-//        revokeAllUserTokens(user);
-//        saveUserToken(user, accessToken);
-//        return new TokenResponse(accessToken, refreshToken);
-//    }
 
     public TokenResponse authenticate(final AuthRequest request){
         final User user = repository.findByEmail(request.email())

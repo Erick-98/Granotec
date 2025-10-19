@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ApiResponse <T>{
 
-    private final String mensaje;
-    private final T data;
+    private String mensaje;
+    private T data;
 }

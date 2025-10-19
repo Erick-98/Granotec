@@ -23,19 +23,6 @@ public class AppConfig {
 
     private final UserRepository repository;
 
-//    @Bean
-//    public UserDetailsService userDetailsService(){
-//        return username -> {
-//            final User user = repository.findByEmail(username)
-//                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//            return org.springframework.security.core.userdetails.User
-//                    .builder()
-//                    .username(user.getEmail())
-//                    .password(user.getPassword())
-//                    .build();
-//        };
-//    }
-
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> repository.findByEmail(username)
