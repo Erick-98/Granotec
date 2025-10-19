@@ -1,7 +1,6 @@
 package com.granotec.inventory_api.storage.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StorageRequest {
 
-    @NotNull(message = "nombre is required")
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "descripcion is required")
     private String descripcion;
 }

@@ -12,16 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "almacen")
+@Table(name = "almacen", uniqueConstraints = @UniqueConstraint(columnNames = "nombre"))
 public class Storage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private StorageName nombre;
+    @Column(nullable = false, length = 20)
+    private String nombre;
 
     @Column(length = 500)
     private String descripcion;

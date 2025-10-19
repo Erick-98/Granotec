@@ -39,7 +39,7 @@ public class VendorService {
     public VendorResponse update(Long id, VendorRequest request) {
         Vendor v = repository.findById(id)
                 .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
-                .orElseThrow(() -> new ResourceNotFoundException("Proveedor", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor"));
 
         if (request.getEmail() != null && repository.findByEmail(request.getEmail()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("Email already used");
@@ -69,13 +69,13 @@ public class VendorService {
     public VendorResponse getById(Long id) {
         Vendor v = repository.findById(id)
                 .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
-                .orElseThrow(() -> new ResourceNotFoundException("Proveedor", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor"));
         return toDto(v);
     }
 
     public void softDelete(Long id) {
         Vendor v = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proveedor", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor"));
         if (Boolean.TRUE.equals(v.getIsDeleted())) {
             throw new BadRequestException("Proveedor already deleted");
         }
