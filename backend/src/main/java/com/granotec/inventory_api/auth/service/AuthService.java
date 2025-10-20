@@ -136,4 +136,17 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    // Nuevo: logout — revoca el token actual recibido en el header Authorization
+    public void logout(@NotNull final String authentication) {
+        if (authentication == null || !authentication.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid auth header");
+        }
+        final String jwtToken = authentication.substring(7);
+        tokenRepository.findByToken(jwtToken).ifPresent(token -> {
+            token.setIsExpired(true);
+            token.setIsRevoked(true);
+            tokenRepository.save(token);
+        });
+    }
+
 }
