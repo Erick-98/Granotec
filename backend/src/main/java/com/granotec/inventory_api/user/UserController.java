@@ -13,13 +13,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
-
-    @GetMapping
-    public List<UserResponse> changePassoword(){
-        return userRepository.findAll()
-                .stream()
-                .map(user -> new UserResponse(user.getName(),user.getEmail()))
-                .toList();
-    }
+//    private final UserRepository userRepository;
+//
+//    @GetMapping
+//    public List<UserResponse> changePassoword(){
+//        return userRepository.findAll()
+//                .stream()
+//                .map(user -> new UserResponse(user.getName(),user.getEmail()))
+//                .toList();
+//    }
 }
