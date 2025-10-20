@@ -9,6 +9,9 @@ import com.granotec.inventory_api.role.dto.RoleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -36,6 +39,38 @@ public class UserService {
         }
 
         return new RoleResponse(role.getId(), role.getName());
+    }
+
+    // Nuevo: listar todos los usuarios como UserResponse
+    public List<UserResponse> listUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // Nuevo: obtener un usuario por id
+    public UserResponse getUserById(Integer userId) {
+        User user = userRepository.findById(userId)
+                .filter(u -> !Boolean.TRUE.equals(u.getIsDeleted()))
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        return toDto(user);
+    }
+
+    private UserResponse toDto(User user){
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                toRoleResponse(user.getRole())
+        );
+    }
+
+    private RoleResponse toRoleResponse(Role role){
+        if(role == null){
+            return null;
+        }
+        return new RoleResponse(role.getId(),role.getName());
     }
 
 }
