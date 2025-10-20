@@ -1,4 +1,4 @@
-package com.granotec.inventory_api.user;
+package com.granotec.inventory_api.user.dto;
 
 import com.granotec.inventory_api.role.dto.RoleResponse;
 

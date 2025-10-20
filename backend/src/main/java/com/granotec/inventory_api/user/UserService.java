@@ -6,6 +6,7 @@ import com.granotec.inventory_api.permission.dto.AssignRoleRequest;
 import com.granotec.inventory_api.role.Role;
 import com.granotec.inventory_api.role.RoleRepository;
 import com.granotec.inventory_api.role.dto.RoleResponse;
+import com.granotec.inventory_api.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

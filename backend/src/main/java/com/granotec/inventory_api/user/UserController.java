@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.user;
 
 import com.granotec.inventory_api.common.dto.ApiResponse;
+import com.granotec.inventory_api.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
