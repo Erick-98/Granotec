@@ -1,5 +1,7 @@
 package com.granotec.inventory_api.config;
 
+import com.granotec.inventory_api.permission.Permission;
+import com.granotec.inventory_api.role.Role;
 import com.granotec.inventory_api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,22 +27,44 @@ public class AppConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> repository.findByEmail(username)
-                .map(user -> org.springframework.security.core.userdetails.User
-                        .builder()
-                        .username(user.getEmail())
-                        .password(user.getPassword())
-                        .authorities(user.getRoles().stream()
-                                .flatMap(role -> {
-                                    List<SimpleGrantedAuthority> auths = new ArrayList<>();
-                                    auths.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-                                    role.getPermissions().forEach(p ->
-                                            auths.add(new SimpleGrantedAuthority(p.getName())));
-                                    return  auths.stream();
-                                })
-                                .toList())
-                        .build()
-                ).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+          return username -> repository.findByEmail(username)
+                  .map(user -> {
+                      List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                      Role role = user.getRole();
+
+                      if(role != null){
+                          authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+                          if(role.getPermissions() != null){
+                              for(Permission permission : role.getPermissions()){
+                                  authorities.add(new SimpleGrantedAuthority(permission.getName()));
+                              }
+                          }
+                      }
+
+                      return org.springframework.security.core.userdetails.User
+                              .builder()
+                              .username(user.getEmail())
+                              .password(user.getPassword())
+                              .authorities(authorities)
+                              .build();
+                  })
+                  .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//        return username -> repository.findByEmail(username)
+//                .map(user -> org.springframework.security.core.userdetails.User
+//                        .builder()
+//                        .username(user.getEmail())
+//                        .password(user.getPassword())
+//                        .authorities(user.getRoles().stream()
+//                                .flatMap(role -> {
+//                                    List<SimpleGrantedAuthority> auths = new ArrayList<>();
+//                                    auths.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+//                                    role.getPermissions().forEach(p ->
+//                                            auths.add(new SimpleGrantedAuthority(p.getName())));
+//                                    return  auths.stream();
+//                                })
+//                                .toList())
+//                        .build()
+//                ).orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
     @Bean
