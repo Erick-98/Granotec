@@ -17,15 +17,14 @@ public class VendorController {
 
     private final VendorService service;
 
-
     @PostMapping
     public ResponseEntity<ApiResponse<VendorResponse>> create(@Valid @RequestBody VendorRequest dto) {
-        return ResponseEntity.ok(new ApiResponse<>("Proveedor creado", service.create(dto)));
+        return ResponseEntity.ok(new ApiResponse<>("Proveedor creado exitosamente", service.create(dto)));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<VendorResponse>>> list() {
-        return ResponseEntity.ok(new ApiResponse<>("Listado proveedores", service.listAll()));
+        return ResponseEntity.ok(new ApiResponse<>("Listado de proveedores", service.listAll()));
     }
 
     @GetMapping("/{id}")
@@ -35,7 +34,7 @@ public class VendorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<VendorResponse>> update(@PathVariable Long id, @Valid @RequestBody VendorRequest dto) {
-        return ResponseEntity.ok(new ApiResponse<>("Proveedor actualizado", service.update(id, dto)));
+        return ResponseEntity.ok(new ApiResponse<>("Proveedor actualizado correctamente", service.update(id, dto)));
     }
 
     @DeleteMapping("/{id}")

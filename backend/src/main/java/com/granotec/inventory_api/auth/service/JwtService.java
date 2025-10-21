@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -39,9 +40,14 @@ public class JwtService {
     }
 
     private String buildToken(final User user, final long expiration) {
+        Map<String,Object> claims = new LinkedHashMap<>();
+        claims.put("name", user.getName());
+        claims.put("role", user.getRole().getName());
+        claims.put("permissions", user.getRole().getPermissions().stream().map(p -> p.getName()).toList());
+
         return Jwts
                 .builder()
-                .claims(Map.of("name", user.getName()))
+                .claims(claims)
                 .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))

@@ -1,11 +1,14 @@
 package com.granotec.inventory_api.role;
 
+import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.permission.Permission;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -15,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "roles")
-public class Role {
+public class Role extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +33,6 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private Set<Permission> permissions;
+    private Set<Permission> permissions = new HashSet<>();
 
 }

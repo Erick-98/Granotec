@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.vendor;
 
 import com.granotec.inventory_api.common.model.BaseEntity;
+import com.granotec.inventory_api.common.enums.VendorDocumentType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +24,11 @@ public class Vendor extends BaseEntity {
     @Column(nullable = false)
     private String nombre;
 
-    private String tipoDocumento;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private VendorDocumentType tipoDocumento;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String documento;
 
     private String direccion;

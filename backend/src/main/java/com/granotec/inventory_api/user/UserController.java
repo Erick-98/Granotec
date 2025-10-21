@@ -1,25 +1,30 @@
 package com.granotec.inventory_api.user;
 
+import com.granotec.inventory_api.common.dto.ApiResponse;
+import com.granotec.inventory_api.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService service;
 
+    //@PreAuthorize("hasAuthority('ver_usuarios')")
     @GetMapping
-    public List<UserResponse> changePassoword(){
-        return userRepository.findAll()
-                .stream()
-                .map(user -> new UserResponse(user.getName(),user.getEmail()))
-                .toList();
+    public ResponseEntity<ApiResponse<List<UserResponse>>> list() {
+        return ResponseEntity.ok(new ApiResponse<>("Listado de usuarios", service.listUsers()));
     }
+
+    //@PreAuthorize("hasAuthority('ver_usuarios')")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> get(@PathVariable Integer id) {
+        return ResponseEntity.ok(new ApiResponse<>("Usuario encontrado", service.getUserById(id)));
+    }
+
 }

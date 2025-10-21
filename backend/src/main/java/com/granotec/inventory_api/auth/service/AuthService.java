@@ -44,21 +44,6 @@ public class AuthService {
         return new TokenResponse(jwtToken, refreshToken);
     }
 
-//    public TokenResponse authenticate(final AuthRequest request) {
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        request.email(),
-//                        request.password()
-//                )
-//        );
-//        final User user = repository.findByEmail(request.email())
-//                .orElseThrow();
-//        final String accessToken = jwtService.generateToken(user);
-//        final String refreshToken = jwtService.generateRefreshToken(user);
-//        revokeAllUserTokens(user);
-//        saveUserToken(user, accessToken);
-//        return new TokenResponse(accessToken, refreshToken);
-//    }
 
     public TokenResponse authenticate(final AuthRequest request){
         final User user = repository.findByEmail(request.email())
@@ -149,6 +134,19 @@ public class AuthService {
         saveUserToken(user, accessToken);
 
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+    // Nuevo: logout — revoca el token actual recibido en el header Authorization
+    public void logout(@NotNull final String authentication) {
+        if (authentication == null || !authentication.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid auth header");
+        }
+        final String jwtToken = authentication.substring(7);
+        tokenRepository.findByToken(jwtToken).ifPresent(token -> {
+            token.setIsExpired(true);
+            token.setIsRevoked(true);
+            tokenRepository.save(token);
+        });
     }
 
 }

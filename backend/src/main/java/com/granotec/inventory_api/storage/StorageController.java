@@ -5,6 +5,7 @@ import com.granotec.inventory_api.storage.dto.StorageRequest;
 import com.granotec.inventory_api.storage.dto.StorageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,8 @@ public class StorageController {
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<StorageResponse>> create(@Valid @RequestBody StorageRequest request){
         StorageResponse result = service.create(request);
-        return ResponseEntity.ok(new ApiResponse<>("Almacen creado",result));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>("Almacen creado correctamente",result));
     }
 
     @GetMapping
