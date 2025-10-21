@@ -32,7 +32,6 @@ public class JwtService {
     }
 
     public String generateToken(final User user) {
-        Map<String,Object> claims = Map.of("name", user.getName());
         return buildToken(user, jwtExpiration);
     }
 
