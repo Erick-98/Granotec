@@ -1,6 +1,6 @@
 package com.granotec.inventory_api.vendor.dto;
 
-import com.granotec.inventory_api.common.enums.VendorDocumentType;
+import com.granotec.inventory_api.common.enums.DocumentType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ public class VendorRequest {
     private String nombre;
 
     @NotNull(message = "El campo TipoDocumento es obligatorio." )
-    private VendorDocumentType tipoDocumento;
+    private DocumentType tipoDocumento;
 
     @NotBlank(message = "El documento es obligatorio.")
     @Pattern(regexp = "\\d{8}|\\d{11}", message = "El documento debe tener 8 dígitos para DNI o 11 dígitos para RUC.")

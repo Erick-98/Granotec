@@ -24,6 +24,4 @@ public class Storage extends BaseEntity {
 
     @Column(length = 500)
     private String descripcion;
-
-
 }
