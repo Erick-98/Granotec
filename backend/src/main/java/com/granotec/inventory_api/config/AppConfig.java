@@ -49,22 +49,6 @@ public class AppConfig {
                               .build();
                   })
                   .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//        return username -> repository.findByEmail(username)
-//                .map(user -> org.springframework.security.core.userdetails.User
-//                        .builder()
-//                        .username(user.getEmail())
-//                        .password(user.getPassword())
-//                        .authorities(user.getRoles().stream()
-//                                .flatMap(role -> {
-//                                    List<SimpleGrantedAuthority> auths = new ArrayList<>();
-//                                    auths.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-//                                    role.getPermissions().forEach(p ->
-//                                            auths.add(new SimpleGrantedAuthority(p.getName())));
-//                                    return  auths.stream();
-//                                })
-//                                .toList())
-//                        .build()
-//                ).orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
     @Bean

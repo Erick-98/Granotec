@@ -2,6 +2,8 @@ package com.granotec.inventory_api.product;
 
 
 import com.granotec.inventory_api.common.model.BaseEntity;
+import com.granotec.inventory_api.dispatch.details_dispatch.DetailsDispatch;
+import com.granotec.inventory_api.ov.details_ov.Details_ov;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -40,7 +43,11 @@ public class Product extends BaseEntity {
     @Column(name = "lote", length = 50, nullable = false)
     private String batch;
 
+    @OneToMany(mappedBy = "product")
+    private List<Details_ov> detalles_ov;
 
+    @OneToMany(mappedBy = "product")
+    private List<DetailsDispatch> detalles_despacho;
 
     /*
     TENER EN CUENTA EL BLOQUEO DE PRODUCTOS POR CALIDAD, SI ES QUE PUEDE AÑADIR DESDE ACÁ UN LOCK

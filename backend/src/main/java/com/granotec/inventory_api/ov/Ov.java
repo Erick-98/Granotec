@@ -4,6 +4,7 @@ import com.granotec.inventory_api.common.enums.Currency;
 import com.granotec.inventory_api.common.enums.TipoOv;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.customer.Customer;
+import com.granotec.inventory_api.dispatch.Dispatch;
 import com.granotec.inventory_api.ov.details_ov.Details_ov;
 import com.granotec.inventory_api.salesperson.Salesperson;
 import jakarta.persistence.*;
@@ -52,6 +53,9 @@ public class Ov extends BaseEntity {
 
     @Column(name = "total", nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
+
+    @OneToMany(mappedBy = "ordenVenta")
+    private List<Dispatch> despachos;
 
     @OneToMany(mappedBy = "ordenVenta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Details_ov> detalle;

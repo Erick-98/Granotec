@@ -2,11 +2,14 @@ package com.granotec.inventory_api.customer;
 
 
 import com.granotec.inventory_api.common.model.Person;
+import com.granotec.inventory_api.ov.Ov;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -23,6 +26,9 @@ public class Customer extends Person {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 15, unique = true)
+    @Column(nullable = false, length = 15)
     private String apellidos;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Ov> ordenesDeVenta;
 }

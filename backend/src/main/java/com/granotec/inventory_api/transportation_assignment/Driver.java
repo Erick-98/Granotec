@@ -1,13 +1,14 @@
-package com.granotec.inventory_api.driver;
+package com.granotec.inventory_api.transportation_assignment;
 
 
-import com.granotec.inventory_api.carrier.Carrier;
 import com.granotec.inventory_api.common.model.Person;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -28,6 +29,9 @@ public class Driver extends Person {
     private String apellidos;
 
     @ManyToOne
-    @JoinColumn(name = "carrier_id")
+    @JoinColumn(name = "id_transportista")
     private Carrier carrier;
+
+    @OneToMany(mappedBy = "driver")
+    private List<Transp_Assignment> asignaciones;
 }

@@ -1,12 +1,13 @@
-package com.granotec.inventory_api.car;
+package com.granotec.inventory_api.transportation_assignment;
 
-import com.granotec.inventory_api.carrier.Carrier;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -27,7 +28,9 @@ public class Car extends BaseEntity {
     private String marca;
 
     @ManyToOne
-    @JoinColumn(name = "carrier_id")
+    @JoinColumn(name = "id_transportista", nullable = false)
     private Carrier carrier;
 
+    @OneToMany(mappedBy = "car")
+    private List<Transp_Assignment> asignaciones;
 }

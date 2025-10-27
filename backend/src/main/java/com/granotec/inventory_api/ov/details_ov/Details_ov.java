@@ -25,7 +25,7 @@ public class Details_ov extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_ov", nullable = false)
-    private Ov id_ov;
+    private Ov ordenVenta;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_producto", nullable = false)

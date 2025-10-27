@@ -1,11 +1,14 @@
 package com.granotec.inventory_api.salesperson;
 
 import com.granotec.inventory_api.common.model.Person;
+import com.granotec.inventory_api.ov.Ov;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -24,4 +27,7 @@ public class Salesperson extends Person {
 
     @Column(length = 15, unique = true)
     private String apellidos;
+
+    @OneToMany(mappedBy = "salesperson")
+    private List<Ov> ordenesDeVenta;
 }

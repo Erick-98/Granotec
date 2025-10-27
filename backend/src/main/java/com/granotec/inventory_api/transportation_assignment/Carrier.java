@@ -1,8 +1,6 @@
-package com.granotec.inventory_api.carrier;
+package com.granotec.inventory_api.transportation_assignment;
 
-import com.granotec.inventory_api.car.Car;
 import com.granotec.inventory_api.common.model.Person;
-import com.granotec.inventory_api.driver.Driver;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,15 +16,18 @@ public class Carrier extends Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "razon_social", nullable = false,length = 150)
     private String razonSocial;
 
-    @OneToMany(mappedBy = "carrier")
+    @OneToMany(mappedBy = "carrier", cascade = CascadeType.ALL)
     private List<Driver> drivers;
 
-    @OneToMany(mappedBy = "carrier")
+    @OneToMany(mappedBy = "carrier", cascade = CascadeType.ALL)
     private List<Car> cars;
+
+    @OneToMany(mappedBy = "carrier")
+    private List<Transp_Assignment> asignaciones;
 }
 

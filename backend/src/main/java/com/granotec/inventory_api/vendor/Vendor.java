@@ -1,11 +1,14 @@
 package com.granotec.inventory_api.vendor;
 
 import com.granotec.inventory_api.common.model.Person;
+import com.granotec.inventory_api.ov.Ov;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Entity
@@ -22,5 +25,4 @@ public class Vendor extends Person {
 
     @Column(nullable = false)
     private String razonSocial;
-
 }
