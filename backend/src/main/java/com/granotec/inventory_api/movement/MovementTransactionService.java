@@ -108,6 +108,9 @@ public class MovementTransactionService {
                 if (req.tipoMovimiento == MovementKind.SALIDA || req.tipoMovimiento == MovementKind.TRANSFERENCIA) {
                     // restar de origen
                     if (almacenOrigen == null) throw new BadRequestException("Almacen origen requerido para este tipo de movimiento");
+                    if (Boolean.TRUE.equals(p.getIsLocked())) {
+                        throw new BadRequestException("Producto bloqueado: " + p.getId());
+                    }
                     Stock stock = stockRepository.findByAlmacenIdAndProductoIdAndLote(almacenOrigen.getId(), p.getId(), lote).orElseThrow(() -> new BadRequestException("Stock insuficiente en almacen origen"));
                     if (stock.getCantidad().compareTo(cantidad) < 0) {
                         throw new BadRequestException("Stock insuficiente para producto " + p.getId());
@@ -115,16 +118,6 @@ public class MovementTransactionService {
                     stock.setCantidad(stock.getCantidad().subtract(cantidad));
                     stockRepository.save(stock);
                 }
-
-                // actualizar stock total en product (si corresponde)
-                if (p.getStock() == null) p.setStock(0);
-                int delta = cantidad.intValue();
-                if (req.tipoMovimiento == MovementKind.ENTRADA || req.tipoMovimiento == MovementKind.SALDO_INICIAL) p.setStock(p.getStock() + delta);
-                if (req.tipoMovimiento == MovementKind.SALIDA) p.setStock(p.getStock() - delta);
-                if (req.tipoMovimiento == MovementKind.TRANSFERENCIA) {
-                    // para transferencia, stock global no cambia
-                }
-                productRepository.save(p);
 
                 // crear MovementDetail y asociar
                 MovementDetail md = new MovementDetail();

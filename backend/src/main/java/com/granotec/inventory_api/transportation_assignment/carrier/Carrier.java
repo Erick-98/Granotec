@@ -1,6 +1,9 @@
-package com.granotec.inventory_api.transportation_assignment;
+package com.granotec.inventory_api.transportation_assignment.carrier;
 
 import com.granotec.inventory_api.common.model.Person;
+import com.granotec.inventory_api.transportation_assignment.driver.Driver;
+import com.granotec.inventory_api.transportation_assignment.Transp_Assignment;
+import com.granotec.inventory_api.transportation_assignment.car.Car;
 import jakarta.persistence.*;
 import lombok.*;
 

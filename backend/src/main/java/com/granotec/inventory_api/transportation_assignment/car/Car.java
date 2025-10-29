@@ -1,6 +1,8 @@
-package com.granotec.inventory_api.transportation_assignment;
+package com.granotec.inventory_api.transportation_assignment.car;
 
 import com.granotec.inventory_api.common.model.BaseEntity;
+import com.granotec.inventory_api.transportation_assignment.carrier.Carrier;
+import com.granotec.inventory_api.transportation_assignment.Transp_Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +23,7 @@ public class Car extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "placa", nullable = false, unique = true, length = 6)
+    @Column(name = "placa", nullable = false, unique = true, length = 7)
     private String placa;
 
     @Column(name = "marca", length = 40)

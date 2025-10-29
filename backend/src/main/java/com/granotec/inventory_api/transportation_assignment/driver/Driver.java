@@ -1,7 +1,9 @@
-package com.granotec.inventory_api.transportation_assignment;
+package com.granotec.inventory_api.transportation_assignment.driver;
 
 
 import com.granotec.inventory_api.common.model.Person;
+import com.granotec.inventory_api.transportation_assignment.Transp_Assignment;
+import com.granotec.inventory_api.transportation_assignment.carrier.Carrier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +27,7 @@ public class Driver extends Person {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 15, unique = true)
+    @Column(nullable = false, length = 40)
     private String apellidos;
 
     @ManyToOne

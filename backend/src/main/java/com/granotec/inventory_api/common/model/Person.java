@@ -17,10 +17,10 @@ import lombok.Setter;
 public abstract class Person extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private DocumentType tipoDocumento;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String nroDocumento;
 
     private String direccion;

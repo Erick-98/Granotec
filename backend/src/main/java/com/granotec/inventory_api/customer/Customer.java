@@ -23,11 +23,14 @@ public class Customer extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String name;
 
-    @Column(nullable = false, length = 15)
+    @Column(length = 40)
     private String apellidos;
+
+    @Column(length = 150, unique = true)
+    private String razonSocial;
 
     @OneToMany(mappedBy = "customer")
     private List<Ov> ordenesDeVenta;

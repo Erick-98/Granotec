@@ -6,6 +6,8 @@ import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.stock.dto.StockRequest;
 import com.granotec.inventory_api.stock.dto.StockResponse;
 import com.granotec.inventory_api.storage.StorageRepository;
+import com.granotec.inventory_api.storage.entity.Storage;
+import com.granotec.inventory_api.product.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ public class StockService {
     private final StockRepository stockRepository;
     private final StorageRepository storageRepository;
     private final ProductRepository productRepository;
+    private final StockAdjustmentRepository adjustmentRepository;
 
     public List<StockResponse> listAll(){
         return stockRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
@@ -74,10 +77,14 @@ public class StockService {
 
     @Transactional
     public void softDelete(Long id){
-        Stock s = stockRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Stock no encontrado"));
+        Stock s = stock_repository_get(id);
         // BaseEntity proporciona softDelete() y getters/setters con nombre isDeleted
         s.softDelete();
         stockRepository.save(s);
+    }
+
+    private Stock stock_repository_get(Long id){
+        return stockRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Stock no encontrado"));
     }
 
     // Ajuste de stock con bloqueo pesimista
@@ -107,6 +114,77 @@ public class StockService {
         stock.setCantidad(newQty);
         Stock saved = stockRepository.save(stock);
         return toResponse(saved);
+    }
+
+    // --- Nuevos métodos atómicos propuestos ---
+
+    @Transactional
+    public void decreaseByStockId(Long stockId, BigDecimal qty){
+        if(qty == null || qty.compareTo(BigDecimal.ZERO) <= 0) throw new BadRequestException("Cantidad debe ser positiva");
+        int affected = stockRepository.decreaseByIdIfSufficient(stockId, qty);
+        if(affected == 0){
+            throw new BadRequestException("Stock insuficiente o registro no encontrado");
+        }
+    }
+
+    @Transactional
+    public void decreaseByAlmacenProductoLote(Long almacenId, Integer productoId, String lote, BigDecimal qty){
+        if(qty == null || qty.compareTo(BigDecimal.ZERO) <= 0) throw new BadRequestException("Cantidad debe ser positiva");
+        int affected = stockRepository.decreaseByAlmacenProductoLoteIfSufficient(almacenId, productoId, lote, qty);
+        if(affected == 0){
+            throw new BadRequestException("Stock insuficiente o registro no encontrado");
+        }
+    }
+
+    // Convenience: decrease by product (take first stock record for product)
+    @Transactional
+    public void decreaseByProduct(Integer productoId, BigDecimal qty){
+        Stock s = stockRepository.findFirstByProductoIdOrderByIdAsc(productoId)
+                .orElseThrow(() -> new BadRequestException("No existe stock para el producto"));
+        decreaseByStockId(s.getId(), qty);
+    }
+
+    // Convenience: increase by product (take first stock record for product)
+    @Transactional
+    public void increaseByProduct(Integer productoId, BigDecimal qty){
+        if(qty == null || qty.compareTo(BigDecimal.ZERO) <= 0) throw new BadRequestException("Cantidad debe ser positiva");
+        Stock s = stockRepository.findFirstByProductoIdOrderByIdAsc(productoId)
+                .orElseThrow(() -> new BadRequestException("No existe stock para el producto"));
+        // use adjustStock to add delta positive
+        adjustStock(s.getAlmacen().getId(), productoId, s.getLote(), qty);
+    }
+
+    // Overload: ajustar/restaurar por producto (compat con servicios de detalle)
+    @Transactional
+    public void adjustStock(Integer oldProductId, int oldQty, Integer newProductId, BigDecimal newQty){
+        if(oldProductId != null && oldQty > 0){
+            increaseByProduct(oldProductId, new java.math.BigDecimal(oldQty));
+        }
+        if(newProductId != null && newQty != null){
+            decreaseByProduct(newProductId, newQty);
+        }
+    }
+
+    // Registrar ajuste y ejecutar
+    @Transactional
+    public void recordAdjustment(Long idAlmacen, Integer idProducto, String lote, BigDecimal delta, String notes, String createdBy){
+        // resolve storage and product existance
+        Storage almacen = storageRepository.findById(idAlmacen).orElse(null);
+        Product producto = null;
+        if(idProducto != null) producto = productRepository.findById(idProducto).orElse(null);
+
+        // apply adjustment to stock
+        adjustStock(idAlmacen, idProducto, lote, delta);
+
+        StockAdjustment adj = StockAdjustment.builder()
+                .almacen(almacen)
+                .producto(producto)
+                .lote(lote)
+                .delta(delta)
+                .notes(notes)
+                .createdBy(createdBy)
+                .build();
+        adjustmentRepository.save(adj);
     }
 
     private StockResponse toResponse(Stock s){

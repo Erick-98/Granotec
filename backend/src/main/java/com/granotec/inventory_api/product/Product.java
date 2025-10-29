@@ -4,6 +4,7 @@ package com.granotec.inventory_api.product;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.dispatch.details_dispatch.DetailsDispatch;
 import com.granotec.inventory_api.ov.details_ov.Details_ov;
+import com.granotec.inventory_api.stock.Stock;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,11 +38,28 @@ public class Product extends BaseEntity {
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "stock", nullable = false)
+    // Compatibilidad: campo transitorio stock para no romper tests/constructores existentes
+    @Transient
+    @Deprecated
     private Integer stock;
 
-    @Column(name = "lote", length = 50, nullable = false)
+    // El campo 'stock' se normaliza en la tabla 'stock'. Mantener relación hacia los registros de stock por almacen/lote.
+    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY)
+    private List<Stock> stocks;
+
+    @Column(name = "lote", length = 50)
     private String batch;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "unidad_medida", length = 20)
+    private UnitOfMeasure unitOfMeasure;
+
+    // Bloqueo por calidad o estado que impide movimientos hasta ser liberado
+    @Column(name = "is_locked")
+    private Boolean isLocked = Boolean.FALSE;
+
+    @Column(name = "lock_reason")
+    private String lockReason;
 
     @OneToMany(mappedBy = "product")
     private List<Details_ov> detalles_ov;
@@ -50,8 +68,6 @@ public class Product extends BaseEntity {
     private List<DetailsDispatch> detalles_despacho;
 
     /*
-    TENER EN CUENTA EL BLOQUEO DE PRODUCTOS POR CALIDAD, SI ES QUE PUEDE AÑADIR DESDE ACÁ UN LOCK
-    puede ser un booleano "isLocked" o un enum "status" con valores como "AVAILABLE", "LOCKED", "UNDER_REVIEW", etc.
-    FALTA AÑADIR UNIDAD DE MEDIDA y/o otros campos necesarios que aún no se me ocurreen jaja
-    * */
+    SUGERENCIA: para validar movimientos, comprobar product.isLocked antes de decrementar stock.
+    */
 }

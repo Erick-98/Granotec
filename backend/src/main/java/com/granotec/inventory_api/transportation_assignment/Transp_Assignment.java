@@ -2,6 +2,9 @@ package com.granotec.inventory_api.transportation_assignment;
 
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.dispatch.Dispatch;
+import com.granotec.inventory_api.transportation_assignment.car.Car;
+import com.granotec.inventory_api.transportation_assignment.carrier.Carrier;
+import com.granotec.inventory_api.transportation_assignment.driver.Driver;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,11 +1,8 @@
 package com.granotec.inventory_api.dispatch;
 
-import com.granotec.inventory_api.transportation_assignment.Car;
-import com.granotec.inventory_api.transportation_assignment.Carrier;
 import com.granotec.inventory_api.common.enums.Status;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.dispatch.details_dispatch.DetailsDispatch;
-import com.granotec.inventory_api.transportation_assignment.Driver;
 import com.granotec.inventory_api.ov.Ov;
 import com.granotec.inventory_api.transportation_assignment.Transp_Assignment;
 import jakarta.persistence.*;
@@ -34,7 +31,7 @@ public class Dispatch extends BaseEntity {
     private Ov ordenVenta;
 
     @ManyToOne
-    @JoinColumn(name = "id_asignacion", nullable = false)
+    @JoinColumn(name = "id_asignacion")
     private Transp_Assignment asignacion;
 
     @Column(name = "fecha_despacho", nullable = false)
