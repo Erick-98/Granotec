@@ -9,7 +9,7 @@ export const navItems: NavItem[] = [
     iconName: 'solar:atom-line-duotone',
     route: '/dashboard',
   },
-  {
+  /*{
     displayName: 'Analytics',
     iconName: 'solar:widget-add-line-duotone',
     route: 'https://materialm-angular-main.netlify.app/dashboards/dashboard1',
@@ -17,8 +17,8 @@ export const navItems: NavItem[] = [
     external: true,
     chipClass: 'bg-light-secondary text-secondary',
     chipContent: 'PRO',
-  },
-  {
+  },*/
+  /*{
     displayName: 'eCommerce',
     iconName: 'solar:chart-line-duotone',
     route: 'https://materialm-angular-main.netlify.app/dashboards/dashboard2',
@@ -26,8 +26,8 @@ export const navItems: NavItem[] = [
     external: true,
     chipClass: 'bg-light-secondary text-secondary',
     chipContent: 'PRO',
-  },
-  {
+  },*/
+  /*{
     displayName: 'CRM',
     iconName: 'solar:screencast-2-line-duotone',
     route: 'https://materialm-angular-main.netlify.app/dashboards/dashboard3',
@@ -35,8 +35,8 @@ export const navItems: NavItem[] = [
     external: true,
     chipClass: 'bg-light-secondary text-secondary',
     chipContent: 'PRO',
-  },
-
+  },*/
+/*
   {
     divider: true,
     navCap: 'Apps',
@@ -214,32 +214,32 @@ export const navItems: NavItem[] = [
       },
     ],
   },
-
+*/
   {
-    navCap: 'Ui Components',
+    navCap: 'Mantenimiento',
     divider: true
   },
   {
-    displayName: 'Badge',
+    displayName: 'Almacén',
     iconName: 'solar:archive-minimalistic-line-duotone',
     route: '/ui-components/badge',
   },
   {
-    displayName: 'Chips',
+    displayName: 'Proveedor',
     iconName: 'solar:danger-circle-line-duotone',
     route: '/ui-components/chips',
   },
   {
-    displayName: 'Lists',
+    displayName: 'Cliente',
     iconName: 'solar:bookmark-square-minimalistic-line-duotone',
     route: '/ui-components/lists',
   },
   {
-    displayName: 'Menu',
+    displayName: 'Producto',
     iconName: 'solar:file-text-line-duotone',
     route: '/ui-components/menu',
   },
-  {
+  /*{
     displayName: 'Tooltips',
     iconName: 'solar:text-field-focus-line-duotone',
     route: '/ui-components/tooltips',
@@ -469,18 +469,33 @@ export const navItems: NavItem[] = [
       },
     ],
   },
-
+*/
   {
-    navCap: 'Extra',
+    navCap: 'Inventario',
     divider: true
   },
   {
-    displayName: 'Icons',
+    displayName: 'Kardex',
     iconName: 'solar:sticker-smile-circle-2-line-duotone',
     route: '/extra/icons',
   },
   {
-    displayName: 'Sample Page',
+    displayName: 'Saldo de Stock',
+    iconName: 'solar:planet-3-line-duotone',
+    route: '/extra/sample-page',
+  },
+   {
+    displayName: 'Vencidos',
+    iconName: 'solar:planet-3-line-duotone',
+    route: '/extra/sample-page',
+  },
+    {
+    displayName: 'Eliminación',
+    iconName: 'solar:planet-3-line-duotone',
+    route: '/extra/sample-page',
+  },
+    {
+    displayName: 'Cierre de inventario',
     iconName: 'solar:planet-3-line-duotone',
     route: '/extra/sample-page',
   },
