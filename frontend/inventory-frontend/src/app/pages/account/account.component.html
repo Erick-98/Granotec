@@ -1,0 +1,32 @@
+<mat-card class="cardWithShadow p-24">
+  <h2 class="m-b-4">Mi Cuenta</h2>
+  <span class="text-muted">Preferencias</span>
+
+  <div class="row m-t-16">
+    <div class="col-12 col-md-6 m-b-12">
+      <mat-card class="p-16">
+        <div class="d-flex align-items-center justify-content-between m-b-12">
+          <h3 class="m-0 f-s-16">Tema</h3>
+          <span class="text-muted">{{ user.theme() === 'light' ? 'Claro' : 'Oscuro' }}</span>
+        </div>
+        <mat-slide-toggle [checked]="user.theme() === 'dark'" (change)="user.toggleTheme()">
+          Modo oscuro
+        </mat-slide-toggle>
+      </mat-card>
+    </div>
+    <div class="col-12 col-md-6 m-b-12">
+      <mat-card class="p-16">
+        <div class="d-flex align-items-center justify-content-between m-b-12">
+          <h3 class="m-0 f-s-16">Idioma</h3>
+          <span class="text-muted">{{ user.language() === 'es' ? 'Español' : 'English' }}</span>
+        </div>
+        <mat-button-toggle-group [value]="user.language()" (change)="user.setLanguage($event.value)" name="lang">
+          <mat-button-toggle value="es">Español</mat-button-toggle>
+          <mat-button-toggle value="en">English</mat-button-toggle>
+        </mat-button-toggle-group>
+      </mat-card>
+    </div>
+  </div>
+</mat-card>
+
+

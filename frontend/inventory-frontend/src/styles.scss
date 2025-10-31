@@ -2,3 +2,143 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Temas dinámicos simples: se aplican en <html> por UserService */
+.theme-light {
+  --app-bg: #f5f7fb;
+  --app-surface: #ffffff;
+  --app-text: #1f2937;
+  --app-muted: #6b7280;
+}
+
+.theme-dark {
+  --app-bg: #0f172a; /* slate-900 */
+  --app-surface: #111827; /* gray-900 */
+  --app-text: #e5e7eb; /* gray-200 */
+  --app-muted: #9ca3af; /* gray-400 */
+}
+
+html.theme-light, html.theme-dark {
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+/* Ajustes básicos de superficies comunes */
+body, .mat-typography { color: var(--app-text); }
+
+mat-toolbar.topbar,
+.app-topstrip { background: var(--app-surface) !important; color: var(--app-text) !important; }
+
+.cardWithShadow { background: var(--app-surface); color: var(--app-text); transition: background .2s, color .2s; }
+
+/* Botones en top-strip: solo ajustar en modo oscuro para no romper modo claro */
+html.theme-dark .app-topstrip .text-white { color: var(--app-text) !important; }
+html.theme-dark .app-topstrip .text-white-50 { color: var(--app-muted) !important; }
+
+/* ==========================================
+   Angular Material: overrides básicos por tema
+   ========================================== */
+html.theme-light, html.theme-dark {
+  /* Sugerir esquema al navegador para scrollbars, formularios nativos, etc. */
+  color-scheme: light dark;
+}
+
+/* Toolbar */
+.mat-toolbar.topbar { background-color: var(--app-surface) !important; color: var(--app-text) !important; }
+
+/* Cards */
+.mat-mdc-card, .mat-mdc-card .mdc-card { background-color: var(--app-surface) !important; color: var(--app-text) !important; }
+
+/* Menús y popups */
+.mat-mdc-menu-panel, .mat-mdc-select-panel, .mat-mdc-autocomplete-panel { background-color: var(--app-surface) !important; color: var(--app-text) !important; }
+.mat-mdc-menu-item .mdc-list-item__primary-text { color: var(--app-text); }
+/* Dropdown de perfil en topbar */
+html.theme-dark .topbar-dd .mdc-list-item__primary-text { color: var(--app-text) !important; opacity: .95; }
+html.theme-dark .topbar-dd mat-icon, html.theme-dark .topbar-dd .iconify { color: var(--app-text) !important; }
+html.theme-dark .topbar-dd .mat-stroked-button { color: var(--app-text) !important; border-color: rgba(255,255,255,.3) !important; }
+
+/* Listas y tablas */
+.mat-mdc-list-item, .mat-mdc-table, .mat-mdc-cell, .mat-mdc-header-cell { color: var(--app-text); }
+.mat-mdc-table { background: var(--app-surface); }
+
+/* Inputs */
+.mat-mdc-form-field-subscript-wrapper, .mat-mdc-form-field-focus-overlay { background: transparent; }
+.mat-mdc-input-element, .mat-mdc-select-value { color: var(--app-text); }
+
+/* Botones */
+.mat-mdc-button, .mat-mdc-unelevated-button, .mat-mdc-raised-button, .mat-mdc-outlined-button {
+  --mdc-text-button-label-text-color: var(--app-text);
+  color: var(--app-text);
+}
+
+/* Tablas de sombras más suaves en dark */
+html.theme-dark .cardWithShadow, html.theme-dark .mat-mdc-card {
+  box-shadow: 0 6px 24px rgba(0,0,0,.45);
+}
+
+/* Sidebar */
+.mat-drawer.sidebarNav { background: var(--app-surface) !important; color: var(--app-text) !important; }
+.mat-drawer.sidebarNav .mdc-list-item__primary-text, 
+.mat-drawer.sidebarNav .routeIcon { color: var(--app-text); }
+html.theme-dark .mat-drawer.sidebarNav { box-shadow: 7px 7px 18px rgba(0,0,0,.4); }
+
+/* Menú activo contraste en dark */
+html.theme-dark .menu-list-item.activeMenu { background-color: rgba(59,130,246,.18); }
+
+/* ApexCharts ajustes rápidos */
+.apexcharts-canvas { color: var(--app-text); }
+.apexcharts-tooltip { background: var(--app-surface) !important; color: var(--app-text) !important; border-color: rgba(255,255,255,.08) !important; }
+.apexcharts-gridline { stroke: rgba(255,255,255,.12) !important; }
+
+/* Tablas (Popular Products y otras) */
+.mat-mdc-table { border-radius: 12px; overflow: hidden; background: var(--app-surface) !important; }
+.mat-mdc-table .mdc-data-table__content { background: var(--app-surface) !important; }
+.mat-mdc-header-cell { color: var(--app-muted) !important; font-weight: 600; }
+.mat-mdc-row { border-bottom: 1px solid rgba(0,0,0,.06); background: transparent; }
+html.theme-dark .mat-mdc-row { border-bottom-color: rgba(255,255,255,.06); background: transparent !important; }
+.mat-mdc-header-row { background: transparent !important; }
+html.theme-dark .mdc-data-table__row, html.theme-dark .mdc-data-table__header-row { background: transparent !important; }
+.mat-mdc-table .mdc-data-table__cell, .mat-mdc-table .mdc-data-table__header-cell { color: var(--app-text) !important; }
+.mat-mdc-cell { color: var(--app-text) !important; }
+
+/* Badges de estado (Confirmed/Cancelled) */
+[class^="bg-light-"] { filter: saturate(1.1); }
+html.theme-dark [class^="bg-light-"] { filter: brightness(.9) saturate(1.2); }
+
+/* Progress bars dentro de tablas/cards */
+.mat-mdc-progress-bar { --mdc-linear-progress-active-indicator-color: var(--app-text); }
+html.theme-dark .mat-mdc-progress-bar .mdc-linear-progress__buffer-bar { background-color: rgba(255,255,255,.12) !important; }
+
+/* Pasteles claros -> atenuados en modo oscuro */
+html.theme-dark .bg-light-primary,
+html.theme-dark .bg-light-secondary,
+html.theme-dark .bg-light-error,
+html.theme-dark .bg-light-warning,
+html.theme-dark .bg-light-success {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+html.theme-dark .border-secondary,
+html.theme-dark .border-error,
+html.theme-dark .text-muted { color: var(--app-muted) !important; }
+
+/* Tarjetas “shadow-none” con fondo pastel: forzamos superficie del tema */
+html.theme-dark .shadow-none.bg-light-primary,
+html.theme-dark .shadow-none.bg-light-secondary,
+html.theme-dark .shadow-none.bg-light-error,
+html.theme-dark .shadow-none.bg-light-warning,
+html.theme-dark .shadow-none.bg-light-success {
+  background-color: var(--app-surface) !important;
+}
+
+/* Blog cards: asegurar contraste de textos en oscuro */
+.cardWithShadow mat-card-content,
+.cardWithShadow mat-card-title,
+.cardWithShadow mat-card-content span,
+.cardWithShadow a.hover-text { color: var(--app-text) !important; }
+html.theme-dark .cardWithShadow .bg-light { background-color: rgba(255,255,255,.12) !important; color: var(--app-text) !important; }
+
+/* Chip de tiempo en imágenes (2 mins Read) */
+html.theme-dark .card-overlay .bg-white {
+  background-color: rgba(0,0,0,.65) !important;
+  color: #ffffff !important;
+}

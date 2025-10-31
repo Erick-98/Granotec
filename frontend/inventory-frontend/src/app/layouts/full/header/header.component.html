@@ -20,8 +20,6 @@
 
   <span class="flex-1-auto"></span>
 
-  <a href="https://www.wrappixel.com/templates/materialm-material-angular-dashboard-template/?ref=376#demos" target="_blank" mat-flat-button>Check Pro Template</a>
-
   <!-- --------------------------------------------------------------- -->
   <!-- profile Dropdown -->
   <!-- --------------------------------------------------------------- -->
@@ -30,13 +28,13 @@
     <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover icon-35 profile-dd" width="35" />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="['/dashboard/perfil']">
       <mat-icon class="d-flex align-items-center"><i data-icon="solar:shield-user-line-duotone"
-          class="iconify icon-22"></i></mat-icon>My Profile
+          class="iconify icon-22"></i></mat-icon>Mi Perfil
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item [routerLink]="['/dashboard/cuenta']">
       <mat-icon class="d-flex align-items-center"><i data-icon="solar:user-id-line-duotone"
-          class="iconify icon-22"></i></mat-icon>My Account
+          class="iconify icon-22"></i></mat-icon>Mi Cuenta
     </button>
     <button mat-menu-item>
       <mat-icon class="d-flex align-items-center"><i data-icon="solar:checklist-minimalistic-line-duotone"
