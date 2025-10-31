@@ -7,6 +7,9 @@ import com.granotec.inventory_api.auth.repository.PasswordResetToken;
 import com.granotec.inventory_api.auth.repository.PasswordResetTokenRepository;
 import com.granotec.inventory_api.auth.repository.Token;
 import com.granotec.inventory_api.auth.repository.TokenRepository;
+import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
+import com.granotec.inventory_api.role.Role;
+import com.granotec.inventory_api.role.RoleRepository;
 import com.granotec.inventory_api.user.User;
 import com.granotec.inventory_api.user.UserRepository;
 import com.granotec.inventory_api.email.EmailService;
@@ -34,6 +37,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final  AuthenticationManager authenticationManager;
+    private final RoleRepository roleRepository;
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
@@ -42,10 +46,14 @@ public class AuthService {
     private String frontendUrl;
 
     public TokenResponse register(final RegisterRequest request) {
+        Role userRole = roleRepository.findById(request.roleId())
+                .orElseThrow(()-> new ResourceNotFoundException("Rol no encontrado"));
+
         final User user = User.builder()
                 .name(request.name())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
+                .role(userRole)
                 .build();
 
         final User savedUser = repository.save(user);
