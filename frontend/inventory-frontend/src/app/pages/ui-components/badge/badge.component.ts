@@ -1,22 +1,59 @@
-import { Component, OnInit } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatCardModule } from '@angular/material/card';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MaterialModule } from 'src/app/material.module';
 
 @Component({
   selector: 'app-badge',
+  standalone: true,
+  imports: [CommonModule, FormsModule, MaterialModule],
   templateUrl: './badge.component.html',
-  imports: [MatBadgeModule, MatButtonModule, MatIconModule, MatCardModule],
+  styleUrls: ['./badge.component.scss'],
 })
-export class AppBadgeComponent implements OnInit {
-  constructor() {}
+export class AppBadgeComponent {
+  almacen = {
+    codigo: '',
+    nombre: '',
+    direccion: '',
+    responsable: '',
+    tipo: '',
+    capacidad: null,
+    estado: 'activo',
+  };
 
-  ngOnInit(): void {}
+  almacenes: any[] = [];
+  confirmacion = false;
 
-  hidden = false;
+  columnas: string[] = ['codigo', 'nombre', 'responsable', 'tipo', 'estado'];
 
-  toggleBadgeVisibility() {
-    this.hidden = !this.hidden;
+  guardarAlmacen() {
+    if (!this.almacen.codigo || !this.almacen.nombre) return;
+
+    this.almacenes.push({ ...this.almacen });
+    this.confirmacion = true;
+
+    setTimeout(() => (this.confirmacion = false), 3000);
+
+    this.almacen = {
+      codigo: '',
+      nombre: '',
+      direccion: '',
+      responsable: '',
+      tipo: '',
+      capacidad: null,
+      estado: 'activo',
+    };
+  }
+
+  cancelar() {
+    this.almacen = {
+      codigo: '',
+      nombre: '',
+      direccion: '',
+      responsable: '',
+      tipo: '',
+      capacidad: null,
+      estado: 'activo',
+    };
   }
 }

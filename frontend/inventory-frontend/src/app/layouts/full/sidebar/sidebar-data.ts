@@ -501,6 +501,27 @@ export const navItems: NavItem[] = [
   },
 
   {
+    navCap: 'Producción',
+    divider: true
+  },
+  {
+    displayName: 'Orden de Producción',
+    iconName: 'solar:sticker-smile-circle-2-line-duotone',
+    route: '/extra/icons',
+  },
+  {
+    displayName: 'Control de Producción',
+    iconName: 'solar:planet-3-line-duotone',
+    route: '/extra/sample-page',
+  },
+   {
+    displayName: 'Control de rendimiento',
+    iconName: 'solar:planet-3-line-duotone',
+    route: '/extra/sample-page',
+  },
+
+/*
+  {
     divider: true,
     navCap: 'Forms',
   },
@@ -839,7 +860,7 @@ export const navItems: NavItem[] = [
     chipClass: 'bg-light-secondary text-secondary',
     chipContent: 'PRO',
   },
-
+*/
   {
     divider: true,
     navCap: 'Auth',
@@ -855,7 +876,7 @@ export const navItems: NavItem[] = [
         iconName: 'solar:round-alt-arrow-right-line-duotone',
         route: '/authentication/login',
       },
-      {
+      /*{
         displayName: 'Side Login',
          subItemIcon: true,
         iconName: 'solar:round-alt-arrow-right-line-duotone',
@@ -864,7 +885,7 @@ export const navItems: NavItem[] = [
         chip: true,
         chipClass: 'bg-light-secondary text-secondary',
         chipContent: 'PRO',
-      },
+      },*/
     ],
   },
   {
@@ -878,7 +899,7 @@ export const navItems: NavItem[] = [
         iconName: 'solar:round-alt-arrow-right-line-duotone',
         route: '/authentication/register',
       },
-      {
+      /*{
         displayName: 'Side Register',
          subItemIcon: true,
         iconName: 'solar:round-alt-arrow-right-line-duotone',
@@ -887,10 +908,10 @@ export const navItems: NavItem[] = [
         chip: true,
         chipClass: 'bg-light-secondary text-secondary',
         chipContent: 'PRO',
-      },
+      },*/
     ],
   },
-  {
+  /*{
     displayName: 'Forgot Pwd',
     iconName: 'solar:password-outline',
     route: '/authentication',
@@ -947,8 +968,9 @@ export const navItems: NavItem[] = [
         chipContent: 'PRO',
       },
     ],
-  },
-  {
+  },*/
+  
+  /*{
     displayName: 'Error',
     iconName: 'solar:bug-minimalistic-line-duotone',
     route: 'https://materialm-angular-main.netlify.app/authentication/error',
@@ -966,5 +988,5 @@ export const navItems: NavItem[] = [
     chipClass: 'bg-light-secondary text-secondary',
     chipContent: 'PRO',
   },
-  
+  */
 ];
