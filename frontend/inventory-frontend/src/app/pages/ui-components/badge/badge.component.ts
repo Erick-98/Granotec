@@ -14,7 +14,6 @@ export class AppBadgeComponent {
   almacen = {
     codigo: '',
     nombre: '',
-    direccion: '',
     responsable: '',
     tipo: '',
     capacidad: null,
@@ -37,7 +36,6 @@ export class AppBadgeComponent {
     this.almacen = {
       codigo: '',
       nombre: '',
-      direccion: '',
       responsable: '',
       tipo: '',
       capacidad: null,
@@ -49,7 +47,6 @@ export class AppBadgeComponent {
     this.almacen = {
       codigo: '',
       nombre: '',
-      direccion: '',
       responsable: '',
       tipo: '',
       capacidad: null,
