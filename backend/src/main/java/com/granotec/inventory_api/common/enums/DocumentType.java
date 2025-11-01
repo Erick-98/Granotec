@@ -1,6 +1,6 @@
 package com.granotec.inventory_api.common.enums;
 
-public enum VendorDocumentType {
+public enum DocumentType {
     DNI,
     RUC
 }

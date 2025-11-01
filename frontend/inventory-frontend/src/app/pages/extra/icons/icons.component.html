@@ -1,11 +1,81 @@
-<!-- ============================================================== -->
-<!-- Simple four boxes Row -->
-<!-- ============================================================== -->
 <mat-card class="cardWithShadow">
   <mat-card-content>
-    <mat-card-title>Icons</mat-card-title>
-    <mat-card-subtitle class="m-b-24">Solar Icon</mat-card-subtitle>
-    <iframe src="https://icon-sets.iconify.design/solar/" title="Solar Icon" width="100%" height="590px" frameBorder="0">
-    </iframe>
+    <mat-card-title>CONTROL DE KARDEX</mat-card-title>
+    <mat-card-subtitle class="m-b-24">GRANOTEC S.A — Fecha: 31/10/2025</mat-card-subtitle>
+
+    <div class="search-bar">
+      <mat-form-field appearance="outline">
+        <mat-label>Buscar</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Filtrar productos, lotes, operaciones..."
+          (keyup)="applyFilter($any($event.target).value)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="table-container mat-elevation-z2">
+      <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Fecha Doc</th>
+          <td mat-cell *matCellDef="let r">{{ r.fecha }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="almacen">
+          <th mat-header-cell *matHeaderCellDef>Almacén</th>
+          <td mat-cell *matCellDef="let r">{{ r.almacen }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="movimiento">
+          <th mat-header-cell *matHeaderCellDef>Movimiento</th>
+          <td mat-cell *matCellDef="let r">{{ r.movimiento }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoOperacion">
+          <th mat-header-cell *matHeaderCellDef>Tipo Operación</th>
+          <td mat-cell *matCellDef="let r">{{ r.tipoOperacion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreComercial">
+          <th mat-header-cell *matHeaderCellDef>Nombre Comercial</th>
+          <td mat-cell *matCellDef="let r">{{ r.nombreComercial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef>Código</th>
+          <td mat-cell *matCellDef="let r">{{ r.codigo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lote">
+          <th mat-header-cell *matHeaderCellDef>Lote</th>
+          <td mat-cell *matCellDef="let r">{{ r.lote }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="op">
+          <th mat-header-cell *matHeaderCellDef>OP</th>
+          <td mat-cell *matCellDef="let r">{{ r.op }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaProd">
+          <th mat-header-cell *matHeaderCellDef>Fecha Prod</th>
+          <td mat-cell *matCellDef="let r">{{ r.fechaProd }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaVcto">
+          <th mat-header-cell *matHeaderCellDef>Fecha Vcto</th>
+          <td mat-cell *matCellDef="let r">{{ r.fechaVcto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="presentacion">
+          <th mat-header-cell *matHeaderCellDef>Presentación</th>
+          <td mat-cell *matCellDef="let r">{{ r.presentacion }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
   </mat-card-content>
 </mat-card>

@@ -2,7 +2,7 @@ package com.granotec.inventory_api.vendor;
 
 import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
-import com.granotec.inventory_api.common.enums.VendorDocumentType;
+import com.granotec.inventory_api.common.enums.DocumentType;
 import com.granotec.inventory_api.vendor.dto.VendorRequest;
 import com.granotec.inventory_api.vendor.dto.VendorResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +22,19 @@ public class VendorService {
         if(request.getEmail() != null && repository.findByEmail(request.getEmail()).isPresent()){
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
-        if(request.getDocumento() != null && repository.findByDocumento(request.getDocumento()).isPresent()){
+        if(request.getDocumento() != null && repository.findByNroDocumento(request.getDocumento()).isPresent()){
             throw new BadRequestException("El documento ya está en uso");
         }
 
-        Vendor v = Vendor.builder()
-                .nombre(request.getNombre())
-                .tipoDocumento(request.getTipoDocumento())
-                .documento(request.getDocumento())
-                .direccion(request.getDireccion())
-                .telefono(request.getTelefono())
-                .email(request.getEmail())
-                .build();
+        // Creamos la entidad asignando los campos heredados desde Person mediante setters
+        Vendor v = new Vendor();
+        v.setRazonSocial(request.getNombre());
+        v.setTipoDocumento(request.getTipoDocumento());
+        v.setNroDocumento(request.getDocumento());
+        v.setDireccion(request.getDireccion());
+        v.setTelefono(request.getTelefono());
+        v.setEmail(request.getEmail());
+
         v = repository.save(v);
         return toDto(v);
     }
@@ -48,13 +49,13 @@ public class VendorService {
         if (request.getEmail() != null && repository.findByEmail(request.getEmail()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
-        if (request.getDocumento() != null && repository.findByDocumento(request.getDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
+        if (request.getDocumento() != null && repository.findByNroDocumento(request.getDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El documento ya está en uso.");
         }
 
-        v.setNombre(request.getNombre());
+        v.setRazonSocial(request.getNombre());
         v.setTipoDocumento(request.getTipoDocumento());
-        v.setDocumento(request.getDocumento());
+        v.setNroDocumento(request.getDocumento());
         v.setDireccion(request.getDireccion());
         v.setTelefono(request.getTelefono());
         v.setEmail(request.getEmail());
@@ -87,11 +88,11 @@ public class VendorService {
         repository.save(v);
     }
 
-    private void validateDocumento(VendorDocumentType tipo, String documento){
-        if(tipo == VendorDocumentType.DNI && (documento == null || documento.length() != 8)){
+    private void validateDocumento(DocumentType tipo, String documento){
+        if(tipo == DocumentType.DNI && (documento == null || documento.length() != 8)){
             throw new BadRequestException("El DNI debe tener 8 caracteres");
         }
-        if(tipo == VendorDocumentType.RUC && (documento == null || documento.length() != 11)){
+        if(tipo == DocumentType.RUC && (documento == null || documento.length() != 11)){
             throw new BadRequestException("El RUC debe tener 11 caracteres");
         }
     }
@@ -99,17 +100,14 @@ public class VendorService {
     private VendorResponse toDto(Vendor v) {
         return new VendorResponse(
                 v.getId(),
-                v.getNombre(),
-                v.getTipoDocumento().name(),
-                v.getDocumento(),
+                v.getRazonSocial(),
+                v.getTipoDocumento() != null ? v.getTipoDocumento().name() : null,
+                v.getNroDocumento(),
                 v.getDireccion(),
                 v.getTelefono(),
                 v.getEmail()
         );
     }
-
-
-
 
 
 

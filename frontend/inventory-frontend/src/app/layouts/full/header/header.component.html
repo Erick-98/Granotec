@@ -34,35 +34,26 @@
 
   <span class="flex-1-auto"></span>
 
-  <!-- Profile Dropdown -->
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="profilemenu"
-    aria-label="Menú de perfil"
-    class="d-flex align-items-center justify-content-center profile-btn-dd"
-  >
-    <img
-      src="/assets/images/profile/user-1.jpg"
-      class="rounded-circle object-cover icon-35 profile-dd"
-      width="35"
-      height="35"
-      alt="Foto de perfil"
-    />
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- profile Dropdown -->
+  <!-- --------------------------------------------------------------- -->
+  <button mat-icon-button extended [matMenuTriggerFor]="profilemenu" aria-label="Notifications"
+    class="d-flex align-items-center justify-content-center profile-btn-dd">
+    <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover icon-35 profile-dd" width="35" />
+>>>>>>> develop
   </button>
 
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
     <button mat-menu-item [routerLink]="['/dashboard/perfil']">
-      <mat-icon class="d-flex align-items-center">
-        <i data-icon="solar:shield-user-line-duotone" class="iconify icon-22"></i>
-      </mat-icon>
-      Mi Perfil
-    </button>
 
+      <mat-icon class="d-flex align-items-center"><i data-icon="solar:shield-user-line-duotone"
+          class="iconify icon-22"></i></mat-icon>Mi Perfil
+    </button>
     <button mat-menu-item [routerLink]="['/dashboard/cuenta']">
-      <mat-icon class="d-flex align-items-center">
-        <i data-icon="solar:user-id-line-duotone" class="iconify icon-22"></i>
-      </mat-icon>
-      Mi Cuenta
+      <mat-icon class="d-flex align-items-center"><i data-icon="solar:user-id-line-duotone"
+          class="iconify icon-22"></i></mat-icon>Mi Cuenta
+>>>>>>> develop
     </button>
 
     <button mat-menu-item>

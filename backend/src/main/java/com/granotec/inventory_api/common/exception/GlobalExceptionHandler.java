@@ -12,17 +12,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(basePackages = "com.granotec.inventory_api")
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request){
-        String message = "Datos invalidos";
-        if(ex.getBindingResult().getFieldError() != null){
-            message = ex.getBindingResult().getFieldError().getDefaultMessage();
-        }
-        ApiResponse<Void> body = new ApiResponse<>(message,null);
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(err -> {
+            errors.put(err.getField(), err.getDefaultMessage());
+        });
+        ApiResponse<Map<String,String>> body = new ApiResponse<>("Datos invalidos", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 

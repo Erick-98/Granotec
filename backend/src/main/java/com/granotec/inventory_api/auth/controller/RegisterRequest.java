@@ -6,5 +6,6 @@ public record RegisterRequest (
         String name,
         String email,
         @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
-        String password
+        String password,
+        Integer roleId
 ){ }
