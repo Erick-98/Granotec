@@ -5,22 +5,32 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { TablerIconsModule } from 'angular-tabler-icons';
-import { MaterialModule } from 'src/app/material.module';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+import { MaterialModule } from 'src/app/material.module';
+import { TablerIconsModule } from 'angular-tabler-icons';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [
     RouterModule,
     CommonModule,
     NgScrollbarModule,
     TablerIconsModule,
-    MaterialModule,
-    MatBadgeModule
+    MaterialModule,     // tu módulo agregado
+    MatBadgeModule,     // asegúrate de tenerlos también aquí
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
   ],
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
