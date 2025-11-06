@@ -1,4 +1,4 @@
-package com.granotec.inventory_api.product;
+package com.granotec.inventory_api.common.enums;
 
 public enum UnitOfMeasure {
     UN, // unidad

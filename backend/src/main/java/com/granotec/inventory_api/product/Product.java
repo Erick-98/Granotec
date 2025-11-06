@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.product;
 
 
+import com.granotec.inventory_api.common.enums.UnitOfMeasure;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.dispatch.details_dispatch.DetailsDispatch;
 import com.granotec.inventory_api.ov.details_ov.Details_ov;
