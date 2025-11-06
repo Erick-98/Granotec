@@ -2,7 +2,7 @@ package com.granotec.inventory_api.stock;
 
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.product.Product;
-import com.granotec.inventory_api.storage.entity.Storage;
+import com.granotec.inventory_api.storage.Storage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

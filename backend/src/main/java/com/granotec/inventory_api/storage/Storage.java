@@ -1,4 +1,4 @@
-package com.granotec.inventory_api.storage.entity;
+package com.granotec.inventory_api.storage;
 
 import com.granotec.inventory_api.common.model.BaseEntity;
 import jakarta.persistence.*;

@@ -6,7 +6,7 @@ import com.granotec.inventory_api.product.Product;
 import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.stock.Stock;
 import com.granotec.inventory_api.stock.StockRepository;
-import com.granotec.inventory_api.storage.entity.Storage;
+import com.granotec.inventory_api.storage.Storage;
 import com.granotec.inventory_api.storage.StorageRepository;
 import com.granotec.inventory_api.vendor.VendorRepository;
 import com.granotec.inventory_api.customer.CustomerRepository;
