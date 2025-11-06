@@ -1,25 +1,26 @@
 package com.granotec.inventory_api.customer;
 
+import com.granotec.inventory_api.common.enums.CondicionPago;
 import com.granotec.inventory_api.common.enums.DocumentType;
 import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
 import com.granotec.inventory_api.customer.dto.CustomerRequest;
 import com.granotec.inventory_api.customer.dto.CustomerResponse;
 import com.granotec.inventory_api.customer.dto.CustomerStatsResponse;
+import com.granotec.inventory_api.customer.typeCustomer.TypeCustomer;
+import com.granotec.inventory_api.customer.typeCustomer.TypeCustomerRepository;
+import com.granotec.inventory_api.location.entity.District;
+import com.granotec.inventory_api.location.repository.DistrictRepository;
 import com.granotec.inventory_api.ov.Ov;
 import com.granotec.inventory_api.ov.OvRepository;
 import com.granotec.inventory_api.ov.dto.OvResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,64 +28,71 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomerService {
 
-    private final CustomerRepository repository;
+    private final CustomerRepository cuRepository;
+    private final DistrictRepository disRepository;
+    private final TypeCustomerRepository tpcRepository;
     private final OvRepository ovRepository;
 
-    public CustomerResponse create(CustomerRequest request){
-        validateDocumento(request.getTipoDocumento(),request.getDocumento());
-        if(request.getEmail() != null && repository.findByEmail(request.getEmail()).isPresent()){
+    @Transactional
+    public CustomerResponse create(CustomerRequest dto) {
+
+        validateDocumento(dto.getTipoDocumento(),dto.getNroDocumento());
+
+        if(dto.getEmail() != null && cuRepository.findByEmail(dto.getEmail()).isPresent()){
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
-        if(request.getDocumento() != null && repository.findByNroDocumento(request.getDocumento()).isPresent()){
+        if(dto.getNroDocumento() != null && cuRepository.findByNroDocumento(dto.getNroDocumento()).isPresent()){
             throw new BadRequestException("El documento ya está en uso");
         }
 
-        Customer c = new Customer();
-        c.setName(request.getNombre());
-        c.setApellidos(request.getApellidos());
-        c.setRazonSocial(request.getRazonSocial());
-        c.setTipoDocumento(request.getTipoDocumento());
-        c.setNroDocumento(request.getDocumento());
-        c.setDireccion(request.getDireccion());
-        c.setTelefono(request.getTelefono());
-        c.setEmail(request.getEmail());
+        District distrito = disRepository.findById(dto.getDistritoId())
+                .orElseThrow(() -> new ResourceNotFoundException("El distrito no existe"));
 
-        c = repository.save(c);
-        return toDto(c);
+        TypeCustomer tipoCliente = tpcRepository.findById(dto.getTipoClienteId())
+                .orElseThrow(() -> new ResourceNotFoundException("El tipo de cliente no existe"));
+
+        Customer customer = mapToEntity(dto, new Customer());
+        customer.setDistrito(distrito);
+        customer.setTipoCliente(tipoCliente);
+
+        return mapToResponse(cuRepository.save(customer));
     }
 
-    public CustomerResponse update(Long id, CustomerRequest request) {
-        Customer c = repository.findById(id)
-                .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
+    @Transactional
+    public CustomerResponse update(Long id, CustomerRequest dto) {
+        Customer existing = cuRepository.findById(id)
+                .filter(cu -> !Boolean.TRUE.equals(cu.getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
-        validateDocumento(request.getTipoDocumento(), request.getDocumento());
+        validateDocumento(dto.getTipoDocumento(), dto.getNroDocumento());
 
-        if (request.getEmail() != null && repository.findByEmail(request.getEmail()).filter(x -> !x.getId().equals(id)).isPresent()) {
+        if (dto.getEmail() != null && cuRepository.findByEmail(dto.getEmail()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
-        if (request.getDocumento() != null && repository.findByNroDocumento(request.getDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
+
+        if (dto.getNroDocumento() != null && cuRepository.findByNroDocumento(dto.getNroDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El documento ya está en uso.");
         }
 
-        // Map fields manually to avoid overwriting id and relations
-        c.setName(request.getNombre());
-        c.setApellidos(request.getApellidos());
-        c.setRazonSocial(request.getRazonSocial());
-        c.setTipoDocumento(request.getTipoDocumento());
-        c.setNroDocumento(request.getDocumento());
-        c.setDireccion(request.getDireccion());
-        c.setTelefono(request.getTelefono());
-        c.setEmail(request.getEmail());
-        c = repository.save(c);
-        return toDto(c);
+        District distrito = disRepository.findById(dto.getDistritoId())
+                .orElseThrow(() -> new ResourceNotFoundException("El distrito no existe"));
+
+        TypeCustomer tipoCliente = tpcRepository.findById(dto.getTipoClienteId())
+                .orElseThrow(() -> new ResourceNotFoundException("El tipo de cliente no existe"));
+
+        Customer customer = mapToEntity(dto, existing);
+        customer.setDistrito(distrito);
+        customer.setTipoCliente(tipoCliente);
+
+        return mapToResponse(cuRepository.save(customer));
     }
 
+    @Transactional(readOnly = true)
     public List<CustomerResponse> listAll() {
-        return repository.findAll()
+        return cuRepository.findAll()
                 .stream()
                 .filter(p -> !Boolean.TRUE.equals(p.getIsDeleted()))
-                .map(this::toDto)
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -101,12 +109,12 @@ public class CustomerService {
             spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("email")), email.toLowerCase()));
         }
 
-        return repository.findAll(spec, pageable).map(this::toDto);
+        return cuRepository.findAll(spec, pageable).map(this::mapToResponse);
     }
 
     public Page<OvResponse> getCustomerOvs(Long customerId, Pageable pageable) {
         // validate customer exists and not deleted
-        Customer c = repository.findById(customerId)
+        Customer c = cuRepository.findById(customerId)
                 .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
@@ -114,33 +122,9 @@ public class CustomerService {
                 .map(this::toOvDto);
     }
 
-    public ByteArrayInputStream exportCsv(String format) {
-        // For simplicity export all customers to CSV; format ignored except csv
-        List<CustomerResponse> data = listAll();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter pw = new PrintWriter(baos, true, StandardCharsets.UTF_8);
-
-        // Header
-        pw.println("id,nombre,apellidos,tipoDocumento,documento,direccion,telefono,email");
-        for (CustomerResponse r : data) {
-            pw.printf("%d,%s,%s,%s,%s,%s,%s,%s\n",
-                    r.getId(),
-                    safe(r.getNombre()),
-                    safe(r.getApellidos()),
-                    safe(r.getTipoDocumento()),
-                    safe(r.getDocumento()),
-                    safe(r.getDireccion()),
-                    safe(r.getTelefono()),
-                    safe(r.getEmail())
-            );
-        }
-        pw.flush();
-        return new ByteArrayInputStream(baos.toByteArray());
-    }
-
     public CustomerStatsResponse getCustomerStats(Long customerId) {
-        Customer c = repository.findById(customerId)
-                .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
+        Customer c = cuRepository.findById(customerId)
+                .filter(cu -> !Boolean.TRUE.equals(cu.getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
         // Compute stats: total orders, total amount, last order date using repository aggregates
@@ -151,21 +135,23 @@ public class CustomerService {
         return new CustomerStatsResponse(customerId, totalOrders, totalAmount, lastOrderDate);
     }
 
+    @Transactional(readOnly = true)
     public CustomerResponse getById(Long id) {
-        Customer c = repository.findById(id)
-                .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
+        Customer c = cuRepository.findById(id)
+                .filter(cu -> !Boolean.TRUE.equals(cu.getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
-        return toDto(c);
+        return mapToResponse(c);
     }
 
+    @Transactional
     public void softDelete(Long id) {
-        Customer c = repository.findById(id)
+        Customer c = cuRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
-        if (Boolean.TRUE.equals(c.getIsDeleted())) {
+        if(Boolean.TRUE.equals(c.getIsDeleted())){
             throw new BadRequestException("El cliente ya ha sido eliminado");
         }
         c.softDelete();
-        repository.save(c);
+        cuRepository.save(c);
     }
 
     private void validateDocumento(DocumentType tipo, String documento){
@@ -177,25 +163,49 @@ public class CustomerService {
         }
     }
 
-    private String safe(String v) {
-        return v == null ? "" : v.replaceAll(",", " ");
+    private CustomerResponse mapToResponse(Customer c) {
+        return CustomerResponse.builder()
+                .id(c.getId())
+                .nombre(c.getName())
+                .apellidos(c.getApellidos())
+                .razonSocial(c.getRazonSocial())
+                .zona(c.getZona())
+                .rubro(c.getRubro())
+                .condicionPago(c.getCondicionPago().name())
+                .limiteDolares(c.getLimiteDolares())
+                .limiteCreditoSoles(c.getLimiteCreditoSoles())
+                .notas(c.getNotas())
+                .tipoDocumento(c.getTipoDocumento().name())
+                .nroDocumento(c.getNroDocumento())
+                .direccion(c.getDireccion())
+                .telefono(c.getTelefono())
+                .email(c.getEmail())
+                .distrito(c.getDistrito() != null ? c.getDistrito().getName() : null)
+                .provincia(c.getProvincia() != null ? c.getProvincia().getName() : null)
+                .departamento(c.getDepartamento() != null ? c.getDepartamento().getName() : null)
+                .tipoCliente(c.getTipoCliente() != null ? c.getTipoCliente().getNombre() : null)
+                .build();
     }
 
-    private CustomerResponse toDto(Customer c) {
-        return new CustomerResponse(
-                c.getId(),
-                c.getName(),
-                c.getApellidos(),
-                c.getRazonSocial(),
-                c.getTipoDocumento() != null ? c.getTipoDocumento().name() : null,
-                c.getNroDocumento(),
-                c.getDireccion(),
-                c.getTelefono(),
-                c.getEmail()
-        );
+    private Customer mapToEntity(CustomerRequest dto, Customer customer) {
+        customer.setName(dto.getNombre());
+        customer.setApellidos(dto.getApellidos());
+        customer.setRazonSocial(dto.getRazonSocial());
+        customer.setZona(dto.getZona());
+        customer.setRubro(dto.getRubro());
+        customer.setCondicionPago(CondicionPago.valueOf(dto.getCondicionPago()));
+        customer.setLimiteDolares(dto.getLimiteDolares());
+        customer.setLimiteCreditoSoles(dto.getLimiteCreditoSoles());
+        customer.setNotas(dto.getNotas());
+        customer.setTipoDocumento(DocumentType.valueOf(dto.getTipoDocumento().name()));
+        customer.setNroDocumento(dto.getNroDocumento());
+        customer.setDireccion(dto.getDireccion());
+        customer.setTelefono(dto.getTelefono());
+        customer.setEmail(dto.getEmail());
+        return customer;
     }
 
-    private OvResponse toOvDto(Ov o) {
+    private OvResponse toOvDto(Ov o){
         return new OvResponse(
                 o.getId(),
                 o.getNumeroDocumento(),
@@ -207,5 +217,6 @@ public class CustomerService {
                 o.getTotal()
         );
     }
+
 
 }
