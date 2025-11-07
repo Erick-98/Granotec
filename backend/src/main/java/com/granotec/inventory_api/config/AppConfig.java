@@ -1,5 +1,6 @@
 package com.granotec.inventory_api.config;
 
+import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
 import com.granotec.inventory_api.permission.Permission;
 import com.granotec.inventory_api.role.Role;
 import com.granotec.inventory_api.user.UserRepository;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -48,7 +48,7 @@ public class AppConfig {
                               .authorities(authorities)
                               .build();
                   })
-                  .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                  .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Bean
