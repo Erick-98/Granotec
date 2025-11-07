@@ -19,6 +19,7 @@ import java.util.Map;
 public class ProductController {
     private final ProductService productService;
 
+    @PreAuthorize("@permissionService.has('product:read')")
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> list(@RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "20") int size,
@@ -26,25 +27,27 @@ public class ProductController {
         return ResponseEntity.ok(productService.listAll(page,size,q));
     }
 
+    @PreAuthorize("@permissionService.has('product:read')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> get(@PathVariable Integer id){
         return ResponseEntity.ok(productService.getById(id));
     }
 
+    @PreAuthorize("@permissionService.has('product:stock:view')")
     @GetMapping("/{id}/stock")
     public ResponseEntity<ProductStockDetailsResponse> stock(@PathVariable Integer id){
         return ResponseEntity.ok(productService.getStockDetails(id));
     }
 
     @PatchMapping("/{id}/lock")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@permissionService.has('product:lock')")
     public ResponseEntity<String> lock(@PathVariable Integer id, @RequestParam boolean locked, @RequestParam(required = false) String reason){
         productService.setLock(id, locked, reason);
         return ResponseEntity.ok("OK");
     }
 
     @PostMapping("/{id}/stock/adjust")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@permissionService.has('product:adjust')")
     public ResponseEntity<String> adjustStock(@PathVariable Integer id, @RequestBody Map<String, Object> body){
         // body: { "almacenId":1, "lote": "L1", "delta": -5, "notes":"ajuste" }
         Long almacenId = body.get("almacenId") == null ? null : Long.valueOf(body.get("almacenId").toString());

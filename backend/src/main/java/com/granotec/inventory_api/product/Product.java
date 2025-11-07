@@ -33,9 +33,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(name = "descripcion")
-    private String description;
-
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -54,6 +51,9 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "unidad_medida", length = 20)
     private UnitOfMeasure unitOfMeasure;
+
+    @Column(name = "descripcion")
+    private String description;
 
     // Bloqueo por calidad o estado que impide movimientos hasta ser liberado
     @Column(name = "is_locked")
