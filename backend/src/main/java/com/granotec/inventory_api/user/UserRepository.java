@@ -1,6 +1,5 @@
 package com.granotec.inventory_api.user;
 
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
