@@ -27,6 +27,7 @@ public class Role extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_permissions",
@@ -34,4 +35,11 @@ public class Role extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
     private Set<Permission> permissions = new HashSet<>();
+
+    // Método para agregar permisos a un rol
+    public void addPermissions(Set<Permission> permissions) {
+        if (permissions != null) {
+            this.permissions.addAll(permissions);
+        }
+    }
 }

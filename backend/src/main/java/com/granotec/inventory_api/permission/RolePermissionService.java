@@ -62,7 +62,7 @@ public class RolePermissionService {
                 .map(name -> permissionRepository.findByName(name)
                         .orElseThrow(()-> new ResourceNotFoundException("Permiso no encontrado: " + name)))
                 .collect(Collectors.toSet());
-        role.getPermissions().addAll(permissions);
+        role.addPermissions(permissions);
         roleRepository.save(role);
     }
 
