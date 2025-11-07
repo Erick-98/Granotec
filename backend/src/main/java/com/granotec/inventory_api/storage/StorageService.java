@@ -4,7 +4,6 @@ import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
 import com.granotec.inventory_api.storage.dto.StorageRequest;
 import com.granotec.inventory_api.storage.dto.StorageResponse;
-import com.granotec.inventory_api.storage.entity.Storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

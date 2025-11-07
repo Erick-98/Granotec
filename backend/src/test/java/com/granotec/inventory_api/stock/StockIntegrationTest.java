@@ -3,7 +3,7 @@ package com.granotec.inventory_api.stock;
 import com.granotec.inventory_api.product.Product;
 import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.storage.StorageRepository;
-import com.granotec.inventory_api.storage.entity.Storage;
+import com.granotec.inventory_api.storage.Storage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

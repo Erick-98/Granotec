@@ -1,4 +1,4 @@
-package com.granotec.inventory_api.auth.controller;
+package com.granotec.inventory_api.auth.dto;
 
 import jakarta.validation.constraints.Size;
 

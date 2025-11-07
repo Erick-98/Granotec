@@ -6,7 +6,7 @@ import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.stock.dto.StockRequest;
 import com.granotec.inventory_api.stock.dto.StockResponse;
 import com.granotec.inventory_api.storage.StorageRepository;
-import com.granotec.inventory_api.storage.entity.Storage;
+import com.granotec.inventory_api.storage.Storage;
 import com.granotec.inventory_api.product.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

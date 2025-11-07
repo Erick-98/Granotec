@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -19,11 +20,13 @@ public class StockController {
 
     private final StockService stockService;
 
+    @PreAuthorize("@permissionService.has('stock:view')")
     @GetMapping
     public ResponseEntity<List<StockResponse>> listAll(){
         return ResponseEntity.ok(stockService.listAll());
     }
 
+    @PreAuthorize("@permissionService.has('stock:view')")
     @GetMapping("/{id}")
     public ResponseEntity<StockResponse> getById(@PathVariable Long id){
         return ResponseEntity.ok(stockService.getById(id));
@@ -31,6 +34,7 @@ public class StockController {
 
     @PostMapping("/adjust")
     @Transactional
+    @PreAuthorize("@permissionService.has('stock:adjust')")
     public ResponseEntity<String> adjustStock(@Valid @RequestBody StockAdjustRequest req){
         // obtener usuario autenticado desde el JWT (SecurityContext)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

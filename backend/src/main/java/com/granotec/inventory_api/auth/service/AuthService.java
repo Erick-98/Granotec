@@ -1,12 +1,13 @@
 package com.granotec.inventory_api.auth.service;
 
-import com.granotec.inventory_api.auth.controller.AuthRequest;
-import com.granotec.inventory_api.auth.controller.RegisterRequest;
-import com.granotec.inventory_api.auth.controller.TokenResponse;
+import com.granotec.inventory_api.auth.dto.AuthRequest;
+import com.granotec.inventory_api.auth.dto.RegisterRequest;
+import com.granotec.inventory_api.auth.dto.TokenResponse;
 import com.granotec.inventory_api.auth.repository.PasswordResetToken;
 import com.granotec.inventory_api.auth.repository.PasswordResetTokenRepository;
 import com.granotec.inventory_api.auth.repository.Token;
 import com.granotec.inventory_api.auth.repository.TokenRepository;
+import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
 import com.granotec.inventory_api.role.Role;
 import com.granotec.inventory_api.role.RoleRepository;
@@ -16,12 +17,13 @@ import com.granotec.inventory_api.email.EmailService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -42,9 +44,12 @@ public class AuthService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
 
+    private final ApplicationContext applicationContext;
+
     @Value("${application.frontend.url:http://localhost:3000}")
     private String frontendUrl;
 
+    @Transactional
     public TokenResponse register(final RegisterRequest request) {
         Role userRole = roleRepository.findById(request.roleId())
                 .orElseThrow(()-> new ResourceNotFoundException("Rol no encontrado"));
@@ -65,12 +70,13 @@ public class AuthService {
     }
 
 
+    @Transactional
     public TokenResponse authenticate(final AuthRequest request){
         final User user = repository.findByEmail(request.email())
-                .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(()-> new ResourceNotFoundException("Usuario no encontrado"));
 
         if(user.getLockTime() != null && user.getLockTime().isAfter(LocalDateTime.now())){
-            throw new RuntimeException("Cuenta bloqueada. Intenta nuevamente en 1 minuto");
+            throw new BadRequestException("Cuenta bloqueada. Intenta nuevamente en 1 minuto");
         }
 
         try{
@@ -82,8 +88,9 @@ public class AuthService {
             );
 
         }catch (BadCredentialsException e){
-            handleFailedLogin(user);
-            throw new RuntimeException("Credenciales incorrectas");
+            // Invocar el método mediante el proxy del bean para que la anotación @Transactional(propagation = REQUIRES_NEW) funcione
+            applicationContext.getBean(AuthService.class).handleFailedLogin(user.getId());
+            throw new BadRequestException("Credenciales incorrectas");
         }
 
         resetFailedAttempts(user);
@@ -94,8 +101,11 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
-    private void handleFailedLogin(User user) {
-        user.setFailedAttempts(user.getFailedAttempts() + 1);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleFailedLogin(Integer userId) {
+        final User user = repository.findById(userId).orElseThrow(() -> new BadRequestException("Usuario no encontrado al registrar intento fallido"));
+        Integer current = user.getFailedAttempts() == null ? 0 : user.getFailedAttempts();
+        user.setFailedAttempts(current + 1);
         if (user.getFailedAttempts() >= 3) {
             user.setLockTime(LocalDateTime.now().plusMinutes(1));
             user.setFailedAttempts(0);
@@ -173,7 +183,7 @@ public class AuthService {
 
     public void forgotPassword(final String email) {
         final User user = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         // limpiar tokens antiguos
         passwordResetTokenRepository.deleteAllByUser_Id(user.getId());

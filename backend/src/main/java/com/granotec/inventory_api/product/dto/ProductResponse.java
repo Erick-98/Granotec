@@ -1,6 +1,6 @@
 package com.granotec.inventory_api.product.dto;
 
-import com.granotec.inventory_api.product.UnitOfMeasure;
+import com.granotec.inventory_api.common.enums.UnitOfMeasure;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

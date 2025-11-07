@@ -2,6 +2,7 @@ package com.granotec.inventory_api.movement;
 
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.common.enums.Status;
+import com.granotec.inventory_api.storage.Storage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,11 +31,11 @@ public class Movement extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_almacen_origen")
-    private com.granotec.inventory_api.storage.entity.Storage almacenOrigen;
+    private Storage almacenOrigen;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_almacen_destino")
-    private com.granotec.inventory_api.storage.entity.Storage almacenDestino;
+    private Storage almacenDestino;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_movimiento", nullable = false, length = 30)

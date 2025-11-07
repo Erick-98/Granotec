@@ -7,11 +7,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,8 +41,18 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
+    //  @Builder.Default
+    @Builder.Default
+    @Column(nullable = false)
     private Integer failedAttempts = 0;
     private LocalDateTime lockTime;
+
+    // Asegura que al persistir por primera vez el campo no quede null (p. ex. cuando se usa el builder)
+    @SuppressWarnings("unused")
+    @PrePersist
+    protected void prePersist() {
+        if (this.failedAttempts == null) {
+            this.failedAttempts = 0;
+        }
+    }
 }
-
-
