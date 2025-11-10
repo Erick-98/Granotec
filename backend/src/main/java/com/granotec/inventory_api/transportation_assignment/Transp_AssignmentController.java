@@ -2,7 +2,6 @@ package com.granotec.inventory_api.transportation_assignment;
 
 import com.granotec.inventory_api.transportation_assignment.dto.TranspAssignmentRequest;
 import com.granotec.inventory_api.transportation_assignment.dto.TranspAssignmentResponse;
-import com.granotec.inventory_api.transportation_assignment.dto.TranspAssignmentStatsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/transp_assignment")
@@ -45,11 +43,11 @@ public class Transp_AssignmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/stats")
-    public ResponseEntity<TranspAssignmentStatsResponse> stats(@RequestParam(required = false) String from,
-                                                                @RequestParam(required = false) String to) {
-        LocalDate f = from == null ? LocalDate.now().minusMonths(1) : LocalDate.parse(from);
-        LocalDate t = to == null ? LocalDate.now() : LocalDate.parse(to);
-        return ResponseEntity.ok(service.getStats(f, t));
-    }
+//    @GetMapping("/stats")
+//    public ResponseEntity<TranspAssignmentStatsResponse> stats(@RequestParam(required = false) String from,
+//                                                                @RequestParam(required = false) String to) {
+//        LocalDate f = from == null ? LocalDate.now().minusMonths(1) : LocalDate.parse(from);
+//        LocalDate t = to == null ? LocalDate.now() : LocalDate.parse(to);
+//        return ResponseEntity.ok(service.getStats(f, t));
+//    }
 }
