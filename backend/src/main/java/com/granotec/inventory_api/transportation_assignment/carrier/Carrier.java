@@ -24,6 +24,9 @@ public class Carrier extends Person {
     @Column(name = "razon_social", nullable = false,length = 150)
     private String razonSocial;
 
+    @Column(unique = true)
+    private String nroDocumento;
+
     @OneToMany(mappedBy = "carrier", cascade = CascadeType.ALL)
     private List<Driver> drivers;
 

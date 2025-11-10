@@ -30,6 +30,9 @@ public class Driver extends Person {
     @Column(nullable = false, length = 40)
     private String apellidos;
 
+    @Column(unique = true)
+    private String nroDocumento;
+
     @ManyToOne
     @JoinColumn(name = "id_transportista")
     private Carrier carrier;

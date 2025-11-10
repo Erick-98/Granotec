@@ -7,7 +7,6 @@ import com.granotec.inventory_api.customer.typeCustomer.TypeCustomer;
 import com.granotec.inventory_api.location.entity.Department;
 import com.granotec.inventory_api.location.entity.District;
 import com.granotec.inventory_api.location.entity.Province;
-import com.granotec.inventory_api.ov.Ov;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @Builder
@@ -37,6 +35,9 @@ public class Customer extends Person {
 
     @Column(length = 150, unique = true)
     private String razonSocial;
+
+    @Column(unique = true)
+    private String nroDocumento;
 
     @Column(length = 150)
     private String zona;
@@ -64,9 +65,6 @@ public class Customer extends Person {
 
     @Column(columnDefinition = "TEXT")
     private String notas;
-
-    @OneToMany(mappedBy = "customer")
-    private List<Ov> ordenesDeVenta;
 
     @Transient
     public Province getProvincia(){

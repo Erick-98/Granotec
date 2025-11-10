@@ -6,21 +6,16 @@ import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
 import com.granotec.inventory_api.customer.dto.CustomerRequest;
 import com.granotec.inventory_api.customer.dto.CustomerResponse;
-import com.granotec.inventory_api.customer.dto.CustomerStatsResponse;
 import com.granotec.inventory_api.customer.typeCustomer.TypeCustomer;
 import com.granotec.inventory_api.customer.typeCustomer.TypeCustomerRepository;
 import com.granotec.inventory_api.location.entity.District;
 import com.granotec.inventory_api.location.repository.DistrictRepository;
-import com.granotec.inventory_api.ov.Ov;
-import com.granotec.inventory_api.ov.OvRepository;
-import com.granotec.inventory_api.ov.dto.OvResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +26,6 @@ public class CustomerService {
     private final CustomerRepository cuRepository;
     private final DistrictRepository disRepository;
     private final TypeCustomerRepository tpcRepository;
-    private final OvRepository ovRepository;
 
     @Transactional
     public CustomerResponse create(CustomerRequest dto) {
@@ -112,29 +106,6 @@ public class CustomerService {
         return cuRepository.findAll(spec, pageable).map(this::mapToResponse);
     }
 
-    public Page<OvResponse> getCustomerOvs(Long customerId, Pageable pageable) {
-        // validate customer exists and not deleted
-        Customer c = cuRepository.findById(customerId)
-                .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
-
-        return ovRepository.findByCustomerId(customerId, pageable)
-                .map(this::toOvDto);
-    }
-
-    public CustomerStatsResponse getCustomerStats(Long customerId) {
-        Customer c = cuRepository.findById(customerId)
-                .filter(cu -> !Boolean.TRUE.equals(cu.getIsDeleted()))
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
-
-        // Compute stats: total orders, total amount, last order date using repository aggregates
-        long totalOrders = ovRepository.countByCustomerId(customerId);
-        BigDecimal totalAmount = ovRepository.sumTotalByCustomerId(customerId);
-        java.time.LocalDate lastOrderDate = ovRepository.maxFechaByCustomerId(customerId);
-
-        return new CustomerStatsResponse(customerId, totalOrders, totalAmount, lastOrderDate);
-    }
-
     @Transactional(readOnly = true)
     public CustomerResponse getById(Long id) {
         Customer c = cuRepository.findById(id)
@@ -204,19 +175,5 @@ public class CustomerService {
         customer.setEmail(dto.getEmail());
         return customer;
     }
-
-    private OvResponse toOvDto(Ov o){
-        return new OvResponse(
-                o.getId(),
-                o.getNumeroDocumento(),
-                o.getTipoDocumento() != null ? o.getTipoDocumento().name() : null,
-                o.getCustomer() != null ? o.getCustomer().getId() : null,
-                o.getSalesperson() != null ? o.getSalesperson().getId() : null,
-                o.getFecha(),
-                o.getCurrency() != null ? o.getCurrency().name() : null,
-                o.getTotal()
-        );
-    }
-
 
 }

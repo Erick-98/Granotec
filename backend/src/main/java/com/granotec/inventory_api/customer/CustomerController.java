@@ -3,8 +3,6 @@ package com.granotec.inventory_api.customer;
 import com.granotec.inventory_api.common.dto.ApiResponse;
 import com.granotec.inventory_api.customer.dto.CustomerRequest;
 import com.granotec.inventory_api.customer.dto.CustomerResponse;
-import com.granotec.inventory_api.customer.dto.CustomerStatsResponse;
-import com.granotec.inventory_api.ov.dto.OvResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,16 +40,10 @@ public class CustomerController {
         return ResponseEntity.ok(new ApiResponse<>("Clientes paginados", service.list(pageable, nombre, documento, email)));
     }
 
-    @GetMapping("/{id}/ov")
-    public ResponseEntity<ApiResponse<Page<OvResponse>>> getCustomerOvs(@PathVariable Long id,
-                                                                        @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(new ApiResponse<>("Órdenes del cliente", service.getCustomerOvs(id, pageable)));
-    }
-
-    @GetMapping("/{id}/stats")
-    public ResponseEntity<ApiResponse<CustomerStatsResponse>> getCustomerStats(@PathVariable Long id) {
-        return ResponseEntity.ok(new ApiResponse<>("Estadísticas del cliente", service.getCustomerStats(id)));
-    }
+//    @GetMapping("/{id}/stats")
+//    public ResponseEntity<ApiResponse<CustomerStatsResponse>> getCustomerStats(@PathVariable Long id) {
+//        return ResponseEntity.ok(new ApiResponse<>("Estadísticas del cliente", service.getCustomerStats(id)));
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CustomerResponse>> get(@PathVariable Long id) {
