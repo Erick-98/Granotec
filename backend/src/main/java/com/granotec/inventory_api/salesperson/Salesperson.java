@@ -1,7 +1,9 @@
 package com.granotec.inventory_api.salesperson;
 
 import com.granotec.inventory_api.common.model.Person;
-import com.granotec.inventory_api.ov.Ov;
+import com.granotec.inventory_api.location.entity.Department;
+import com.granotec.inventory_api.location.entity.District;
+import com.granotec.inventory_api.location.entity.Province;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +30,22 @@ public class Salesperson extends Person {
     @Column(length = 15, unique = true)
     private String apellidos;
 
-    @OneToMany(mappedBy = "salesperson")
-    private List<Ov> ordenesDeVenta;
+    @Column(unique = true)
+    private String nroDocumento;
+
+    @ManyToOne
+    @JoinColumn(name = "distrito_id")
+    private District distrito;
+
+    @Transient
+    public Province getProvincia(){
+        return distrito != null ? distrito.getProvince() : null;
+    }
+
+    @Transient
+    public Department getDepartamento(){
+        Province provincia = getProvincia();
+        return provincia != null ? provincia.getDepartment() : null;
+    }
+
 }

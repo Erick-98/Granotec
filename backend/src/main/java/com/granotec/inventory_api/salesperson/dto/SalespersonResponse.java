@@ -12,6 +12,10 @@ public class SalespersonResponse {
     private String name;
     private String apellidos;
     private String nroDocumento;
+    private String direccion;
+    private String distrito;
+    private String provincia;
+    private String departamento;
     private String telefono;
     private String email;
 }

@@ -2,89 +2,126 @@ package com.granotec.inventory_api.salesperson;
 
 import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.common.exception.ResourceNotFoundException;
-import com.granotec.inventory_api.ov.OvRepository;
-import com.granotec.inventory_api.ov.dto.OvResponse;
+import com.granotec.inventory_api.location.entity.District;
+import com.granotec.inventory_api.location.repository.DistrictRepository;
 import com.granotec.inventory_api.salesperson.dto.SalespersonRequest;
 import com.granotec.inventory_api.salesperson.dto.SalespersonResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.stylesheets.LinkStyle;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 public class SalespersonService {
 
     private final SalespersonRepository repository;
-    private final OvRepository ovRepository;
+    private final DistrictRepository disRepository;
 
-    public Page<SalespersonResponse> listAll(int page, int size, String q){
-        Pageable p = PageRequest.of(page, size);
-        Page<Salesperson> result;
-        if (q == null || q.isBlank()) result = repository.findAll(p);
-        else result = repository.findByNameContainingIgnoreCaseOrNroDocumentoContainingIgnoreCase(q, q, p);
-        return result.map(this::toDto);
-    }
-
-    public SalespersonResponse getById(Integer id){
-        Salesperson s = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
-        return toDto(s);
-    }
-
-    public SalespersonResponse create(SalespersonRequest req){
-        Salesperson s = new Salesperson();
-        s.setName(req.getName());
-        s.setApellidos(req.getApellidos());
-        s.setNroDocumento(req.getNroDocumento());
-        s.setTelefono(req.getTelefono());
-        s.setEmail(req.getEmail());
-        s = repository.save(s);
-        return toDto(s);
-    }
-
-    public SalespersonResponse update(Integer id, SalespersonRequest req){
-        Salesperson s = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
-        s.setName(req.getName());
-        s.setApellidos(req.getApellidos());
-        s.setNroDocumento(req.getNroDocumento());
-        s.setTelefono(req.getTelefono());
-        s.setEmail(req.getEmail());
-        s = repository.save(s);
-        return toDto(s);
-    }
-
-    public void delete(Integer id){
-        Salesperson s = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
-        if (s.getOrdenesDeVenta() != null && !s.getOrdenesDeVenta().isEmpty()){
-            throw new BadRequestException("No se puede eliminar vendedor con órdenes asociadas");
+    @Transactional
+    public SalespersonResponse create(SalespersonRequest request){
+        if(request.getNroDocumento() == null || request.getNroDocumento().isBlank()){
+            throw new BadRequestException("El número de documento es obligatorio");
         }
-        s.softDelete();
-        repository.save(s);
+        if(request.getEmail() != null && repository.findByEmail(request.getEmail()).isPresent()){
+            throw new BadRequestException("El correo electrónico ya está en uso");
+        }
+
+        if(request.getNroDocumento() != null && repository.findByNroDocumento(request.getNroDocumento()).isPresent()){
+            throw new BadRequestException("El documento ya está en uso");
+        }
+
+        District distrito = disRepository.findById(request.getDistritoId())
+                .orElseThrow(() -> new ResourceNotFoundException("El distrito no existe"));
+
+        Salesperson salesperson = new Salesperson();
+        salesperson.setDistrito(distrito);
+
+        return toDto(repository.save(salesperson));
     }
 
-    public SalespersonResponse toDto(Salesperson s){
-        return new SalespersonResponse(s.getId(), s.getName(), s.getApellidos(), s.getNroDocumento(), s.getTelefono(), s.getEmail());
+    @Transactional
+    public SalespersonResponse update(Integer id, SalespersonRequest req){
+
+        Salesperson existing = repository.findById(id)
+                .filter(sa -> !Boolean.TRUE.equals(sa.getIsDeleted()))
+                .orElseThrow(()-> new ResourceNotFoundException("Vendedor no encontrado"));
+        if(req.getNroDocumento() == null || req.getNroDocumento().isBlank()){
+            throw new BadRequestException("El número de documento es obligatorio");
+        }
+
+        if(req.getEmail() != null && repository.findByEmail(req.getEmail()).filter(s -> !s.getId().equals(id)).isPresent()){
+            throw new BadRequestException("El correo electrónico ya está en uso");
+        }
+
+        if(req.getNroDocumento() != null && repository.findByNroDocumento(req.getNroDocumento()).filter(s -> !s.getId().equals(id)).isPresent()){
+            throw new BadRequestException("El documento ya está en uso.");
+        }
+
+        District distrito = disRepository.findById(req.getDistritoId())
+                .orElseThrow(() -> new ResourceNotFoundException("El distrito no existe"));
+
+        Salesperson salesperson =mapToEntity(req, existing);
+        salesperson.setDistrito(distrito);
+
+        return toDto(repository.save(salesperson));
     }
 
-    // Stats endpoints
-    public java.util.Map<String, Object> statsForSalesperson(Integer salespersonId){
-        repository.findById(salespersonId).orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
-        var totalOrders = ovRepository.countBySalespersonId(salespersonId);
-        var totalAmount = ovRepository.sumTotalBySalespersonId(salespersonId);
-        var lastOrder = ovRepository.maxFechaBySalespersonId(salespersonId);
-        return java.util.Map.of(
-                "totalOrders", totalOrders,
-                "totalAmount", totalAmount != null ? totalAmount : BigDecimal.ZERO,
-                "lastOrder", lastOrder
-        );
+    @Transactional(readOnly = true)
+    public List<SalespersonResponse> listAll(){
+        return repository.findAll()
+                .stream()
+                .filter(s -> !Boolean.TRUE.equals(s.getIsDeleted()))
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
-    public List<OvResponse> listOrders(Integer salespersonId, int page, int size){
-        Page<com.granotec.inventory_api.ov.Ov> p = ovRepository.findBySalespersonId(salespersonId, PageRequest.of(page,size));
-        return p.map(o -> new OvResponse(o.getId(), o.getNumeroDocumento(), o.getTipoDocumento() != null ? o.getTipoDocumento().name() : null, o.getCustomer()!=null?o.getCustomer().getId():null, o.getSalesperson()!=null?o.getSalesperson().getId():null, o.getFecha(), o.getCurrency()!=null?o.getCurrency().name():null, o.getTotal())).getContent();
+    @Transactional
+    public SalespersonResponse getById(Integer id){
+        Salesperson s = repository.findById(id)
+                .filter(sa -> !Boolean.TRUE.equals(sa.getIsDeleted()))
+                .orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
+        return toDto(s);
     }
+
+    @Transactional
+    public void softDelete(Integer id){
+        Salesperson salesperson = repository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Vendedor no encontrado"));
+        if(Boolean.TRUE.equals(salesperson.getIsDeleted())){
+            throw new BadRequestException("El vendedor ya fue eliminado");
+        }
+        salesperson.softDelete();
+        repository.save(salesperson);
+    }
+
+    private SalespersonResponse toDto(Salesperson s){
+        return new SalespersonResponse(
+                s.getId(),
+                s.getName(),
+                s.getApellidos(),
+                s.getNroDocumento(),
+                s.getDireccion(),
+                s.getDistrito() != null ? s.getDistrito().getName() : null,
+                s.getProvincia() != null ? s.getProvincia().getName() : null,
+                s.getDepartamento() != null ? s.getDepartamento().getName() : null,
+                s.getTelefono(),
+                s.getEmail());
+    }
+
+    private Salesperson mapToEntity(SalespersonRequest dto, Salesperson sal){
+        sal.setName(dto.getName());
+        sal.setApellidos(dto.getApellidos());
+        sal.setNroDocumento(dto.getNroDocumento());
+        sal.setDireccion(dto.getDireccion());
+        sal.setTelefono(dto.getTelefono());
+        sal.setEmail(dto.getEmail());
+        return sal;
+    }
+
+
 }
