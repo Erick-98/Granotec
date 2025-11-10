@@ -15,4 +15,7 @@ public class VendorResponse {
     private String direccion;
     private String telefono;
     private String email;
+    private String notas;
+    private String moneda;
+    private String condicionPago;
 }

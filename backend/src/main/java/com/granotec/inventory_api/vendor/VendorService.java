@@ -7,6 +7,7 @@ import com.granotec.inventory_api.vendor.dto.VendorRequest;
 import com.granotec.inventory_api.vendor.dto.VendorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class VendorService {
 
     private final VendorRepository repository;
 
+    @Transactional
     public VendorResponse create(VendorRequest request){
         validateDocumento(request.getTipoDocumento(),request.getDocumento());
         if(request.getEmail() != null && repository.findByEmail(request.getEmail()).isPresent()){
@@ -34,11 +36,15 @@ public class VendorService {
         v.setDireccion(request.getDireccion());
         v.setTelefono(request.getTelefono());
         v.setEmail(request.getEmail());
+        v.setNotas(request.getNotas());
+        v.setMoneda(request.getMoneda());
+        v.setCondicionPago(request.getCondicionPago());
 
         v = repository.save(v);
         return toDto(v);
     }
 
+    @Transactional
     public VendorResponse update(Long id, VendorRequest request) {
         Vendor v = repository.findById(id)
                 .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
@@ -59,6 +65,9 @@ public class VendorService {
         v.setDireccion(request.getDireccion());
         v.setTelefono(request.getTelefono());
         v.setEmail(request.getEmail());
+        v.setNotas(request.getNotas());
+        v.setMoneda(request.getMoneda());
+        v.setCondicionPago(request.getCondicionPago());
         v = repository.save(v);
         return toDto(v);
     }
@@ -78,6 +87,7 @@ public class VendorService {
         return toDto(v);
     }
 
+    @Transactional
     public void softDelete(Long id) {
         Vendor v = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado"));
@@ -105,7 +115,10 @@ public class VendorService {
                 v.getNroDocumento(),
                 v.getDireccion(),
                 v.getTelefono(),
-                v.getEmail()
+                v.getEmail(),
+                v.getNotas(),
+                v.getMoneda() != null ? v.getMoneda().name() : null,
+                v.getCondicionPago() != null ? v.getCondicionPago().name() : null
         );
     }
 
