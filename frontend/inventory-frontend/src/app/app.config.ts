@@ -3,10 +3,7 @@ import {
   provideZoneChangeDetection,
   importProvidersFrom,
 } from '@angular/core';
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import {
   provideRouter,
@@ -15,6 +12,7 @@ import {
 } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideClientHydration } from '@angular/platform-browser';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 // icons
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -38,7 +36,8 @@ export const appConfig: ApplicationConfig = {
       }),
       withComponentInputBinding()
     ),
-    provideHttpClient(withInterceptorsFromDi()),
+  // Registramos el interceptor JWT de forma funcional.
+  provideHttpClient(withInterceptors([jwtInterceptor])),
     provideClientHydration(),
     provideAnimationsAsync(),
     importProvidersFrom(
