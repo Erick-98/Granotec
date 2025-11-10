@@ -9,51 +9,31 @@
             </a>
           </div>
 
-          <div class="row m-t-24 custom-row">
-            <div class="col-6">
-              <button mat-stroked-button class="w-100">
-                <div class="d-flex align-items-center">
-                  <img src="/assets/images/svgs/google-icon.svg" alt="google" width="16" class="m-r-8" />
-                  <span class="d-none d-lg-block">Iniciar sesión con Google</span>
-                </div>
-              </button>
-            </div>
-            <div class="col-6">
-              <button mat-stroked-button class="w-100 d-flex align-items-center">
-                <div class="d-flex align-items-center">
-                  <img src="/assets/images/svgs/facebook-icon.svg" alt="facebook" width="40" class="m-r-4" />
-                  <span class="d-none d-lg-block">Iniciar sesión con Facebook</span>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <div class="or-border m-t-30">o iniciar sesión con</div>
-
-          <form class="m-t-30">
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Nombre de usuario</mat-label>
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Correo electrónico</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput />
+              <input matInput placeholder="tu@correo.com" formControlName="email" />
+              <mat-error *ngIf="f.email?.touched && f.email?.hasError('required')">Correo requerido</mat-error>
+              <mat-error *ngIf="f.email?.touched && f.email?.hasError('email')">Formato inválido</mat-error>
             </mat-form-field>
             <!-- password -->
             <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Contraseña</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="password" />
+              <input matInput type="password" placeholder="••••••••" formControlName="password" />
+              <mat-error *ngIf="f.password?.touched && f.password?.hasError('required')">Contraseña requerida</mat-error>
+              <mat-error *ngIf="f.password?.touched && f.password?.hasError('minlength')">Mínimo 8 caracteres</mat-error>
             </mat-form-field>
 
             <div class="d-flex align-items-center m-b-12">
-              <mat-checkbox color="primary">Recordar este dispositivo</mat-checkbox>
               <a [routerLink]="['/']" class="text-primary f-w-600 text-decoration-none m-l-auto f-s-14">¿Olvidaste tu contraseña?</a>
             </div>
-            <a [routerLink]="['/']" mat-flat-button color="primary" class="w-100">
-              Iniciar Sesion
-            </a>
-            <!-- input -->
+            <button type="submit" mat-flat-button color="primary" class="w-100" [disabled]="form.invalid">
+              Iniciar Sesión
+            </button>
+            <mat-error *ngIf="form.errors?.['invalidCredentials']" class="text-center m-t-10">
+              Credenciales inválidas. Por favor, inténtalo de nuevo.
+            </mat-error>
           </form>
-          <span class="d-block f-w-500 text-center m-t-24">No tienes una cuenta?
-            <a [routerLink]="['/authentication/register']" class="text-decoration-none text-primary f-w-500 f-s-14">
-              Crear cuenta</a>
-          </span>
         </mat-card-content>
       </mat-card>
     </div> 
