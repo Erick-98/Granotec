@@ -7,15 +7,11 @@ import com.granotec.inventory_api.transportation_assignment.carrier.CarrierRepos
 import com.granotec.inventory_api.transportation_assignment.driver.DriverRepository;
 import com.granotec.inventory_api.transportation_assignment.dto.TranspAssignmentRequest;
 import com.granotec.inventory_api.transportation_assignment.dto.TranspAssignmentResponse;
-import com.granotec.inventory_api.transportation_assignment.dto.TranspAssignmentStatsResponse;
-import com.granotec.inventory_api.dispatch.DispatchRepository;
-import com.granotec.inventory_api.common.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +21,6 @@ public class Transp_AssignmentService {
     private final CarrierRepository carrierRepository;
     private final DriverRepository driverRepository;
     private final CarRepository carRepository;
-    private final DispatchRepository dispatchRepository;
 
     public TranspAssignmentResponse create(TranspAssignmentRequest req) {
         var carrier = carrierRepository.findById(req.getCarrierId())
@@ -100,12 +95,12 @@ public class Transp_AssignmentService {
         return repository.findByDriver_IdAndIsDeletedFalse(driverId, pageable).map(this::toDto);
     }
 
-    public TranspAssignmentStatsResponse getStats(LocalDate from, LocalDate to) {
-        long totalAssignments = repository.count();
-        long totalDispatches = dispatchRepository.countByFechaBetween(from, to);
-        long pending = dispatchRepository.countByEstadoAndFechaBetween(Status.PENDIENTE, from, to);
-        Double avgDays = dispatchRepository.avgDeliveryDaysByFechaBetweenAndEstado(from, to, Status.ENTREGADO.name());
-        return new TranspAssignmentStatsResponse(totalAssignments, totalDispatches, pending, avgDays);
-    }
+//    public TranspAssignmentStatsResponse getStats(LocalDate from, LocalDate to) {
+//        long totalAssignments = repository.count();
+//        long totalDispatches = dispatchRepository.countByFechaBetween(from, to);
+//        long pending = dispatchRepository.countByEstadoAndFechaBetween(Status.PENDIENTE, from, to);
+//        Double avgDays = dispatchRepository.avgDeliveryDaysByFechaBetweenAndEstado(from, to, Status.ENTREGADO.name());
+//        return new TranspAssignmentStatsResponse(totalAssignments, totalDispatches, pending, avgDays);
+//    }
 
 }

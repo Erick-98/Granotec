@@ -20,9 +20,6 @@ public abstract class Person extends BaseEntity {
     @Column
     private DocumentType tipoDocumento;
 
-    @Column(unique = true)
-    private String nroDocumento;
-
     private String direccion;
 
     @Column
