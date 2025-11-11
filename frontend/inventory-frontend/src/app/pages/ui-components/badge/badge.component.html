@@ -3,10 +3,10 @@
   <mat-card-subtitle>Complete los datos del almacén</mat-card-subtitle>
 
   <form class="form-grid" (ngSubmit)="guardarAlmacen()" #almacenForm="ngForm">
-    <mat-form-field appearance="outline">
+    <!-- <mat-form-field appearance="outline">
       <mat-label>Código de almacén</mat-label>
       <input matInput [(ngModel)]="almacen.codigo" name="codigo" required placeholder="Ejemplo: ALM-001" />
-    </mat-form-field>
+    </mat-form-field> -->
 
     <mat-form-field appearance="outline">
       <mat-label>Nombre</mat-label>
@@ -14,11 +14,11 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Responsable</mat-label>
-      <input matInput [(ngModel)]="almacen.responsable" name="responsable" placeholder="Nombre del responsable" />
+      <mat-label>Descripción</mat-label>
+      <input matInput [(ngModel)]="almacen.descripcion" name="descripción" placeholder="Descripción" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <!-- <mat-form-field appearance="outline">
       <mat-label>Tipo</mat-label>
       <mat-select [(ngModel)]="almacen.tipo" name="tipo">
         <mat-option value="general">General</mat-option>
@@ -27,12 +27,12 @@
         <mat-option value="químicos">Químicos</mat-option>
         <mat-option value="otros">Otros</mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
 
-    <mat-form-field appearance="outline">
+    <!-- <mat-form-field appearance="outline">
       <mat-label>Capacidad (m³)</mat-label>
       <input matInput type="number" [(ngModel)]="almacen.capacidad" name="capacidad" placeholder="Capacidad estimada" />
-    </mat-form-field>
+    </mat-form-field> -->
 
     <mat-form-field appearance="outline">
       <mat-label>Estado</mat-label>

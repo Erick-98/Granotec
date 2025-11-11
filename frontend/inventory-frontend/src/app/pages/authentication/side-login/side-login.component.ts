@@ -35,7 +35,11 @@ export class AppSideLoginComponent {
     this.auth.login({ email: email as string, password: password as string }).subscribe({
       next: (res) => {
         console.log('✅ Login exitoso', res);
-        this.router.navigate(['/dashboard']);
+        // Intentar navegar y loguear resultado para depuración
+        this.router
+          .navigate(['/dashboard'])
+          .then((ok) => console.log('Router.navigate -> success:', ok))
+          .catch((err) => console.error('Router.navigate -> error:', err));
       },
       error: (err) => {
         console.error('❌ Error en login', err);
