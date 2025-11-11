@@ -150,17 +150,25 @@ export class AuthService {
    * Almacena tokens y actualiza contexto del usuario.
    */
   private storeTokens(resp: AuthResponse): void {
-    if (resp?.accesToken) {
-      localStorage.setItem(this.ACCESS_TOKEN_KEY, resp.accesToken);
-      const claims = this.decodePayload(resp.accesToken);
+    // Algunos backends usan "accessToken" (con doble 's'), otros "accesToken".
+    // Aceptamos varias variantes comunes para evitar problemas de mapeo.
+    const accessToken = (resp as any)?.accesToken ?? (resp as any)?.accessToken ?? (resp as any)?.token ?? (resp as any)?.access_token;
+    const refreshToken = (resp as any)?.refreshToken ?? (resp as any)?.refresh_token ?? null;
+
+    if (accessToken) {
+      localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
+      const claims = this.decodePayload(accessToken);
       if (claims) {
         this.userContext.setUser(claims);
         this.scheduleTokenRefresh(claims.exp);
       }
     }
-    if (resp?.refreshToken) {
-      localStorage.setItem(this.REFRESH_TOKEN_KEY, resp.refreshToken);
+    if (refreshToken) {
+      localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
     }
+
+    // Log útil para depuración durante integración (puede quitarse en producción).
+    console.log('AuthService: storeTokens -> accessToken set=', !!accessToken, ' refreshToken set=', !!refreshToken);
   }
 
   /**
