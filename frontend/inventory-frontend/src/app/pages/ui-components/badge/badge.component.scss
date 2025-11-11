@@ -6,6 +6,13 @@
   font-family: 'Inter', 'Roboto', sans-serif;
 }
 
+/* Si el componente está dentro de un MatDialog (contener .mat-dialog-container) no forzar altura completa */
+:host-context(.mat-dialog-container) {
+  padding: 0; /* dialog ya pone padding */
+  background: transparent;
+  min-height: auto;
+}
+
 /* ----- Tarjeta principal ----- */
 .cardWithShadow {
   background: #fff;
