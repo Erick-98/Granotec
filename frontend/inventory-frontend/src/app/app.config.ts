@@ -38,8 +38,10 @@ export const appConfig: ApplicationConfig = {
     ),
   // Registramos el interceptor JWT de forma funcional.
   provideHttpClient(withInterceptors([jwtInterceptor])),
-    provideClientHydration(),
-    provideAnimationsAsync(),
+  // Removed provideClientHydration() because this project doesn't serialize
+  // server-side state for hydration. Keeping it here triggers NG0505 in
+  // the browser console when no server serialized payload is present.
+  provideAnimationsAsync(),
     importProvidersFrom(
       FormsModule,
       ReactiveFormsModule,

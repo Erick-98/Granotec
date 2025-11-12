@@ -15,6 +15,7 @@ export const PagesRoutes: Routes = [
       ],
     },
   },
+ 
   {
     path: 'perfil',
     component: ProfileComponent,
