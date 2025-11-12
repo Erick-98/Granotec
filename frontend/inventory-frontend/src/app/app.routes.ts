@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { authGuard } from './core/guards/auth.guard';
+// mantenimiento section is lazy-loaded from its own routes file
 
 export const routes: Routes = [
   {
@@ -18,6 +19,12 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
+      },
+      {
+        path: 'mantenimiento',
+        loadChildren: () => 
+          import('./pages/mantenimiento/mantenimiento.routes').then(
+            (m) => m.MantenimientoRoutes)
       },
       {
         path: 'ui-components',

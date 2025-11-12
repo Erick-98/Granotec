@@ -222,22 +222,22 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Almacén',
     iconName: 'solar:archive-minimalistic-line-duotone',
-    route: '/ui-components/badge',
+    route: '/mantenimiento/almacen',
   },
   {
     displayName: 'Proveedor',
     iconName: 'solar:danger-circle-line-duotone',
-    route: '/ui-components/chips',
+    route: '/mantenimiento/proveedor',
   },
   {
     displayName: 'Cliente',
     iconName: 'solar:bookmark-square-minimalistic-line-duotone',
-    route: '/ui-components/lists',
+    route: '/mantenimiento/cliente',
   },
   {
     displayName: 'Producto',
     iconName: 'solar:file-text-line-duotone',
-    route: '/ui-components/menu',
+    route: '/mantenimiento/producto',
   },
   /*{
     displayName: 'Tooltips',
