@@ -66,6 +66,7 @@ public class ProductService {
             p.setFamilia(f);
         }
         p.setTipoPresentacion(request.getTipoPresentacion());
+        p.setTipoProducto(request.getTipoProducto());
         p.setUnitOfMeasure(request.getUnitOfMeasure());
         p.setIsLocked(request.getBlocked() != null ? request.getBlocked() : Boolean.FALSE);
         p = productRepository.save(p);
@@ -96,6 +97,7 @@ public class ProductService {
             p.setFamilia(null);
         }
         p.setTipoPresentacion(request.getTipoPresentacion());
+        p.setTipoProducto(request.getTipoProducto());
         p.setUnitOfMeasure(request.getUnitOfMeasure());
         p.setIsLocked(request.getBlocked() != null ? request.getBlocked() : p.getIsLocked());
         p = productRepository.save(p);
@@ -150,6 +152,7 @@ public class ProductService {
         resp.setDescription(p.getDescription());
         resp.setUnitOfMeasure(p.getUnitOfMeasure());
         resp.setTipoPresentacion(p.getTipoPresentacion());
+        resp.setTipoProducto(p.getTipoProducto());
         resp.setProveedor(p.getProveedor() != null ? p.getProveedor().getRazonSocial() : null);
         resp.setFamilia(p.getFamilia() != null ? p.getFamilia().getNombre() : null);
         resp.setIsLocked(p.getIsLocked());

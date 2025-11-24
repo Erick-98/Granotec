@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.product.dto;
 
 import com.granotec.inventory_api.common.enums.TipoPresentacion;
+import com.granotec.inventory_api.common.enums.TypeProduct;
 import com.granotec.inventory_api.common.enums.UnitOfMeasure;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class ProductResponse {
     private String description;
     private UnitOfMeasure unitOfMeasure;
     private TipoPresentacion tipoPresentacion;
+    private TypeProduct tipoProducto;
     private String proveedor;
     private String familia;
     private Boolean isLocked;
