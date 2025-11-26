@@ -29,12 +29,24 @@ public class CustomerService {
 
     @Transactional
     public CustomerResponse create(CustomerRequest dto) {
+        // ✅ SOLUCIÓN - Convertir campos únicos vacíos a null
+        if (dto.getRazonSocial() != null && dto.getRazonSocial().trim().isEmpty()) {
+            dto.setRazonSocial(null);
+        }
+        if (dto.getEmail() != null && dto.getEmail().trim().isEmpty()) {
+            dto.setEmail(null);
+        }
 
-        validateDocumento(dto.getTipoDocumento(),dto.getNroDocumento());
+        // ✅ CORREGIDO - Convertir String a DocumentType para validación
+        DocumentType tipoDoc = DocumentType.valueOf(dto.getTipoDocumento());
+        validateDocumento(tipoDoc, dto.getNroDocumento());
 
+        // Validar email único (solo si no es null)
         if(dto.getEmail() != null && cuRepository.findByEmail(dto.getEmail()).isPresent()){
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
+        
+        // Validar documento único
         if(dto.getNroDocumento() != null && cuRepository.findByNroDocumento(dto.getNroDocumento()).isPresent()){
             throw new BadRequestException("El documento ya está en uso");
         }
@@ -54,16 +66,28 @@ public class CustomerService {
 
     @Transactional
     public CustomerResponse update(Long id, CustomerRequest dto) {
+        // ✅ SOLUCIÓN - Convertir campos únicos vacíos a null
+        if (dto.getRazonSocial() != null && dto.getRazonSocial().trim().isEmpty()) {
+            dto.setRazonSocial(null);
+        }
+        if (dto.getEmail() != null && dto.getEmail().trim().isEmpty()) {
+            dto.setEmail(null);
+        }
+
         Customer existing = cuRepository.findById(id)
                 .filter(cu -> !Boolean.TRUE.equals(cu.getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
 
-        validateDocumento(dto.getTipoDocumento(), dto.getNroDocumento());
+        // ✅ CORREGIDO - Convertir String a DocumentType para validación
+        DocumentType tipoDoc = DocumentType.valueOf(dto.getTipoDocumento());
+        validateDocumento(tipoDoc, dto.getNroDocumento());
 
+        // Validar email único (excluyendo el actual)
         if (dto.getEmail() != null && cuRepository.findByEmail(dto.getEmail()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
 
+        // Validar documento único (excluyendo el actual)
         if (dto.getNroDocumento() != null && cuRepository.findByNroDocumento(dto.getNroDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El documento ya está en uso.");
         }
@@ -168,12 +192,14 @@ public class CustomerService {
         customer.setLimiteDolares(dto.getLimiteDolares());
         customer.setLimiteCreditoSoles(dto.getLimiteCreditoSoles());
         customer.setNotas(dto.getNotas());
-        customer.setTipoDocumento(DocumentType.valueOf(dto.getTipoDocumento().name()));
+        
+        // ✅ CORREGIDO - Convertir String a DocumentType
+        customer.setTipoDocumento(DocumentType.valueOf(dto.getTipoDocumento()));
+        
         customer.setNroDocumento(dto.getNroDocumento());
         customer.setDireccion(dto.getDireccion());
         customer.setTelefono(dto.getTelefono());
         customer.setEmail(dto.getEmail());
         return customer;
     }
-
 }

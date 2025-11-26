@@ -45,39 +45,40 @@ public class CustomerRequest {
 
     private String notas;
 
-    @NotNull(message = "El campo TipoDocumento es obligatorio." )
-    private DocumentType tipoDocumento;
+    // ✅ CORREGIDO - Cambiado a String
+    @NotBlank(message = "El tipo de documento es obligatorio")
+    private String tipoDocumento;
 
-    @NotNull(message = "El documento es obligatorio.")
-    @Pattern(regexp = "\\d{8}|\\d{11}", message = "El documento debe tener 8 dígitos para DNI o 11 dígitos para RUC.")
+    @NotNull(message = "El documento es obligatorio")
+    @Pattern(regexp = "\\d{8}|\\d{11}", message = "El documento debe tener 8 dígitos para DNI o 11 dígitos para RUC")
     private String nroDocumento;
 
     private String direccion;
 
-    @Size(max = 9, message = "El teléfono no debe exceder los 9 caracteres.")
+    @Size(max = 9, message = "El teléfono no debe exceder los 9 caracteres")
     private String telefono;
 
-    @Email(message = "El email debe tener un formato válido.")
+    @Email(message = "El email debe tener un formato válido")
     private String email;
 
-    @AssertTrue(message = "Los clientes con DNI deben tener nombre y apellidos.")
+    @AssertTrue(message = "Los clientes con DNI deben tener nombre y apellidos")
     public boolean isValidNatural() {
-        if (tipoDocumento == DocumentType.DNI) {
+        if ("DNI".equals(tipoDocumento)) {
             return nombre != null && !nombre.isBlank()
                     && apellidos != null && !apellidos.isBlank();
         }
         return true;
     }
 
-    @AssertTrue(message = "Los clientes con RUC deben tener razón social.")
+    @AssertTrue(message = "Los clientes con RUC deben tener razón social")
     public boolean isValidJuridico() {
-        if (tipoDocumento == DocumentType.RUC) {
+        if ("RUC".equals(tipoDocumento)) {
             return razonSocial != null && !razonSocial.isBlank();
         }
         return true;
     }
 
-    @AssertTrue(message = "La condición de pago no es válida.")
+    @AssertTrue(message = "La condición de pago no es válida")
     public boolean isCondicionPagoValid(){
         if(condicionPago == null || condicionPago.isBlank()) return false;
         try{
@@ -88,6 +89,14 @@ public class CustomerRequest {
         }
     }
 
-
+    @AssertTrue(message = "El tipo de documento no es válido")
+    public boolean isTipoDocumentoValid(){
+        if(tipoDocumento == null || tipoDocumento.isBlank()) return false;
+        try{
+            DocumentType.valueOf(tipoDocumento);
+            return true;
+        }catch (IllegalArgumentException e){
+            return false;
+        }
+    }
 }
-

@@ -33,7 +33,7 @@ public class Customer extends Person {
     @Column(length = 40)
     private String apellidos;
 
-    @Column(length = 150, unique = true)
+    @Column(length = 150, unique = true, nullable = true)
     private String razonSocial;
 
     @Column(unique = true)

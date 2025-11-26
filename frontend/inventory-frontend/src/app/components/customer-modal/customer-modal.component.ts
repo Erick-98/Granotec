@@ -56,14 +56,22 @@ paymentConditions = [
     this.customerForm = this.createForm();
   }
 
-  ngOnInit(): void {
-    this.loadTypeCustomers();
-    
-    if (this.data?.customer) {
-      this.isEdit = true;
-      this.populateForm(this.data.customer);
-    }
+ ngOnInit(): void {
+  this.loadTypeCustomers();
+  
+  console.log('🔍 Data recibida en modal:', this.data);
+  console.log('📝 Cliente para editar:', this.data?.customer);
+  console.log('🆔 ID del cliente:', this.data?.customer?.id);
+  
+  if (this.data?.customer) {
+    this.isEdit = true;
+    console.log('✅ MODO: EDITAR - Cliente ID:', this.data.customer.id);
+    this.populateForm(this.data.customer);
+  } else {
+    this.isEdit = false;
+    console.log('✅ MODO: CREAR - Nuevo cliente');
   }
+}
 
   createForm(): FormGroup {
     return this.fb.group({
@@ -87,25 +95,46 @@ paymentConditions = [
   }
 
   populateForm(customer: any): void {
-    this.customerForm.patchValue({
-      nombre: customer.nombre || '',
-      apellidos: customer.apellidos || '',
-      razonSocial: customer.razonSocial || '',
-      tipoDocumento: customer.tipoDocumento || '',
-      nroDocumento: customer.nroDocumento || '',
-      direccion: customer.direccion || '',
-      telefono: customer.telefono || '',
-      email: customer.email || '',
-      zona: customer.zona || '',
-      distritoId: customer.distritoId || null,
-      tipoClienteId: customer.tipoClienteId || null,
-      rubro: customer.rubro || '',
-      condicionPago: customer.condicionPago || '',
-      limiteDolares: customer.limiteDolares || 0,
-      limiteCreditoSoles: customer.limiteCreditoSoles || 0,
-      notas: customer.notas || ''
-    });
-  }
+  console.log('📝 Poblando formulario con datos del cliente:', customer);
+  
+  this.customerForm.patchValue({
+    nombre: customer.nombre || '',
+    apellidos: customer.apellidos || '',
+    razonSocial: customer.razonSocial || '',
+    tipoDocumento: customer.tipoDocumento || '',
+    nroDocumento: customer.nroDocumento || '',
+    direccion: customer.direccion || '',
+    telefono: customer.telefono || '',
+    email: customer.email || '',
+    zona: customer.zona || '',
+    distritoId: customer.distritoId || null,
+    tipoClienteId: customer.tipoClienteId || null,
+    rubro: customer.rubro || '',
+    condicionPago: customer.condicionPago || '',
+    limiteDolares: customer.limiteDolares || 0,
+    limiteCreditoSoles: customer.limiteCreditoSoles || 0,
+    notas: customer.notas || ''
+  });
+
+  console.log('✅ Formulario después de poblar:', this.customerForm.value);
+  this.onDocumentTypeChange();
+}
+
+// ✅ Métodos auxiliares para obtener IDs desde los nombres
+private getTipoClienteIdFromName(tipoClienteName: string): number | null {
+  if (!tipoClienteName || !this.typeCustomers.length) return null;
+  
+  const found = this.typeCustomers.find(tc => 
+    tc.nombre === tipoClienteName || tc.id.toString() === tipoClienteName
+  );
+  return found ? found.id : null;
+}
+
+private getDistritoIdFromName(distritoName: string): number | null {
+  // Si no tienes una lista de distritos, puedes necesitar cargarlos
+  // Por ahora, retornamos null y el usuario deberá seleccionar manualmente
+  return null;
+}
 
   loadTypeCustomers(): void {
     this.isLoading = true;
@@ -153,10 +182,14 @@ paymentConditions = [
     this.customerForm.get('razonSocial')?.updateValueAndValidity();
   }
 
-// En customer-modal.component.ts - onSubmit()
 onSubmit(): void {
   console.log('🔍 Estado del formulario:', this.customerForm.valid);
   console.log('📋 Valores del formulario:', JSON.stringify(this.customerForm.value, null, 2));
+  console.log('🔄 Modo:', this.isEdit ? 'EDITAR' : 'CREAR');
+  console.log('🆔 ID del cliente:', this.data?.customer?.id);
+  console.log('📊 Data completa:', this.data);
+  
+  this.customerForm.markAllAsTouched();
   
   if (this.customerForm.valid) {
     const formData: CustomerRequest = {
@@ -170,28 +203,46 @@ onSubmit(): void {
     };
     
     console.log('📤 Datos finales para enviar:', JSON.stringify(formData, null, 2));
-    console.log('🔄 LLAMANDO AL SERVICIO createCustomer...');
     
-    // DEBUG: Verificar que el servicio existe
-    console.log('🔍 CustomerService:', this.customerService);
-    console.log('🔍 Método createCustomer:', this.customerService.createCustomer);
-    
-    this.customerService.createCustomer(formData).subscribe({
-      next: (response) => {
-        console.log('✅ RESPUESTA EXITOSA - Cliente creado:', response);
-        this.dialogRef.close(true);
-      },
-      error: (error) => {
-        console.error('❌ ERROR - Creando cliente:', error);
-        console.error('❌ Error completo:', JSON.stringify(error, null, 2));
-        alert('Error: ' + (error.error?.mensaje || error.message || 'Error desconocido'));
-      },
-      complete: () => {
-        console.log('🔄 SUBSCRIPCIÓN COMPLETADA');
+    // ✅ VERIFICACIÓN MEJORADA - Asegurar que estamos en modo edición
+    if (this.isEdit && this.data?.customer?.id) {
+      // ✅ EDITAR CLIENTE EXISTENTE
+      console.log('🔄 EJECUTANDO: Actualizando cliente ID:', this.data.customer.id);
+      this.customerService.updateCustomer(this.data.customer.id, formData).subscribe({
+        next: (response) => {
+          console.log('✅ Cliente actualizado exitosamente:', response);
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('❌ Error actualizando cliente:', error);
+          console.error('❌ Detalles del error:', error.error);
+          alert('Error al actualizar el cliente: ' + (error.error?.message || error.message || 'Error desconocido'));
+        }
+      });
+    } else {
+      // ✅ CREAR NUEVO CLIENTE
+      console.log('🔄 EJECUTANDO: Creando nuevo cliente...');
+      this.customerService.createCustomer(formData).subscribe({
+        next: (response) => {
+          console.log('✅ Cliente creado exitosamente:', response);
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('❌ Error creando cliente:', error);
+          console.error('❌ Detalles del error:', error.error);
+          alert('Error al crear el cliente: ' + (error.error?.message || error.message || 'Error desconocido'));
+        }
+      });
+    }
+  } else {
+    console.log('❌ Formulario inválido - Errores:');
+    Object.keys(this.customerForm.controls).forEach(key => {
+      const control = this.customerForm.get(key);
+      if (control?.errors) {
+        console.log(`   ${key}:`, control.errors);
       }
     });
-  } else {
-    console.log('❌ Formulario inválido');
+    alert('Por favor complete todos los campos requeridos correctamente.');
   }
 }
   onCancel(): void {

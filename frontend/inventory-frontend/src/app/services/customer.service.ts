@@ -8,7 +8,7 @@ import { throwError } from 'rxjs';
 import { 
   CustomerRequest, 
   CustomerResponse, 
-  TypeCustomerResponse  // ← Ahora sí existe
+  TypeCustomerResponse
 } from '../core/models/customer.model';
 
 @Injectable({
@@ -20,26 +20,27 @@ export class CustomerService {
 
   constructor(private http: HttpClient) { }
 
-createCustomer(customer: CustomerRequest): Observable<any> {
-  console.log('🎯 SERVICIO createCustomer EJECUTADO');
-  const processedCustomer = {
-    ...customer
-  };
-  
-  console.log('📤 URL:', `${this.apiUrl}`);
-  console.log('📤 Datos a enviar:', processedCustomer);
-  
-  // Verificar que HttpClient esté disponible
-  console.log('🔍 HttpClient:', this.http);
-  
-  return this.http.post(`${this.apiUrl}`, processedCustomer).pipe(
-    tap(response => console.log('✅ Respuesta recibida:', response)),
-    catchError(error => {
-      console.error('❌ Error en servicio:', error);
-      return throwError(() => error);
-    })
-  );
-}
+  createCustomer(customer: CustomerRequest): Observable<any> {
+    console.log('🎯 SERVICIO createCustomer EJECUTADO');
+    
+    const processedCustomer = {
+      ...customer,
+      tipoDocumento: customer.tipoDocumento,
+      condicionPago: customer.condicionPago
+    };
+    
+    console.log('📤 URL:', `${this.apiUrl}`);
+    console.log('📤 Datos a enviar:', processedCustomer);
+    
+    return this.http.post(`${this.apiUrl}`, processedCustomer).pipe(
+      tap(response => console.log('✅ Respuesta recibida:', response)),
+      catchError(error => {
+        console.error('❌ Error en servicio:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   getCustomers(): Observable<CustomerResponse[]> {
     return this.http.get<any>(this.apiUrl).pipe(
       map(response => {
@@ -61,19 +62,60 @@ createCustomer(customer: CustomerRequest): Observable<any> {
   }
 
   getCustomer(id: number): Observable<CustomerResponse> {
-    return this.http.get<CustomerResponse>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(response => {
+        console.log('📦 Respuesta de cliente individual:', response);
+        // Manejar diferentes formatos de respuesta
+        if (response && response.data) {
+          return response.data;
+        } else if (response && response.id) {
+          return response;
+        } else {
+          return response; // Retornar directo si ya es CustomerResponse
+        }
+      }),
+      catchError(error => {
+        console.error('Error en getCustomer:', error);
+        throw error;
+      })
+    );
   }
 
   updateCustomer(id: number, customer: CustomerRequest): Observable<any> {
+    console.log('🔄 SERVICIO updateCustomer EJECUTADO para ID:', id);
+    
     const processedCustomer = {
       ...customer,
-      condicionPago: customer.condicionPago.toUpperCase()
+      condicionPago: customer.condicionPago
     };
-    return this.http.put(`${this.apiUrl}/${id}`, processedCustomer);
+    
+    console.log('📤 URL:', `${this.apiUrl}/${id}`);
+    console.log('📤 Datos a enviar:', processedCustomer);
+    
+    return this.http.put(`${this.apiUrl}/${id}`, processedCustomer).pipe(
+      tap(response => console.log('✅ Cliente actualizado:', response)),
+      catchError(error => {
+        console.error('❌ Error actualizando cliente:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   deleteCustomer(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    console.log('🗑️ SERVICIO deleteCustomer EJECUTADO para ID:', id);
+    
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      tap(response => console.log('✅ Cliente eliminado:', response)),
+      catchError(error => {
+        console.error('❌ Error eliminando cliente:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // En customer.service.ts - Método de prueba
+  testConnection(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/1`); // Probar obtener cliente con ID 1
   }
 
   getTypeCustomers(): Observable<TypeCustomerResponse[]> {

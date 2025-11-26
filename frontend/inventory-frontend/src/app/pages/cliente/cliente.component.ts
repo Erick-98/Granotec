@@ -88,32 +88,65 @@ private transformCustomers(customers: any[]): any[] {
     });
   }
 
-  onEdit(item: any) { 
-    // Usar los datos originales para editar
-    const customerToEdit = item.originalData || item;
-    
-    const dialogRef = this.dialog.open(CustomerModalComponent, {
-      width: '800px',
-      data: { customer: customerToEdit }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadCustomers();
-      }
-    });
+  // cliente.component.ts - CORREGIR onEdit y onDelete
+onEdit(item: any) { 
+  console.log('✏️ Editando item:', item);
+  
+  // Asegurar que tenemos el ID correcto
+  const customerId = item.id || (item.originalData && item.originalData.id);
+  
+  if (!customerId) {
+    console.error('❌ No se pudo obtener el ID del cliente');
+    alert('Error: No se puede identificar el cliente a editar');
+    return;
   }
+  
+  // ✅ CORREGIDO - Obtener los datos completos del cliente desde el backend
+  this.customerService.getCustomer(customerId).subscribe({
+    next: (customerData) => {
+      console.log('📋 Datos del cliente para editar:', customerData);
+      
+      const dialogRef = this.dialog.open(CustomerModalComponent, {
+        width: '800px',
+        data: { 
+          customer: customerData, 
+          isEdit: true 
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.loadCustomers();
+        }
+      });
+    },
+    error: (error) => {
+      console.error('❌ Error cargando datos del cliente:', error);
+      alert('Error al cargar los datos del cliente');
+    }
+  });
+}
+
 
 onDelete(item: any) { 
+  const customerId = item.id || (item.originalData && item.originalData.id);
   const customerName = item.cliente || 'este cliente';
   
+  if (!customerId) {
+    console.error('❌ No se pudo obtener el ID del cliente para eliminar');
+    alert('Error: No se puede identificar el cliente a eliminar');
+    return;
+  }
+  
   if (confirm(`¿Está seguro de eliminar a ${customerName}?`)) {
-    this.customerService.deleteCustomer(item.id).subscribe({
+    console.log('🗑️ Eliminando cliente ID:', customerId);
+    this.customerService.deleteCustomer(customerId).subscribe({
       next: () => {
+        console.log('✅ Cliente eliminado exitosamente');
         this.loadCustomers();
       },
       error: (error) => {
-        console.error('Error deleting customer:', error);
+        console.error('❌ Error eliminando cliente:', error);
         alert('Error al eliminar el cliente: ' + (error.error?.message || error.message));
       }
     });
