@@ -20,19 +20,19 @@ public class VendorService {
 
     @Transactional
     public VendorResponse create(VendorRequest request){
-        validateDocumento(request.getTipoDocumento(),request.getDocumento());
+        validateDocumento(request.getTipoDocumento(), request.getNroDocumento()); 
         if(request.getEmail() != null && repository.findByEmail(request.getEmail()).isPresent()){
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
-        if(request.getDocumento() != null && repository.findByNroDocumento(request.getDocumento()).isPresent()){
+        if(request.getNroDocumento() != null && repository.findByNroDocumento(request.getNroDocumento()).isPresent()){
             throw new BadRequestException("El documento ya está en uso");
         }
 
         // Creamos la entidad asignando los campos heredados desde Person mediante setters
         Vendor v = new Vendor();
-        v.setRazonSocial(request.getNombre());
+        v.setRazonSocial(request.getRazonSocial());
         v.setTipoDocumento(request.getTipoDocumento());
-        v.setNroDocumento(request.getDocumento());
+        v.setNroDocumento(request.getNroDocumento());
         v.setDireccion(request.getDireccion());
         v.setTelefono(request.getTelefono());
         v.setEmail(request.getEmail());
@@ -50,18 +50,18 @@ public class VendorService {
                 .filter(pr -> !Boolean.TRUE.equals(pr.getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado"));
 
-        validateDocumento(request.getTipoDocumento(), request.getDocumento());
+        validateDocumento(request.getTipoDocumento(), request.getNroDocumento());
 
         if (request.getEmail() != null && repository.findByEmail(request.getEmail()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El correo electrónico ya está en uso");
         }
-        if (request.getDocumento() != null && repository.findByNroDocumento(request.getDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
+        if (request.getNroDocumento() != null && repository.findByNroDocumento(request.getNroDocumento()).filter(x -> !x.getId().equals(id)).isPresent()) {
             throw new BadRequestException("El documento ya está en uso.");
         }
 
-        v.setRazonSocial(request.getNombre());
+       v.setRazonSocial(request.getRazonSocial());
         v.setTipoDocumento(request.getTipoDocumento());
-        v.setNroDocumento(request.getDocumento());
+        v.setNroDocumento(request.getNroDocumento());
         v.setDireccion(request.getDireccion());
         v.setTelefono(request.getTelefono());
         v.setEmail(request.getEmail());

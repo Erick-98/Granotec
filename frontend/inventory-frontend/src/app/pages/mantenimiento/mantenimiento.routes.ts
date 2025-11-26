@@ -4,6 +4,9 @@ import { ProveedorComponent } from '../proveedor/proveedor.component';
 import { ClienteComponent } from '../cliente/cliente.component';
 import { ProductoComponent } from '../producto/producto.component';
 
+  
+
+
 export const MantenimientoRoutes: Routes = [
   {
     path: '',

@@ -165,12 +165,13 @@ export class CrudListComponent implements OnDestroy {
     }
   }
 
-  triggerAction(action: string, item: any) {
-    // default convenience outputs
-    if (action === 'edit') this.edit.emit(item);
-    else if (action === 'delete') this.delete.emit(item);
-    this.actionTriggered.emit({ action, item });
-  }
+// En tu crud-list.component.ts, cambia esta línea:
+triggerAction(action: string, item: any) {
+  // default convenience outputs
+  if (action === 'edit') this.edit.emit(item);
+  else if (action === 'delete') this.delete.emit(item); // ← Cambiar a enviar el objeto completo
+  this.actionTriggered.emit({ action, item });
+}
 
   trackByFn(index: number, item: any) {
     return item?.id ?? index;

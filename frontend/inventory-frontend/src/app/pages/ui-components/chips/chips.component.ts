@@ -12,59 +12,56 @@ import { MaterialModule } from 'src/app/material.module';
 })
 export class AppChipsComponent {
   proveedor = {
-    nombre: '',
-    ruc: '',
-    contacto: '',
+    razonSocial: '',        // ← CORRECTO
+    tipoDocumento: 'RUC',   // ← CORRECTO
+    nroDocumento: '',       // ← CORRECTO
     telefono: '',
     email: '',
     direccion: '',
-    observaciones: '',
-    tipo: '',
-    condicionesPago: '',
-    moneda: '',
-    estado: 'activo',
+    notas: '',              // ← CORRECTO
+    condicionPago: 'EFECTIVO', // ← CORRECTO
+    moneda: 'PEN'
   };
 
   proveedores: any[] = [];
   confirmacion = false;
-  columnas: string[] = ['nombre', 'ruc', 'contacto', 'telefono', 'email', 'tipo', 'estado'];
+  columnas = ['razonSocial', 'nroDocumento', 'telefono', 'email', 'condicionPago', 'moneda'];
 
   guardarProveedor() {
-    if (!this.proveedor.nombre || !this.proveedor.ruc) return;
+    // CORRIGE las validaciones y propiedades
+    if (!this.proveedor.razonSocial || !this.proveedor.nroDocumento) return;
 
     this.proveedores.push({ ...this.proveedor });
     this.confirmacion = true;
 
     setTimeout(() => (this.confirmacion = false), 3000);
 
+    // CORRIGE el reset con las nuevas propiedades
     this.proveedor = {
-      nombre: '',
-      ruc: '',
-      contacto: '',
+      razonSocial: '',        // ← USA las nuevas propiedades
+      tipoDocumento: 'RUC',   
+      nroDocumento: '',       
       telefono: '',
       email: '',
       direccion: '',
-      observaciones: '',
-      tipo: '',
-      condicionesPago: '',
-      moneda: '',
-      estado: 'activo',
+      notas: '',              
+      condicionPago: 'EFECTIVO', 
+      moneda: 'PEN'
     };
   }
 
   cancelar() {
+    // CORRIGE el reset con las nuevas propiedades
     this.proveedor = {
-      nombre: '',
-      ruc: '',
-      contacto: '',
+      razonSocial: '',        // ← USA las nuevas propiedades
+      tipoDocumento: 'RUC',   
+      nroDocumento: '',       
       telefono: '',
       email: '',
       direccion: '',
-      observaciones: '',
-      tipo: '',
-      condicionesPago: '',
-      moneda: '',
-      estado: 'activo',
+      notas: '',              
+      condicionPago: 'EFECTIVO', 
+      moneda: 'PEN'
     };
   }
 }

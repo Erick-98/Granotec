@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         /*Quiten "/api/test/**" al correr*/
-                        req.requestMatchers("/auth/**","/api/test/**")
+                        req.requestMatchers("/auth/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .cors(cors-> cors.configurationSource(request -> {
                     var corsConfig =    new CorsConfiguration();
                     /*Esto tambien , "http://192.168.18.3:4200" . quitar*/
-                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://192.168.18.3:4200")); // Angular
+                    corsConfig.setAllowedOrigins(List.of("http://localhost:4200")); // Angular
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("*"));
                     corsConfig.setAllowCredentials(true);

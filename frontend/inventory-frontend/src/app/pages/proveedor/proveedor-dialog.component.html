@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<form [formGroup]="form" class="dialog-form">
+  <mat-form-field appearance="fill">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="nombre" required />
+    <mat-error *ngIf="form.get('nombre')?.hasError('required')">
+      Nombre es requerido
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Tipo de Documento</mat-label>
+    <mat-select formControlName="tipoDocumento">
+      <mat-option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Nº Documento</mat-label>
+    <input matInput formControlName="documento" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Dirección</mat-label>
+    <input matInput formControlName="direccion" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Teléfono</mat-label>
+    <input matInput formControlName="telefono" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" type="email" />
+    <mat-error *ngIf="form.get('email')?.hasError('email')">
+      Email inválido
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Moneda</mat-label>
+    <mat-select formControlName="moneda">
+      <mat-option *ngFor="let m of monedas" [value]="m">{{ m }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Condición de pago</mat-label>
+    <mat-select formControlName="condicionPago">
+      <mat-option *ngFor="let c of condicionesPago" [value]="c">{{ c }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Notas</mat-label>
+    <textarea matInput formControlName="notas"></textarea>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+      Guardar
+    </button>
+    <button mat-button (click)="close()">Cancelar</button>
+  </div>
+</form>

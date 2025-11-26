@@ -1,13 +1,13 @@
 export interface ProveedorRequest {
-  nombre: string;
-  tipoDocumento?: DocumentType;  
-  documento?: string;
+  razonSocial: string;  // ← CAMBIA 'nombre' por 'razonSocial'
+  tipoDocumento?: string;
+  nroDocumento?: string;  // ← CAMBIA 'documento' por 'nroDocumento'
   direccion?: string;
   telefono?: string;
   email?: string;
+  moneda: string;
+  condicionPago?: string;
   notas?: string;
-  moneda: Currency;             
-  condicionPago?: CondicionPago; 
 }
 
 export type DocumentType = 'DNI' | 'RUC';

@@ -1,70 +1,56 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { StorageResponse } from '../models/storage-response.model';
-import { ApiResponse } from '../models/api-response.models';
-import { StorageRequest } from '../models/storage-request.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { StorageRequest } from '../models/storage-request.model'; // ← Tus modelos
+import { StorageResponse } from '../models/storage-response.model'; // ← Tus modelos
 
 @Injectable({
   providedIn: 'root'
 })
-export class AlmacenService {
+export class StorageService {
+  private apiUrl = `${environment.apiUrl}/storage`;
 
-  private readonly baseUrl = `${environment.apiUrl}/storage`;
   constructor(private http: HttpClient) { }
 
-
-  getAll(): Observable<ApiResponse<StorageResponse[]>>{
-    return this.http.get<ApiResponse<StorageResponse[]>>(this.baseUrl)
-    .pipe(catchError(this.handleError));
+  createStorage(storage: StorageRequest): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, storage).pipe(
+      catchError(error => {
+        console.error('Error creating storage:', error);
+        throw error;
+      })
+    );
   }
 
-  getById(id: number | string): Observable<ApiResponse<StorageResponse>>{
-  
-    return this.http.get<ApiResponse<StorageResponse>>(`${this.baseUrl}/${id}`)
-    .pipe(catchError(this.handleError));
+  getStorages(): Observable<StorageResponse[]> {
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => {
+        if (response && response.data && Array.isArray(response.data)) {
+          return response.data;
+        } else if (Array.isArray(response)) {
+          return response;
+        } else {
+          console.warn('Formato inesperado para almacenes:', response);
+          return [];
+        }
+      }),
+      catchError(error => {
+        console.error('Error en getStorages:', error);
+        return of([]);
+      })
+    );
   }
 
-
-  create(payload: StorageRequest): Observable<ApiResponse<StorageResponse>>{
-    return this.http.post<ApiResponse<StorageResponse>>(this.baseUrl, payload)
-    .pipe(catchError(this.handleError));
+  getStorage(id: number): Observable<StorageResponse> {
+    return this.http.get<StorageResponse>(`${this.apiUrl}/${id}`);
   }
 
-
-  update(id: number | string, payload: StorageRequest): Observable<ApiResponse<StorageResponse>>{
-    return this.http.put<ApiResponse<StorageResponse>>(`${this.baseUrl}/${id}`, payload)
-    .pipe(catchError(this.handleError));
+  updateStorage(id: number, storage: StorageRequest): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, storage);
   }
 
-  delete(id: number | string): Observable<ApiResponse<any>>{
-    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/${id}`)
-    .pipe(catchError(this.handleError));
+  deleteStorage(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
-
-
-  private handleError(error: HttpErrorResponse) {
-    const backendMessage = (error?.error && (error.error.message || error.error.error || error.error.detail)) as
-      | string
-      | undefined;
-    const message = backendMessage
-      ? backendMessage
-      : error.error instanceof ErrorEvent
-      ? `Error de cliente: ${error.error.message}`
-      : `Error del servidor (${error.status}): ${error.message}`;
-    console.error('StorageService error:', message);
-    return throwError(() => new Error(message));
-  }
-
-
-
-
-
-
-
-
-
-
-
 }

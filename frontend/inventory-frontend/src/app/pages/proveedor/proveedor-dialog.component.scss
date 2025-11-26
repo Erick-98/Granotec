@@ -1,0 +1,266 @@
+.dialog-container {
+  min-width: 600px;
+  max-width: 800px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  
+  .header-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+  }
+}
+
+.dialog-content {
+  padding: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.dialog-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  
+  .full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .form-section {
+    grid-column: 1 / -1;
+    margin: 16px 0 8px;
+    
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #edf2f7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      .section-icon {
+        color: #667eea;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+// Estilos mejorados para los campos
+.mat-form-field {
+  width: 100%;
+  
+  &.mat-form-field-appearance-fill {
+    .mat-form-field-flex {
+      background-color: #f7fafc;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #edf2f7;
+      }
+    }
+  }
+  
+  .mat-form-field-label {
+    color: #718096;
+    font-weight: 500;
+  }
+  
+  &.mat-focused {
+    .mat-form-field-flex {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    }
+    
+    .mat-form-field-label {
+      color: #667eea;
+    }
+  }
+}
+
+// Botones mejorados
+.dialog-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  
+  .btn-cancel {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 24px;
+    height: 44px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: #edf2f7;
+      border-color: #cbd5e0;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  .btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 32px;
+    height: 44px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    }
+    
+    &:disabled {
+      background: #cbd5e0;
+      transform: none;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Estados de validación
+.invalid-field {
+  .mat-form-field-flex {
+    background-color: #fed7d7 !important;
+    border: 1px solid #feb2b2;
+  }
+}
+
+.valid-field {
+  .mat-form-field-flex {
+    background-color: #f0fff4 !important;
+    border: 1px solid #9ae6b4;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .dialog-container {
+    min-width: 90vw;
+    max-width: 95vw;
+    margin: 20px;
+  }
+  
+  .dialog-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .dialog-header {
+    padding: 16px 20px 12px;
+    
+    h2 {
+      font-size: 1.3rem;
+    }
+  }
+  
+  .dialog-content {
+    padding: 20px;
+  }
+  
+  .dialog-actions {
+    flex-direction: column-reverse;
+    
+    .btn-cancel,
+    .btn-save {
+      width: 100%;
+    }
+  }
+}
+
+// Animaciones
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Mejoras adicionales para mejor UX
+.field-hint {
+  font-size: 0.75rem;
+  color: #718096;
+  margin-top: 4px;
+  display: block;
+}
+
+.required-star {
+  color: #e53e3e;
+  margin-left: 2px;
+}
+
+// Efectos de carga
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+// Mejoras de accesibilidad
+@media (prefers-reduced-motion: reduce) {
+  .dialog-container {
+    animation: none;
+  }
+  
+  .btn-save:hover:not(:disabled) {
+    transform: none;
+  }
+}

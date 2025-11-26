@@ -4,6 +4,6 @@ public enum UnitOfMeasure {
     SACOS,
     CAJAS,
     BARRILES,
-    PAQUWETES
+    PAQUETES
 }
 

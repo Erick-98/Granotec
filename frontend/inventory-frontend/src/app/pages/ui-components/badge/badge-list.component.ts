@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AlmacenService } from 'src/app/core/services/almacen.service';
-import { StorageResponse } from 'src/app/core/models/storage-response.model';
-import { AppBadgeComponent } from './badge.component';
+import { StorageService } from 'src/app/core/services/almacen.service'; // ← Ruta corregida
+import { StorageResponse } from 'src/app/core/models/storage-response.model'; // ← Ruta corregida
+import { StorageModalComponent } from 'src/app/components/storage-modal/storage-modal.component'; // ← Modal correcto
 
 @Component({
   selector: 'app-badge-list',
@@ -19,7 +19,7 @@ export class BadgeListComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private almacenService: AlmacenService,
+    private storageService: StorageService, // ← Nombre correcto
     private snackBar: MatSnackBar
   ) {}
 
@@ -28,9 +28,19 @@ export class BadgeListComponent implements OnInit {
   }
 
   cargarAlmacenes() {
-    this.almacenService.getAll().subscribe({
-      next: (resp) => (this.almacenes = resp.data ?? []),
-      error: (err) => {
+    this.storageService.getStorages().subscribe({
+      next: (resp: any) => {
+        // Manejar diferentes formatos de respuesta
+        if (resp && resp.data && Array.isArray(resp.data)) {
+          this.almacenes = resp.data;
+        } else if (Array.isArray(resp)) {
+          this.almacenes = resp;
+        } else {
+          this.almacenes = [];
+          console.warn('Formato de respuesta inesperado:', resp);
+        }
+      },
+      error: (err: any) => {
         console.error('Error cargando almacenes', err);
         this.snackBar.open('Error cargando almacenes', 'Cerrar', { duration: 3000 });
       },
@@ -38,17 +48,25 @@ export class BadgeListComponent implements OnInit {
   }
 
   abrirDialogNuevo() {
-    const ref = this.dialog.open(AppBadgeComponent, { width: '520px', maxHeight: '80vh', data: null });
-    ref.afterClosed().subscribe((result) => {
-      // el formulario original del componente badge hace su propio push localmente.
-      // Si deseas que la creación vaya al backend, cambia AppBadgeComponent para emitir resultado o usar AlmacenService directamente.
+    const ref = this.dialog.open(StorageModalComponent, { 
+      width: '520px', 
+      maxHeight: '80vh', 
+      data: null 
+    });
+    
+    ref.afterClosed().subscribe((result: boolean) => {
       if (result) this.cargarAlmacenes();
     });
   }
 
   editar(item: StorageResponse) {
-    const ref = this.dialog.open(AppBadgeComponent, { width: '520px', maxHeight: '80vh', data: item });
-    ref.afterClosed().subscribe((result) => {
+    const ref = this.dialog.open(StorageModalComponent, { 
+      width: '520px', 
+      maxHeight: '80vh', 
+      data: { storage: item } 
+    });
+    
+    ref.afterClosed().subscribe((result: boolean) => {
       if (result) this.cargarAlmacenes();
     });
   }
@@ -56,12 +74,13 @@ export class BadgeListComponent implements OnInit {
   eliminar(item: StorageResponse) {
     const ok = confirm(`¿Eliminar el almacén "${item.nombre}"?`);
     if (!ok) return;
-    this.almacenService.delete(item.id).subscribe({
+    
+    this.storageService.deleteStorage(item.id).subscribe({
       next: () => {
         this.snackBar.open('Almacén eliminado', 'Cerrar', { duration: 2500 });
         this.cargarAlmacenes();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error eliminar almacen', err);
         this.snackBar.open('Error al eliminar almacén', 'Cerrar', { duration: 3000 });
       },

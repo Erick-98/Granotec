@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { authGuard } from './core/guards/auth.guard';
+
 // mantenimiento section is lazy-loaded from its own routes file
 
 export const routes: Routes = [

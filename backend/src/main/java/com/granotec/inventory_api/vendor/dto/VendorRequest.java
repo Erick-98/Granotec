@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VendorRequest {
 
-    @NotBlank(message = "El nombre es obligatorio.")
-    private String nombre;
+    @NotBlank(message = "La razón social es obligatoria.")
+    private String razonSocial;  // ← CAMBIA 'nombre' por 'razonSocial'
 
     //@NotNull(message = "El campo TipoDocumento es obligatorio." )
     private DocumentType tipoDocumento;
 
     //@NotBlank(message = "El documento es obligatorio.")
     //@Pattern(regexp = "\\d{8}|\\d{11}", message = "El documento debe tener 8 dígitos para DNI o 11 dígitos para RUC.")
-    private String documento;
+    private String nroDocumento;
 
     private String direccion;
 
@@ -38,5 +38,4 @@ public class VendorRequest {
     private Currency moneda;
 
     private CondicionPago condicionPago;
-
 }

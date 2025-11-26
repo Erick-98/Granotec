@@ -1,0 +1,103 @@
+<!-- src/app/components/product-modal/product-modal.component.html -->
+<h2 mat-dialog-title>
+  {{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="productForm" class="form-container">
+    <div class="row">
+      <!-- Código -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="code" maxlength="50" placeholder="Ingrese código">
+        <mat-error *ngIf="productForm.get('code')?.hasError('required')">
+          Código es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Nombre Comercial -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Nombre Comercial</mat-label>
+        <input matInput formControlName="nombreComercial" maxlength="100" placeholder="Ingrese nombre comercial">
+        <mat-error *ngIf="productForm.get('nombreComercial')?.hasError('required')">
+          Nombre comercial es requerido
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Descripción -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Ingrese descripción del producto"></textarea>
+    </mat-form-field>
+
+    <div class="row">
+      <!-- Proveedor -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Proveedor</mat-label>
+        <mat-select formControlName="proveedorId">
+          <mat-option value="">Seleccione proveedor</mat-option>
+          <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
+            {{ vendor.razonSocial || 'Proveedor ' + vendor.id }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Familia de Producto -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Familia de Producto</mat-label>
+        <mat-select formControlName="familiaId">
+          <mat-option value="">Seleccione familia</mat-option>
+          <mat-option *ngFor="let family of familyProducts" [value]="family.id">
+            {{ family.nombre || 'Familia ' + family.id }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <!-- Tipo de Presentación -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Tipo de Presentación</mat-label>
+        <mat-select formControlName="tipoPresentacion" required>
+          <mat-option value="">Seleccione presentación</mat-option>
+          <mat-option *ngFor="let tipo of tipoPresentacionOptions" [value]="tipo.value">
+            {{ tipo.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="productForm.get('tipoPresentacion')?.hasError('required')">
+          Tipo de presentación es requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Unidad de Medida -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Unidad de Medida</mat-label>
+        <mat-select formControlName="unitOfMeasure" required>
+          <mat-option value="">Seleccione unidad</mat-option>
+          <mat-option *ngFor="let unit of unitOfMeasureOptions" [value]="unit.value">
+            {{ unit.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="productForm.get('unitOfMeasure')?.hasError('required')">
+          Unidad de medida es requerida
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Bloqueado -->
+    <div class="checkbox-section">
+      <mat-checkbox formControlName="blocked" color="primary">
+        Producto Bloqueado
+      </mat-checkbox>
+      <small class="hint">Si está bloqueado, no se permitirán movimientos de stock</small>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!productForm.valid || isLoading">
+    {{ isEdit ? 'Actualizar' : 'Crear' }} Producto
+  </button>
+</mat-dialog-actions>
