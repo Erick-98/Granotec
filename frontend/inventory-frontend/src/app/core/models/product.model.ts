@@ -1,4 +1,3 @@
-// src/app/models/product.model.ts
 export interface ProductRequest {
   code: string;
   nombreComercial: string;
@@ -13,12 +12,17 @@ export interface ProductRequest {
 export interface ProductResponse {
   id: number;
   code: string;
-  name: string;
+  nombreComercial: string;
   description?: string;
   unitOfMeasure: string;
   tipoPresentacion: string;
+
+  proveedorId?: number;   // 👈 nuevo
   proveedor?: string;
+
+  familiaId?: number;     // 👈 nuevo
   familia?: string;
+
   isLocked?: boolean;
 }
 

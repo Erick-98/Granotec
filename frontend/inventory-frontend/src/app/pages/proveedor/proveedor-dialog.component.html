@@ -2,10 +2,10 @@
 
 <form [formGroup]="form" class="dialog-form">
   <mat-form-field appearance="fill">
-    <mat-label>Nombre</mat-label>
-    <input matInput formControlName="nombre" required />
-    <mat-error *ngIf="form.get('nombre')?.hasError('required')">
-      Nombre es requerido
+    <mat-label>Razón Social</mat-label>
+    <input matInput formControlName="razonSocial" required />
+    <mat-error *ngIf="form.get('razonSocial')?.hasError('required')">
+      La razón social es requerida
     </mat-error>
   </mat-form-field>
 
@@ -18,7 +18,7 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Nº Documento</mat-label>
-    <input matInput formControlName="documento" />
+    <input matInput formControlName="nroDocumento" />
   </mat-form-field>
 
   <mat-form-field appearance="fill">

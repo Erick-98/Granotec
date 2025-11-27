@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VendorResponse {
     private Long id;
-    private String nombre;
+    private String razonSocial;   // <- antes 'nombre'
     private String tipoDocumento;
-    private String documento;
+    private String nroDocumento;  // <- antes 'documento'
     private String direccion;
     private String telefono;
     private String email;

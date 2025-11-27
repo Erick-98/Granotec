@@ -22,17 +22,14 @@ export class ProductoComponent implements OnInit {
   // CORRIGE LAS COLUMNAS - usa tipos específicos de CrudColumnType
   columns: CrudColumn[] = [
     { field: 'code', label: 'Código', type: 'text' },
-    { field: 'name', label: 'Nombre Comercial', type: 'text' },
+    { field: 'nombreComercial', label: 'Nombre Comercial', type: 'text' }, // ← nombreComercial
     { field: 'proveedor', label: 'Proveedor', type: 'text' },
     { field: 'familia', label: 'Familia', type: 'text' },
     { field: 'unitOfMeasure', label: 'Unidad Medida', type: 'text' },
     { field: 'tipoPresentacion', label: 'Presentación', type: 'text' },
-    { 
-      field: 'isLocked', 
-      label: 'Estado', 
-      type: 'badge' as const // ← AGREGA 'as const' para los tipos específicos
-    }
+    { field: 'isLocked', label: 'Estado', type: 'badge' as const }
   ];
+
 
   constructor(
     private productService: ProductService,
@@ -90,7 +87,7 @@ export class ProductoComponent implements OnInit {
   }
 
   onDelete(product: ProductResponse): void {
-    if (confirm(`¿Estás seguro de eliminar el producto ${product.name}?`)) {
+    if (confirm(`¿Estás seguro de eliminar el producto ${product.nombreComercial}?`)) {
       this.productService.deleteProduct(product.id).subscribe({
         next: () => {
           this.loadProducts();

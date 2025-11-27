@@ -36,7 +36,7 @@
       <mat-form-field appearance="outline" class="half-width">
         <mat-label>Proveedor</mat-label>
         <mat-select formControlName="proveedorId">
-          <mat-option value="">Seleccione proveedor</mat-option>
+          <mat-option [value]="null">Seleccione proveedor</mat-option>
           <mat-option *ngFor="let vendor of vendors" [value]="vendor.id">
             {{ vendor.razonSocial || 'Proveedor ' + vendor.id }}
           </mat-option>
@@ -47,7 +47,7 @@
       <mat-form-field appearance="outline" class="half-width">
         <mat-label>Familia de Producto</mat-label>
         <mat-select formControlName="familiaId">
-          <mat-option value="">Seleccione familia</mat-option>
+          <mat-option [value]="null">Seleccione familia</mat-option>
           <mat-option *ngFor="let family of familyProducts" [value]="family.id">
             {{ family.nombre || 'Familia ' + family.id }}
           </mat-option>

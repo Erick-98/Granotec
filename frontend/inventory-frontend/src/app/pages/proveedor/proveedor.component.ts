@@ -23,9 +23,9 @@ import { CrudColumn, CrudColumnType } from 'src/app/components/crud-list/crud-li
 export class ProveedorComponent implements OnInit {
   items: ProveedorResponse[] = [];
 columns: CrudColumn[] = [
-  { field: 'nombre', label: 'Nombre', type: 'text' },
+  { field: 'razonSocial', label: 'Razón Social', type: 'text' },
   { field: 'tipoDocumento', label: 'Tipo Doc.', type: 'text' },
-  { field: 'documento', label: 'Documento', type: 'text' },
+  { field: 'nroDocumento', label: 'Documento', type: 'text' },
   { field: 'telefono', label: 'Teléfono', type: 'text' },
   { field: 'email', label: 'Email', type: 'text' },
   { field: 'moneda', label: 'Moneda', type: 'text' },
@@ -62,7 +62,19 @@ columns: CrudColumn[] = [
     });
   }
 
-  onDelete(id: number): void {
-    this.proveedorService.delete(id).subscribe(() => this.getProveedores());
+  onDelete(proveedor: ProveedorResponse): void {
+  if (!proveedor?.id) {
+    console.error('Proveedor sin id, no se puede eliminar', proveedor);
+    return;
   }
+
+  const ok = confirm(`¿Seguro que deseas eliminar al proveedor "${proveedor.razonSocial}"?`);
+  if (!ok) return;
+
+  this.proveedorService.delete(proveedor.id).subscribe({
+    next: () => this.getProveedores(),
+    error: (err) => console.error('Error eliminando proveedor', err)
+  });
+}
+
 }

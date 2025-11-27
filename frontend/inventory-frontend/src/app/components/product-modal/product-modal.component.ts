@@ -1,4 +1,3 @@
-// src/app/components/product-modal/product-modal.component.ts
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductService } from '../../core/services/product.service';
-import { ProductRequest, FamilyProductResponse, VendorResponse, TIPO_PRESENTACION, UNIT_OF_MEASURE } from '../../core/models/product.model';
+import { ProductRequest, FamilyProductResponse, VendorResponse, TIPO_PRESENTACION, UNIT_OF_MEASURE, ProductResponse } from '../../core/models/product.model';
 
 @Component({
   selector: 'app-product-modal',
@@ -69,18 +68,19 @@ export class ProductModalComponent implements OnInit {
     });
   }
 
-  populateForm(product: any): void {
+  populateForm(product: ProductResponse): void {
     this.productForm.patchValue({
-      code: product.code || '',
-      nombreComercial: product.name || '',
-      description: product.description || '',
-      proveedorId: product.proveedorId || null,
-      tipoPresentacion: product.tipoPresentacion || '',
-      unitOfMeasure: product.unitOfMeasure || '',
-      familiaId: product.familiaId || null,
-      blocked: product.isLocked || false
+      code: product.code ?? '',
+      nombreComercial: product.nombreComercial ?? '',
+      description: product.description ?? '',
+      proveedorId: product.proveedorId ?? null,
+      tipoPresentacion: product.tipoPresentacion ?? '',
+      unitOfMeasure: product.unitOfMeasure ?? '',
+      familiaId: product.familiaId ?? null,
+      blocked: product.isLocked ?? false
     });
   }
+
 
 loadDropdownData(): void {
   this.isLoading = true;
@@ -120,33 +120,52 @@ loadDropdownData(): void {
 }
 
   onSubmit(): void {
-  if (this.productForm.valid && !this.isLoading) {
-    const formData: ProductRequest = this.productForm.value;
-    
-    console.log('🔵 Datos a enviar:', formData); // ← Agrega esto
-    
-    // Asegurar que los IDs sean números
-    if (formData.proveedorId) formData.proveedorId = Number(formData.proveedorId);
-    if (formData.familiaId) formData.familiaId = Number(formData.familiaId);
+    if (this.productForm.valid && !this.isLoading) {
+      const formData: ProductRequest = { ...this.productForm.value };
 
-    console.log('🔵 Datos después de conversión:', formData); // ← Agrega esto
+      console.log('Antes:', this.productForm.value);
+      console.log('Después (formData inicial):', formData);
 
-    if (this.isEdit) {
-      // ... código de edición
-    } else {
-      this.productService.createProduct(formData).subscribe({
-        next: (response) => {
-          this.dialogRef.close(true);
-        },
-        error: (error) => {
-          console.error('🔴 Error completo:', error);
-          console.error('🔴 Error details:', error.error);
-          alert('Error al crear producto: ' + (error.error?.message || error.message || 'Error desconocido'));
-        }
-      });
+      // Normalizar proveedorId
+      if (formData.proveedorId == null) {
+        formData.proveedorId = undefined;
+      } else {
+        formData.proveedorId = Number(formData.proveedorId);
+      }
+
+      // Normalizar familiaId
+      if (formData.familiaId == null) {
+        formData.familiaId = undefined;
+      } else {
+        formData.familiaId = Number(formData.familiaId);
+      }
+
+      console.log('Datos finales a enviar:', formData);
+
+      if (this.isEdit && this.data?.product?.id) {
+        // 🟡 EDITAR
+        this.productService.updateProduct(this.data.product.id, formData).subscribe({
+          next: () => this.dialogRef.close(true),
+          error: (error) => {
+            console.error('🔴 Error al actualizar producto:', error);
+            alert('Error al actualizar producto: ' + (error.error?.message || error.message || 'Error desconocido'));
+          }
+        });
+      } else {
+        // 🟢 CREAR
+        this.productService.createProduct(formData).subscribe({
+          next: () => this.dialogRef.close(true),
+          error: (error) => {
+            console.error('🔴 Error completo:', error);
+            alert('Error al crear producto: ' + (error.error?.message || error.message || 'Error desconocido'));
+          }
+        });
+      }
     }
   }
-}
+
+
+
   onCancel(): void {
     this.dialogRef.close(false);
   }

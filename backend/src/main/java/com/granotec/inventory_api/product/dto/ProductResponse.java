@@ -12,11 +12,16 @@ import lombok.NoArgsConstructor;
 public class ProductResponse {
     private Integer id;
     private String code;
-    private String name;
+    private String nombreComercial;
     private String description;
     private UnitOfMeasure unitOfMeasure;
     private TipoPresentacion tipoPresentacion;
+
+    private Long proveedorId;   // 👈 nuevo
     private String proveedor;
+
+    private Long familiaId;     // 👈 nuevo
     private String familia;
+
     private Boolean isLocked;
 }

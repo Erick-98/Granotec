@@ -32,19 +32,31 @@ public class ProductService {
 
     public Page<ProductResponse> listAll(int page, int size, String q) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<Product> p;
+
         if (q == null || q.trim().isEmpty()) {
-            Page<Product> p = productRepository.findAll(pageable);
-            List<ProductResponse> list = p.getContent().stream().map(this::toDto).collect(Collectors.toList());
-            return new PageImpl<>(list, pageable, p.getTotalElements());
+            p = productRepository.findAll(pageable);
         } else {
-            Page<Product> p = productRepository.findByNombreComercialContainingIgnoreCaseOrCodeContainingIgnoreCase(q, q, pageable);
-            List<ProductResponse> list = p.getContent().stream().map(this::toDto).collect(Collectors.toList());
-            return new PageImpl<>(list, pageable, p.getTotalElements());
+            p = productRepository.findByNombreComercialContainingIgnoreCaseOrCodeContainingIgnoreCase(q, q, pageable);
         }
+
+        // 🔹 Filtrar los soft eliminados
+        List<Product> filtrados = p.getContent().stream()
+            .filter(prod -> !Boolean.TRUE.equals(prod.getIsDeleted()))
+            .collect(Collectors.toList());
+
+        List<ProductResponse> list = filtrados.stream()
+            .map(this::toDto)
+            .collect(Collectors.toList());
+
+        // totalElements = filtrados.size() para que el paginador coincida
+        return new PageImpl<>(list, pageable, filtrados.size());
     }
 
     public ProductResponse getById(Integer id) {
-        Product prod = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+        Product prod = productRepository.findById(id)
+            .filter(p -> !Boolean.TRUE.equals(p.getIsDeleted()))   // 👈 filtra eliminados
+            .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         return toDto(prod);
     }
 
@@ -146,12 +158,21 @@ public class ProductService {
         ProductResponse resp = new ProductResponse();
         resp.setId(p.getId());
         resp.setCode(p.getCode());
-        resp.setName(p.getNombreComercial());
+        resp.setNombreComercial(p.getNombreComercial());
         resp.setDescription(p.getDescription());
         resp.setUnitOfMeasure(p.getUnitOfMeasure());
         resp.setTipoPresentacion(p.getTipoPresentacion());
-        resp.setProveedor(p.getProveedor() != null ? p.getProveedor().getRazonSocial() : null);
-        resp.setFamilia(p.getFamilia() != null ? p.getFamilia().getNombre() : null);
+
+        if (p.getProveedor() != null) {
+            resp.setProveedorId(p.getProveedor().getId());
+            resp.setProveedor(p.getProveedor().getRazonSocial());
+        }
+
+        if (p.getFamilia() != null) {
+            resp.setFamiliaId(p.getFamilia().getId());
+            resp.setFamilia(p.getFamilia().getNombre());
+        }
+
         resp.setIsLocked(p.getIsLocked());
         return resp;
     }
