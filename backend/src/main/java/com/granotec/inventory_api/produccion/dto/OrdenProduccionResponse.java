@@ -14,6 +14,8 @@ public class OrdenProduccionResponse {
     private String estado;
     private BigDecimal cantidadProducida;
     private List<ConsumoInsumoDTO> consumos;
+    private Long almacenDestinoId;
+    private String codigoLoteGenerado;
 
     @Data
     public static class ConsumoInsumoDTO {
@@ -22,4 +24,3 @@ public class OrdenProduccionResponse {
         private BigDecimal cantidad;
     }
 }
-

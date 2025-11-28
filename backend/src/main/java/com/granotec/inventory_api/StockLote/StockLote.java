@@ -33,4 +33,6 @@ public class StockLote extends BaseEntity {
 
     @Column(nullable = false)
     private BigDecimal cantidadDisponible;
+
+    private BigDecimal cantidadReservada = BigDecimal.ZERO;
 }

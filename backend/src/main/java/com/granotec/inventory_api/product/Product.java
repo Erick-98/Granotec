@@ -1,6 +1,5 @@
 package com.granotec.inventory_api.product;
 
-
 import com.granotec.inventory_api.common.enums.TipoPresentacion;
 import com.granotec.inventory_api.common.enums.TypeProduct;
 import com.granotec.inventory_api.common.enums.UnitOfMeasure;

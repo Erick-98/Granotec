@@ -41,8 +41,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex) {
-        ApiResponse<Void> body = new ApiResponse<>(ex.getMessage(), null);
+    public ResponseEntity<ApiResponse<Object>> handleBadRequest(BadRequestException ex) {
+        ApiResponse<Object> body = new ApiResponse<>(ex.getMessage(), ex.getData());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 

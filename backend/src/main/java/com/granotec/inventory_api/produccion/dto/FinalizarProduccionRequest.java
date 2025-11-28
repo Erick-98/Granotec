@@ -17,4 +17,6 @@ public class FinalizarProduccionRequest {
     private BigDecimal costoTotal;
     @NotNull
     private Long usuarioId;
+    private Long almacenDestinoId;
+    private String loteCodigoManual;
 }

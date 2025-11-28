@@ -16,6 +16,9 @@ public class OrdenProduccionRequest {
     @NotNull
     private String fechaInicio;
     private String fechaFin;
+    @NotNull
+    private Long almacenDestinoId;
+    private String loteCodigoManual;
     private List<ConsumoInsumoDTO> consumos;
 
     @Data

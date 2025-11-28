@@ -13,7 +13,4 @@ public class StockDisponibleResponse {
     private Long loteId;
     private String loteCodigo;
 
-    public void setLoteId(Long loteId) {
-        this.loteId = loteId;
-    }
 }

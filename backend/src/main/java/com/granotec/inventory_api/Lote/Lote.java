@@ -38,6 +38,8 @@ public class Lote extends BaseEntity {
     @Column(nullable = false)
     private LocalDate fechaProduccion;
 
+    private LocalDate fechaVencimiento;
+
     @Column(nullable = false)
     private BigDecimal cantidadProducida;
 
@@ -50,7 +52,7 @@ public class Lote extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal precioVentaUnitario;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String estado;
 
 }

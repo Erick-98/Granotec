@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,17 +23,6 @@ public interface StockLoteRepository extends JpaRepository<StockLote, Integer> {
 
     Optional<StockLote> findByLoteIdAndAlmacenId(Long loteId, Long almacenId);
 
-    // Query FIFO
-    @Query("SELECT s FROM StockLote s " +
-            "WHERE s.lote.producto.id = :productoId " +
-            "AND s.cantidadDisponible > 0 " +
-            "AND s.almacen.id = :almacenId " +
-            "AND s.lote.estado = 'DISPONIBLE' " +
-            "ORDER BY s.lote.fechaProduccion ASC")
-    List<StockLote> findAvailableByProductoAndAlmacenFIFO(@Param("productoId") Long productoId,
-                                                          @Param("almacenId") Long almacenId);
-
-    // Locking
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM StockLote s " +
             "WHERE s.lote.producto.id = :productoId " +
@@ -40,12 +30,26 @@ public interface StockLoteRepository extends JpaRepository<StockLote, Integer> {
             "AND s.almacen.id = :almacenId " +
             "AND s.lote.estado = 'DISPONIBLE' " +
             "ORDER BY s.lote.fechaProduccion ASC")
-    List<StockLote> findAvailableByProductoAndAlmacenForUpdate(
-            @Param("productoId") Integer productoId,
-            @Param("almacenId") Long almacenId
-    );
+    List<StockLote> findAvailableByProductoAndAlmacenForUpdate(@Param("productoId") Integer productoId, @Param("almacenId") Long almacenId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM StockLote s " +
+            "WHERE s.lote.producto.id = :productoId " +
+            "AND s.cantidadDisponible > 0 " +
+            "AND s.lote.estado = 'DISPONIBLE' " +
+            "ORDER BY s.lote.fechaProduccion ASC")
+    List<StockLote> findAvailableByProductoForUpdate(@Param("productoId") Integer productoId);
 
     Page<StockLote> findByLoteProductoIdAndAlmacenId(Integer productoId, Long almacenId, Pageable pageable);
     Page<StockLote> findByLoteProductoId(Integer productoId, Pageable pageable);
     Page<StockLote> findByAlmacenId(Long almacenId, Pageable pageable);
+
+    @Query("SELECT coalesce(sum(s.cantidadDisponible),0) FROM StockLote s where s.lote.producto.id = :productoId and s.almacen.id = :almacenId")
+    BigDecimal sumDisponibleByProductoAndAlmacen(@Param("productoId") Integer productoId, @Param("almacenId") Long almacenId);
+
+    @Query("select coalesce(sum(s.cantidadDisponible),0) from StockLote s where s.lote.producto.id = :productoId")
+    BigDecimal sumDisponibleByProducto(@Param("productoId") Integer productoId);
+
+    Optional<StockLote> findFirstByLoteIdAndIsDeletedFalse(Long loteId);
 }
+

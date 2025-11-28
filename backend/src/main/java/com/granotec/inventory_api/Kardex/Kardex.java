@@ -8,6 +8,8 @@ import com.granotec.inventory_api.product.Product;
 import com.granotec.inventory_api.storage.Storage;
 import com.granotec.inventory_api.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,9 +17,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "kardex")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "kardex")
 public class Kardex extends BaseEntity {
 
     @Id
@@ -52,17 +56,30 @@ public class Kardex extends BaseEntity {
 
     private String OP;
 
-    @Column(nullable = false)
+    @Column(nullable = false,precision = 15, scale = 3)
     private BigDecimal cantidad;
 
-    //PARA PRUEBAS
+    @Column(nullable = false, precision = 15, scale = 6)
+    private BigDecimal costoUnitarioSoles;
+
+    @Column(nullable = false, precision = 15, scale = 3)
+    private BigDecimal totalSoles;
+
+    @Column(precision = 15, scale = 6)
+    private BigDecimal costoUnitarioDolares;
+
+    @Column(precision = 15, scale = 3)
+    private BigDecimal totalDolares;
+
+    @Column(precision = 15, scale = 3)
     private BigDecimal stockAnterior;
+
+    @Column(precision = 15, scale = 3)
     private BigDecimal stockActual;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private User usuario;
-
 
     private String observacion;
 
