@@ -507,7 +507,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Orden de Compra',
     iconName: 'solar:cart-large-minimalistic-line-duotone',
-    route: '/ui-components/orden-compra',
+    route: '/ui-components/orden-compra-list',
   },
   {
     displayName: 'Orden de Producción',

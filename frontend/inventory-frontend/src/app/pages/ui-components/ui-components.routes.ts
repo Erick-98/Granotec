@@ -9,6 +9,7 @@ import { AppTooltipsComponent } from './tooltips/tooltips.component';
 import { AppFormsComponent } from './forms/forms.component';
 import { AppTablesComponent } from './tables/tables.component';
 import { OrdenCompraFormComponent } from './orden-compra/orden-compra-form.component';
+import { OrdenCompraListComponent } from './orden-compra-list/orden-compra-list.component';
 export const UiComponentsRoutes: Routes = [
   {
     path: '',
@@ -44,6 +45,10 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'orden-compra',
         component: OrdenCompraFormComponent,
+      },
+      {
+        path: 'orden-compra-list',
+        component: OrdenCompraListComponent,
       },
     ],
   },

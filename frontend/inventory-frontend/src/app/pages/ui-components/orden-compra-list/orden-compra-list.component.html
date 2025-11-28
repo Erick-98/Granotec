@@ -1,0 +1,74 @@
+<div class="invoice-page">
+
+    <!-- Header: buscador + botón -->
+    <div class="invoice-header">
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Search Purchase Order"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="aplicarFiltro()"
+        />
+      </div>
+  
+      <button mat-raised-button color="primary" class="add-btn" (click)="agregarOrden()">
+        Add Purchase Order
+      </button>
+    </div>
+  
+    <!-- Tabla -->
+    <div class="invoice-card">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>
+              <mat-checkbox></mat-checkbox>
+            </th>
+            <th>Id</th>
+            <th>Number</th>
+            <th>Supplier</th>
+            <th>Warehouse</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th class="th-actions">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of comprasFiltradas">
+            <td>
+              <mat-checkbox></mat-checkbox>
+            </td>
+            <td>{{ c.id }}</td>
+            <td>{{ c.numero }}</td>
+            <td>{{ c.proveedorNombre }}</td>
+            <td>{{ c.almacenNombre }}</td>
+            <td>{{ c.total | number: '1.2-2' }}</td>
+            <td>
+              <span [ngClass]="getEstadoClase(c.estado)">
+                {{ c.estado || 'Sin estado' }}
+              </span>
+            </td>
+            <td class="td-actions">
+              <button mat-icon-button (click)="editar(c)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="verDetalle(c)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="eliminar(c)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+  
+          <tr *ngIf="comprasFiltradas.length === 0">
+            <td colspan="8" class="empty-row">
+              No se encontraron órdenes de compra.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
