@@ -15,9 +15,9 @@ import com.granotec.inventory_api.compras.dto.*;
 import com.granotec.inventory_api.product.Product;
 import com.granotec.inventory_api.storage.Storage;
 import com.granotec.inventory_api.vendor.Vendor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.granotec.inventory_api.OrdenCompra.OrdenCompraRepository;
 import com.granotec.inventory_api.StockLote.StockLoteRepository;
 import com.granotec.inventory_api.Kardex.KardexRepository;
@@ -30,16 +30,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class CompraServiceImpl implements CompraService {
-    @Autowired private OrdenCompraRepository ordenCompraRepository;
-    @Autowired private StockLoteRepository stockLoteRepository;
-    @Autowired private KardexRepository kardexRepository;
-    @Autowired private ProductRepository productRepository;
-    @Autowired private VendorRepository vendorRepository;
-    @Autowired private StorageRepository storageRepository;
-    @Autowired private LoteRepository loteRepository;
-    @Autowired private StockAlmacenRepository stockAlmacenRepository;
+     private final OrdenCompraRepository ordenCompraRepository;
+     private final StockLoteRepository stockLoteRepository;
+     private final KardexRepository kardexRepository;
+     private final VendorRepository vendorRepository;
+     private final ProductRepository productRepository;
+     private final StorageRepository storageRepository;
+     private final LoteRepository loteRepository;
+     private final StockAlmacenRepository stockAlmacenRepository;
 
     @Override
     @Transactional
