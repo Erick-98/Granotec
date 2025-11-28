@@ -1,6 +1,5 @@
 package com.granotec.inventory_api.salesperson;
 
-import com.granotec.inventory_api.customer.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,6 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface SalespersonRepository extends JpaRepository<Salesperson, Integer> {
-    Optional<Customer> findByEmail(String email);
-    Optional<Customer> findByNroDocumento(String nroDocumento);
+    Optional<Salesperson> findByEmail(String email);
+    Optional<Salesperson> findByNroDocumento(String nroDocumento);
 }
