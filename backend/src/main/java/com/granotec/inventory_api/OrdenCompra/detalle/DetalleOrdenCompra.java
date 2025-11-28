@@ -1,4 +1,4 @@
-package com.granotec.inventory_api.compras.detalle;
+package com.granotec.inventory_api.OrdenCompra.detalle;
 
 import com.granotec.inventory_api.OrdenCompra.OrdenCompra;
 import com.granotec.inventory_api.product.Product;

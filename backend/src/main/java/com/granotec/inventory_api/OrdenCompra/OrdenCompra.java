@@ -1,6 +1,6 @@
 package com.granotec.inventory_api.OrdenCompra;
 
-import com.granotec.inventory_api.compras.detalle.DetalleOrdenCompra;
+import com.granotec.inventory_api.OrdenCompra.detalle.DetalleOrdenCompra;
 import com.granotec.inventory_api.vendor.Vendor;
 import com.granotec.inventory_api.storage.Storage;
 import com.granotec.inventory_api.common.model.BaseEntity;

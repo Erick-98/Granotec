@@ -1,8 +1,8 @@
-package com.granotec.inventory_api.compras.controller;
+package com.granotec.inventory_api.OrdenCompra.controller;
 
-import com.granotec.inventory_api.compras.dto.CompraRequest;
-import com.granotec.inventory_api.compras.dto.CompraResponse;
-import com.granotec.inventory_api.compras.service.CompraService;
+import com.granotec.inventory_api.OrdenCompra.dto.CompraRequest;
+import com.granotec.inventory_api.OrdenCompra.dto.CompraResponse;
+import com.granotec.inventory_api.OrdenCompra.service.CompraService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

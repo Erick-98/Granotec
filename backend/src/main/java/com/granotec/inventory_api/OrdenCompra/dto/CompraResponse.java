@@ -1,4 +1,4 @@
-package com.granotec.inventory_api.compras.dto;
+package com.granotec.inventory_api.OrdenCompra.dto;
 
 import lombok.Data;
 import java.math.BigDecimal;
