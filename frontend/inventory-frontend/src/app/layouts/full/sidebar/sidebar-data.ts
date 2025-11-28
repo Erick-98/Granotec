@@ -505,6 +505,11 @@ export const navItems: NavItem[] = [
     divider: true
   },
   {
+    displayName: 'Orden de Compra',
+    iconName: 'solar:cart-large-minimalistic-line-duotone',
+    route: '/ui-components/orden-compra',
+  },
+  {
     displayName: 'Orden de Producción',
     iconName: 'solar:sticker-smile-circle-2-line-duotone',
     route: '/extra/icons',
