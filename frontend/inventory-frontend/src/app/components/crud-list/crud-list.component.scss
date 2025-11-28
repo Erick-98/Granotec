@@ -1,25 +1,84 @@
-.cardWithShadow {
-  border-radius: 8px;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.page-header .title {
+  font-size: 22px;
+}
+
+.page-header .breadcrumbs {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+:host ::ng-deep th.mat-mdc-header-cell {
+  font-weight: 700 !important;
+}
+
+
+.toolbar-container {
   background: #fff;
+  padding: 16px 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
   box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.search-field {
+  width: 350px;
+}
+
+.content-card {
+  border-radius: 18px;
+  padding: 0;
   overflow: hidden;
 }
-.card-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 22px;
-  border-bottom: 1px solid #f1f3f5;
+
+.section-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 18px;
 }
-.card-header .title{font-weight:700}
-.card-body{padding:18px}
-.toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
-.search{width:360px}
-.media{display:flex; align-items:center}
-.thumb{border-radius:50%; margin-right:12px; object-fit:cover}
-.meta .name{font-weight:600}
-.meta .subtitle{font-size:12px; color:#6b7280}
-.badge{display:inline-block; padding:6px 10px; border-radius:16px; font-size:12px}
-.badge.stock{background:#f3e8ff; color:#6b21a8}
-.badge.outofstock{background:#fff1f2; color:#be123c}
-.card-footer{display:flex; align-items:center; justify-content:flex-end; padding:12px 18px; border-top:1px solid #f1f3f5}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.page-header .title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.page-header .breadcrumbs {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.toolbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-field {
+  width: 350px;
+}
+
+.content-card {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 18px;
+}

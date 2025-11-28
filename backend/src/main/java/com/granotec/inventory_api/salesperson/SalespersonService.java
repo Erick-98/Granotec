@@ -39,6 +39,12 @@ public class SalespersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("El distrito no existe"));
 
         Salesperson salesperson = new Salesperson();
+        salesperson.setName(request.getName());
+        salesperson.setApellidos(request.getApellidos());
+        salesperson.setNroDocumento(request.getNroDocumento());
+        salesperson.setDireccion(request.getDireccion());
+        salesperson.setTelefono(request.getTelefono());
+        salesperson.setEmail(request.getEmail());
         salesperson.setDistrito(distrito);
 
         return toDto(repository.save(salesperson));

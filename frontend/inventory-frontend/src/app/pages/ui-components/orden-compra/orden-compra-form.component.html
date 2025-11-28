@@ -1,0 +1,180 @@
+<mat-card class="cardWithShadow">
+    <mat-card-title>Orden de Compra</mat-card-title>
+    <mat-card-subtitle>
+      Complete los datos para registrar una nueva orden de compra
+    </mat-card-subtitle>
+  
+    <form class="form-grid" #compraForm="ngForm" (ngSubmit)="guardar(compraForm)">
+      <!-- Número de orden (opcional si el backend lo genera) -->
+      <mat-form-field appearance="outline">
+        <mat-label>Número de orden</mat-label>
+        <input
+          matInput
+          [(ngModel)]="compra.numero"
+          name="numero"
+          placeholder="Ejemplo: OC-0001"
+        />
+      </mat-form-field>
+  
+      <!-- Proveedor -->
+      <mat-form-field appearance="outline">
+        <mat-label>Proveedor</mat-label>
+        <mat-select
+          name="proveedorId"
+          [(ngModel)]="compra.proveedorId"
+          required
+        >
+          <mat-option [value]="0" disabled>Seleccione un proveedor</mat-option>
+          <mat-option *ngFor="let p of proveedores" [value]="p.id">
+            {{ p.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="compraForm.submitted && !compra.proveedorId">
+          El proveedor es obligatorio
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Almacén -->
+      <mat-form-field appearance="outline">
+        <mat-label>Almacén</mat-label>
+        <mat-select
+          name="almacenId"
+          [(ngModel)]="compra.almacenId"
+          required
+        >
+          <mat-option [value]="0" disabled>Seleccione un almacén</mat-option>
+          <mat-option *ngFor="let a of almacenes" [value]="a.id">
+            {{ a.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="compraForm.submitted && !compra.almacenId">
+          El almacén es obligatorio
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Acciones de cabecera -->
+      <div class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="cargando"
+        >
+          {{ cargando ? 'Guardando...' : 'Guardar' }}
+        </button>
+  
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="cancelar(compraForm)"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </mat-card>
+  
+  <!-- Mensaje de confirmación -->
+  <div *ngIf="confirmacion" class="mensaje-exito">
+    ✅ Orden de compra registrada correctamente.
+  </div>
+  
+  <!-- Detalles de la orden -->
+  <mat-card class="cardWithShadow mt-3">
+    <mat-card-title>Detalle de la Orden</mat-card-title>
+    <mat-card-subtitle>Agregue los productos y cantidades</mat-card-subtitle>
+  
+    <div class="detalle-header">
+      <button mat-mini-fab color="primary" (click)="agregarDetalle()">
+        <mat-icon>add</mat-icon>
+      </button>
+      <span>Agregar producto</span>
+    </div>
+  
+    <div class="table-container" *ngIf="compra.detalles.length > 0">
+      <table class="detalles-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio unitario</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let det of compra.detalles; let i = index">
+            <!-- Producto -->
+            <td>
+              <mat-form-field appearance="outline">
+                <mat-label>Producto</mat-label>
+                <mat-select
+                  [(ngModel)]="det.productoId"
+                  [name]="'productoId_' + i"
+                  required
+                >
+                  <mat-option [value]="0" disabled>Seleccione</mat-option>
+                  <mat-option *ngFor="let prod of productos" [value]="prod.id">
+                    {{ prod.nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+  
+            <!-- Cantidad -->
+            <td>
+              <mat-form-field appearance="outline">
+                <mat-label>Cantidad</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  [(ngModel)]="det.cantidad"
+                  [name]="'cantidad_' + i"
+                />
+              </mat-form-field>
+            </td>
+  
+            <!-- Precio unitario -->
+            <td>
+              <mat-form-field appearance="outline">
+                <mat-label>Precio unitario</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  [(ngModel)]="det.precioUnitario"
+                  [name]="'precioUnitario_' + i"
+                />
+              </mat-form-field>
+            </td>
+  
+            <!-- Subtotal -->
+            <td class="subtotal-cell">
+              {{
+                ((+det.cantidad || 0) * (+det.precioUnitario || 0))
+                  | number: '1.2-2'
+              }}
+            </td>
+  
+            <!-- Acciones -->
+            <td class="acciones-cell">
+              <button mat-icon-button color="warn" (click)="eliminarDetalle(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Total -->
+    <div class="total-resumen" *ngIf="compra.detalles.length > 0">
+      <span>Total:</span>
+      <strong>{{ totalCalculado | number: '1.2-2' }}</strong>
+    </div>
+  </mat-card>
+  

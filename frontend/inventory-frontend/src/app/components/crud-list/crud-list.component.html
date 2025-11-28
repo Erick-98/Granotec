@@ -1,3 +1,40 @@
+<!-- CARD 1: Título + Breadcrumb -->
+<div class="cardWithShadow section-card">
+  <div class="page-header">
+    <div class="title">{{ title }}</div>
+    <div class="breadcrumbs">
+      Dashboard • <span>{{ title }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- CARD 2: Buscador + Botón -->
+<div class="cardWithShadow section-card">
+  <div class="toolbar-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Search..." [formControl]="search">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="add.emit()">
+      Add {{ title }}
+    </button>
+  </div>
+</div>
+
+<!-- CARD 3: Tabla + Paginación -->
+<div class="cardWithShadow section-card content-card">
+  <table mat-table [dataSource]="displayed()" class="mat-mdc-table full-width">
+    <!-- columnas y filas como ya están -->
+  </table>
+
+  <div class="card-footer">
+    <mat-paginator
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [length]="serverSide ? length : displayed().length"
+      (page)="onPage($event)">
+    </mat-paginator>
 <div class="cardWithShadow">
   <div class="card-header">
     <div class="title">{{ title }}</div>

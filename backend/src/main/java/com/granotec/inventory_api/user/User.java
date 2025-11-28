@@ -41,7 +41,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
-    //  @Builder.Default
     @Builder.Default
     @Column(nullable = false)
     private Integer failedAttempts = 0;
