@@ -155,7 +155,7 @@
             <!-- Subtotal -->
             <td class="subtotal-cell">
               {{
-                (Number(det.cantidad) || 0) * (Number(det.precioUnitario) || 0)
+                ((+det.cantidad || 0) * (+det.precioUnitario || 0))
                   | number: '1.2-2'
               }}
             </td>

@@ -1,6 +1,6 @@
 package com.granotec.inventory_api.OrdenCompra.service;
 
-import com.granotec.inventory_api.Kardex.Kardex;
+import com.granotec.inventory_api.Kardex.KardexService;
 import com.granotec.inventory_api.Lote.Lote;
 import com.granotec.inventory_api.Lote.LoteRepository;
 import com.granotec.inventory_api.OrdenCompra.OrdenCompra;
@@ -9,8 +9,6 @@ import com.granotec.inventory_api.OrdenCompra.dto.CompraResponse;
 import com.granotec.inventory_api.StockLote.StockLote;
 import com.granotec.inventory_api.Stock_Almacen.StockAlmacen;
 import com.granotec.inventory_api.Stock_Almacen.StockAlmacenRepository;
-import com.granotec.inventory_api.common.enums.TipoMovimiento;
-import com.granotec.inventory_api.common.enums.TypeOperation;
 import com.granotec.inventory_api.common.exception.BadRequestException;
 import com.granotec.inventory_api.OrdenCompra.detalle.DetalleOrdenCompra;
 import com.granotec.inventory_api.product.Product;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.granotec.inventory_api.OrdenCompra.OrdenCompraRepository;
 import com.granotec.inventory_api.StockLote.StockLoteRepository;
-import com.granotec.inventory_api.Kardex.KardexRepository;
 import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.vendor.VendorRepository;
 import com.granotec.inventory_api.storage.StorageRepository;
@@ -36,7 +33,7 @@ import java.util.List;
 public class CompraServiceImpl implements CompraService {
      private final OrdenCompraRepository ordenCompraRepository;
      private final StockLoteRepository stockLoteRepository;
-     private final KardexRepository kardexRepository;
+     private final KardexService kardexService;
      private final VendorRepository vendorRepository;
      private final ProductRepository productRepository;
      private final StorageRepository storageRepository;
@@ -65,11 +62,15 @@ public class CompraServiceImpl implements CompraService {
             Product producto = productRepository.findById(det.getProductoId().intValue())
                     .orElseThrow(() -> new BadRequestException("Producto no encontrado"));
 
+            String loteNumero = "LT" + "-" + det.getLote();
+
             // Crear lote para la compra
             Lote lote = Lote.builder()
+                    .ordenProduccion(null)
                     .producto(producto)
-                    .codigoLote("C" + System.currentTimeMillis() + "-" + producto.getId())
-                    .fechaProduccion(LocalDate.now())
+                    .codigoLote(loteNumero)
+                    .fechaProduccion(det.getFechaProduccion())
+                    .fechaVencimiento(det.getFechaVencimiento())
                     .cantidadProducida(det.getCantidad())
                     .costoUnitario(det.getPrecioUnitario())
                     .precioVentaUnitario(det.getPrecioUnitario())
@@ -109,18 +110,16 @@ public class CompraServiceImpl implements CompraService {
             detalles.add(detalle);
             totalCompra = totalCompra.add(detalle.getSubtotal());
             // Registrar entrada en Kardex (usar stockAnterior real)
-            Kardex kardex = new Kardex();
-            kardex.setAlmacen(almacen);
-            kardex.setProducto(producto);
-            kardex.setCantidad(det.getCantidad());
-            kardex.setTipoMovimiento(TipoMovimiento.ENTRADA);
-            kardex.setTipoOperacion(TypeOperation.COMPRA);
-            kardex.setStockAnterior(stockAnterior);
-            kardex.setStockActual(stockAlmacen.getCantidad());
-            kardex.setObservacion("Compra - Lote " + lote.getCodigoLote());
-            kardex.setFechaMovimiento(LocalDate.now());
-            kardex.setLote(lote);
-            kardexRepository.save(kardex);
+//            kardexService.registrarMovimientos(
+//                    request.getAlmacenId(),
+//                    producto.getId().longValue(),
+//                    lote,
+//
+//                    TipoMovimiento.ENTRADA,
+//                    TypeOperation.COMPRA,
+//                    request.getNumero(),
+//
+//            )
         }
         ordenCompra.setDetalles(detalles);
         ordenCompra.setTotal(totalCompra);

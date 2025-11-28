@@ -2,6 +2,8 @@ package com.granotec.inventory_api.inventario.service;
 
 import com.granotec.inventory_api.ajustes.service.AjusteService;
 import com.granotec.inventory_api.inventario.dto.*;
+import com.granotec.inventory_api.product.Product;
+import com.granotec.inventory_api.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,8 @@ import com.granotec.inventory_api.Kardex.KardexRepository;
 import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.storage.StorageRepository;
 import com.granotec.inventory_api.common.mapper.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -32,11 +36,11 @@ public class InventarioServiceImpl implements InventarioService {
     @Override
     @Transactional
     public MovimientoInventarioResponse registrarEntrada(MovimientoInventarioRequest request) {
-        var almacen = storageRepository.findById(request.getAlmacenId())
+        Storage almacen = storageRepository.findById(request.getAlmacenId())
                 .orElseThrow(() -> new IllegalArgumentException("Almacén no encontrado"));
-        var producto = productRepository.findById(request.getProductoId().intValue())
+        Product producto = productRepository.findById(request.getProductoId().intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-        var cantidad = request.getCantidad();
+        BigDecimal cantidad = request.getCantidad();
         if (cantidad == null || cantidad.compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Cantidad debe ser mayor a cero");
         }

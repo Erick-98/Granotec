@@ -17,6 +17,9 @@ interface OpcionBasica {
   styleUrls: ['./orden-compra-form.component.scss'],
 })
 export class OrdenCompraFormComponent {
+Number(arg0: any) {
+throw new Error('Method not implemented.');
+}
   // Objeto igual a tu CompraRequest (pero definido aquí mismo)
   compra: any = {
     numero: '',
