@@ -1,0 +1,104 @@
+.cardWithShadow {
+    margin-bottom: 16px;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+  
+  .mensaje-exito {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background-color: #e6ffed;
+    color: #1b5e20;
+    font-size: 0.95rem;
+    border: 1px solid #a5d6a7;
+  }
+  
+  .mt-3 {
+    margin-top: 24px;
+  }
+  
+  .detalle-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 16px 0;
+  
+    span {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+  }
+  
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .detalles-table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    thead {
+      background-color: #f5f5f5;
+    }
+  
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+  
+    th {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  
+    tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+  
+    mat-form-field {
+      width: 100%;
+    }
+  }
+  
+  .subtotal-cell {
+    min-width: 90px;
+  }
+  
+  .acciones-cell {
+    text-align: center;
+    min-width: 70px;
+  }
+  
+  .total-resumen {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    font-size: 1.05rem;
+    align-items: center;
+  
+    span {
+      font-weight: 500;
+    }
+  
+    strong {
+      font-size: 1.1rem;
+    }
+  }
+  
