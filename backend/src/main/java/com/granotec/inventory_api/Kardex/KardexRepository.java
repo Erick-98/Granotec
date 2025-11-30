@@ -20,15 +20,21 @@ public interface KardexRepository extends JpaRepository<Kardex, Integer> {
     List<Kardex> findByTipoOperacion(TypeOperation tipoOperacion);
 
 
-    @Query("SELECT k FROM Kardex k WHERE " +
-    "(:productoId IS NULL OR k.producto.id= :productoId) AND " +
-    "(:almacenId IS NULL OR k.almacen.id= :almacenId) AND " +
-    "(:desde IS NULL OR k.fechaMovimiento >= :desde) AND " +
-    "(:hasta IS NULL OR k.fechaMovimiento <= :hasta) " +
-    "ORDER BY k.fechaMovimiento DESC, k.createdAt DESC")
+    @Query("SELECT k FROM Kardex k " +
+            "LEFT JOIN  k.producto p " +
+            "LEFT JOIN  k.almacen a " +
+            "LEFT JOIN  k.usuario u " +
+            "LEFT JOIN  k.lote l " +
+            "LEFT JOIN  k.orden o " +
+            "WHERE (:productoId IS NULL OR p.id = :productoId) AND " +
+            "(:almacenId IS NULL OR a.id= :almacenId) AND " +
+            "(:desde IS NULL OR k.fechaMovimiento >= :desde) AND " +
+            "(:hasta IS NULL OR k.fechaMovimiento <= :hasta) ")
     Page<Kardex> search(@Param("productoId") Integer productoId,
                         @Param("almacenId") Long almacenId,
                         @Param("desde") LocalDate desde,
                         @Param("hasta") LocalDate hasta,
                         Pageable pageable);
+
+
 }

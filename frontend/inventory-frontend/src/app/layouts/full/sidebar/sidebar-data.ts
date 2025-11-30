@@ -477,7 +477,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Kardex',
     iconName: 'solar:sticker-smile-circle-2-line-duotone',
-    route: '/extra/icons',
+    route: '/inventario/kardex',
   },
   {
     displayName: 'Saldo de Stock',

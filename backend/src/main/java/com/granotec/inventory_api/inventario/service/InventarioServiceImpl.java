@@ -29,8 +29,6 @@ public class InventarioServiceImpl implements InventarioService {
      private final StorageRepository storageRepository;
      private final StockAlmacenMapper stockAlmacenMapper;
      private final StockLoteMapper stockLoteMapper;
-     private final LoteMapper loteMapper;
-     private final KardexMapper kardexMapper;
      private final AjusteService ajusteService;
 
     @Override

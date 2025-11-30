@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { authGuard } from './core/guards/auth.guard';
+import { KardexComponent } from './pages/kardex/kardex/kardex.component';
 // mantenimiento section is lazy-loaded from its own routes file
 
 export const routes: Routes = [
@@ -25,6 +26,15 @@ export const routes: Routes = [
         loadChildren: () => 
           import('./pages/mantenimiento/mantenimiento.routes').then(
             (m) => m.MantenimientoRoutes)
+      },
+      {
+        path: 'inventario',
+        children: [
+          {
+            path: 'kardex',
+            component: KardexComponent
+          }
+        ]
       },
       {
         path: 'ui-components',

@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class CompraResponse {
-    private Integer id;
+
     private String numero;
     private Long proveedorId;
     private String proveedorNombre;
@@ -26,6 +26,7 @@ public class CompraResponse {
         private BigDecimal cantidad;
         private BigDecimal precioUnitario;
         private BigDecimal subtotal;
+        private String estado;
     }
 }
 
