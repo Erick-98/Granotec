@@ -1,0 +1,33 @@
+<div class="page-header">
+    <h2>Detalle Orden</h2>
+    <div class="actions">
+      <button (click)="irConsumos()">Consumos</button>
+      <button (click)="irLaboratorio()">Laboratorio</button>
+      <button (click)="irCerrar()">Cerrar</button>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div *ngIf="loading">Cargando...</div>
+    <div *ngIf="!loading && orden">
+      <h3>{{orden.numero}} — {{orden.productoNombre || orden.producto?.nombreComercial}}</h3>
+      <p><strong>Cantidad programada:</strong> {{orden.cantidadProgramada}}</p>
+      <p><strong>Cantidad producida:</strong> {{orden.cantidadProducida}}</p>
+      <p><strong>Estado:</strong> {{orden.estado}}</p>
+  
+      <section *ngIf="orden.consumos?.length">
+        <h4>Consumos</h4>
+        <ul>
+          <li *ngFor="let c of orden.consumos">{{c.insumoNombre || c.insumo?.nombreComercial}} — {{c.cantidad}}</li>
+        </ul>
+      </section>
+  
+      <section *ngIf="orden.lotes?.length">
+        <h4>Lotes</h4>
+        <ul>
+          <li *ngFor="let l of orden.lotes">{{l.codigoLote}} — {{l.cantidadProducida}}</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  
