@@ -1,0 +1,23 @@
+<div class="page-header">
+    <h2>Nueva Orden de Producción</h2>
+  </div>
+  
+  <div class="card form-card">
+    <label>Número (parte libre)</label>
+    <input [(ngModel)]="model.numero" placeholder="ej: 0001" />
+  
+    <label>Producto (id)</label>
+    <input type="number" [(ngModel)]="model.productoId" placeholder="Ingrese id del producto" />
+  
+    <label>Cantidad Programada</label>
+    <input type="number" [(ngModel)]="model.cantidadProgramada" />
+  
+    <label>Almacén Destino (id)</label>
+    <input type="number" [(ngModel)]="model.almacenDestinoId" />
+  
+    <div class="actions">
+      <button (click)="guardar()" class="btn-primary">Crear</button>
+      <button (click)="cancelar()" class="btn-ghost">Cancelar</button>
+    </div>
+  </div>
+  

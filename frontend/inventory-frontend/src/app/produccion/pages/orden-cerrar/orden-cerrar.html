@@ -1,0 +1,15 @@
+<div class="page-header"><h2>Cerrar Orden</h2></div>
+<div class="card">
+  <label>Cantidad Producida</label>
+  <input type="number" [(ngModel)]="cantidadProducida" />
+
+  <label>Código de Lote</label>
+  <input [(ngModel)]="codigoLote" />
+
+  <label>Precio Venta Unitario</label>
+  <input type="number" [(ngModel)]="precioVentaUnitario" />
+
+  <div class="actions">
+    <button (click)="cerrar()" class="btn-primary">Cerrar Orden</button>
+  </div>
+</div>

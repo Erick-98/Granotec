@@ -1,0 +1,16 @@
+<div class="page-header"><h2>Laboratorio</h2></div>
+<div class="card">
+  <label>Aprobado</label>
+  <select [(ngModel)]="aprobado">
+    <option [ngValue]="true">Sí</option>
+    <option [ngValue]="false">No</option>
+  </select>
+
+  <label>Observación</label>
+  <textarea [(ngModel)]="observacion"></textarea>
+
+  <div class="actions">
+    <button (click)="enviar()" class="btn-primary">Enviar</button>
+  </div>
+</div>
+
