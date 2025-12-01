@@ -178,44 +178,68 @@ mat-paginator {
 
 // COLUMNAS NUMÉRICAS CON MEJOR FORMATO
 .mat-column-cantidad,
-.mat-column-cuSoles,
+.mat-column-costoUnitarioSoles,
 .mat-column-totalSoles,
-.mat-column-cuDolares,
+.mat-column-costoUnitarioDolares,
 .mat-column-totalDolares,
-.mat-column-saldoCantidad {
+.mat-column-stockAnterior,
+.mat-column-stockActual {
   text-align: right;
   font-family: 'Roboto Mono', monospace;
   font-size: 11px;
 }
 
+// Stock Actual destacado
+.stock-actual {
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+
 // COLUMNAS DE FECHA
-.mat-column-fecha,
-.mat-column-fechaIng,
-.mat-column-fechaProd,
-.mat-column-fechaVcto {
+.mat-column-fechaMovimiento,
+.mat-column-fechaProduccion,
+.mat-column-fechaVencimiento {
   text-align: center;
   font-size: 11px;
 }
 
 // COLUMNAS COMPACTAS
-.mat-column-codigo,
-.mat-column-lote,
-.mat-column-op {
+.mat-column-productoCodigo,
+.mat-column-loteCodigo,
+.mat-column-numeroOp {
   max-width: 100px;
   font-family: 'Roboto Mono', monospace;
   font-size: 11px;
 }
 
-.mat-column-movimiento {
-  min-width: 90px;
+.mat-column-tipoMovimiento {
+  min-width: 100px;
 }
 
 .mat-column-tipoOperacion {
   min-width: 120px;
 }
 
-.mat-column-numeroDocumento {
+.mat-column-referencia {
   min-width: 130px;
+}
+
+.mat-column-productoNombre {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.mat-column-almacenNombre {
+  min-width: 150px;
+}
+
+.mat-column-proveedor {
+  min-width: 150px;
+  max-width: 250px;
+}
+
+.mat-column-presentacion {
+  min-width: 120px;
 }
 
 // SCROLLBAR PERSONALIZADO
