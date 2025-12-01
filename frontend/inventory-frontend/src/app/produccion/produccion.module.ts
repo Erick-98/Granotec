@@ -12,6 +12,9 @@ import { OrdenDetalleComponent } from './pages/orden-detalle/orden-detalle.compo
 import { OrdenConsumosComponent } from './pages/orden-consumos/orden-consumos';
 import { OrdenLaboratorioComponent } from './pages/orden-laboratorio/orden-laboratorio';
 import { OrdenCerrarComponent } from './pages/orden-cerrar/orden-cerrar';
+import { OrdenCard } from './components/orden-card/orden-card';
+import { ConsumoItem } from './components/consumo-item/consumo-item';
+import { SharedTable } from './components/shared-table/shared-table';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import { OrdenCerrarComponent } from './pages/orden-cerrar/orden-cerrar';
     OrdenDetalleComponent,
     OrdenConsumosComponent,
     OrdenLaboratorioComponent,
-    OrdenCerrarComponent
+    OrdenCerrarComponent,
+    OrdenCard,
+    ConsumoItem,
+    SharedTable
   ],
   imports: [
     CommonModule,
