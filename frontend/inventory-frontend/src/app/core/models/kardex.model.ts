@@ -1,38 +1,49 @@
 export interface KardexItem {
   id: number;
-  fecha: string;
-  almacen: string;
+  fechaMovimiento: string;
   almacenId: number;
-  movimiento: string; // ENTRADA, SALIDA
-  tipoOperacion: string; // PRODUCCION, VENTA, COMPRA, AJUSTE
-  numeroDocumento: string; // Factura/Guía
+  almacenNombre: string;
+  tipoMovimiento: string; // ENTRADA, SALIDA
+  tipoOperacion: string; // PRODUCCION, VENTA, COMPRA, AJUSTE, ELIMINACION, etc.
+  referencia: string; // Factura/Guía
   
-  // Campos específicos que mencionaste
-  nombreComercial: string;
-  codigo: string;
-  lote: string;
-  op: string;
-  fechaIng: string;
-  fechaProd: string;
-  fechaVcto: string;
-  presentacion: string;
-  proveedor: string;
-  proveedorId?: number;
-  destinoCliente: string;
-  
-  // Campos numéricos
-  cantidad: number;
-  cuSoles: number;
-  totalSoles: number;
-  cuDolares: number;
-  totalDolares: number;
-  
-  // Saldos
-  saldoCantidad: number;
-  saldoValorSoles: number;
-  saldoValorDolares: number;
-  
+  // Producto
   productoId: number;
+  productoCodigo: string;
+  productoNombre: string;
+  familiaProducto: any;
+  tipoProducto: string;
+  
+  // Lote
+  loteId?: number;
+  loteCodigo?: string;
+  fechaProduccion?: string;
+  fechaVencimiento?: string;
+  
+  // OP
+  numeroOp?: string;
+  fechaIngresoOp?: string;
+  
+  // Adicionales
+  presentacion?: string;
+  proveedor?: string;
+  destinoCliente?: string;
+  
+  // Valores monetarios
+  cantidad: number;
+  costoUnitarioSoles: number;
+  totalSoles: number;
+  costoUnitarioDolares?: number;
+  totalDolares?: number;
+  
+  // Stock
+  stockAnterior: number;
+  stockActual: number;
+  
+  // Auditoría
+  observacion?: string;
+  usuarioId?: number;
+  usuarioNombre?: string;
 }
 
 export interface KardexFilter {
@@ -54,4 +65,33 @@ export interface KardexSummary {
   saldoFinal: number;
   valorTotalSoles: number;
   valorTotalDolares: number;
+}
+
+export interface KardexPageResponse {
+  content: KardexItem[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  last: boolean;
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  first: boolean;
+  numberOfElements: number;
+  empty: boolean;
 }
