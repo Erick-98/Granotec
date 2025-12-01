@@ -1,6 +1,6 @@
 package com.granotec.inventory_api.compras;
 
-import com.granotec.inventory_api.compras.service.CompraService;
+//import com.granotec.inventory_api.compras.service.CompraService;
 import com.granotec.inventory_api.product.Product;
 import com.granotec.inventory_api.product.ProductRepository;
 import com.granotec.inventory_api.common.enums.TypeProduct;
@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 public class CompraServiceIntegrationTest {
-    @Autowired
-    private CompraService compraService;
+    //@Autowired
+    //private CompraService compraService;
     @Autowired
     private ProductRepository productRepository;
     @Autowired

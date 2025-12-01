@@ -1,0 +1,33 @@
+.form-container {
+  min-width: 600px;
+  padding: 16px 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: calc(50% - 8px);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.checkbox-section {
+  margin: 16px 0;
+  
+  .hint {
+    display: block;
+    margin-top: 4px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+  }
+}
+
+mat-form-field {
+  margin-bottom: 8px;
+}
