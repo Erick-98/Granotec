@@ -18,6 +18,15 @@ export class ProductoService {
       return this.http.get<ApiResponse<ProductoResponse[]>>(this.apiUrl).pipe(catchError(this.handleError));
     }
 
+    getByIdWithPrice(id: number, almacenId?: number): Observable<ApiResponse<ProductoResponse>> {
+      const url = `${this.apiUrl}/${id}/with-price`;
+      const params: any = {};
+      if (almacenId !== undefined && almacenId !== null) {
+        params.almacenId = String(almacenId);
+      }
+      return this.http.get<ApiResponse<ProductoResponse>>(url, { params }).pipe(catchError(this.handleError));
+    }
+
     private handleError(error: HttpErrorResponse) {
       const backendMessage = (error?.error && (error.error.message || error.error.error || error.error.detail)) as
             | string

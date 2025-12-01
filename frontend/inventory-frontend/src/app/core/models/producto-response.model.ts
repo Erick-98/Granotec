@@ -9,4 +9,6 @@ export interface ProductoResponse {
   proveedor: string;
   familia: string;
   isLocked: boolean;
+  precioPromedioPonderado?: number;
+  stockTotal: number;
 }

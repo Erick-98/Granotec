@@ -25,6 +25,14 @@ export class CompraService {
     return this.http.post<CompraResponse>(this.baseUrl, payload).pipe(catchError(this.handleError));
   }
 
+  update(id: number | string, payload: CompraRequest): Observable<CompraResponse> {
+    return this.http.put<CompraResponse>(`${this.baseUrl}/${id}`, payload).pipe(catchError(this.handleError));
+  }
+
+  delete(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     const backendMessage = (error?.error && (error.error.message || error.error.error || error.error.detail)) as
       | string

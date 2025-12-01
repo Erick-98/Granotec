@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 	import {map, startWith} from 'rxjs/operators';
@@ -22,15 +22,36 @@ import { ProveedorService } from 'src/app/core/services/proveedor.service';
 import { ProveedorResponse } from 'src/app/core/models/proveedor-response.model';
 import { ProductoService } from 'src/app/core/services/producto.service';
 import { ProductoResponse } from 'src/app/core/models/producto-response.model';
+import { AlmacenService } from 'src/app/core/services/almacen.service';
+import { StorageResponse } from 'src/app/core/models/storage-response.model';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import {provideNativeDateAdapter, MAT_DATE_FORMATS} from '@angular/material/core';
+import { CompraService } from 'src/app/core/services/compra.service';
+import { CompraRequest, CompraDetalleRequest } from 'src/app/core/models/compra-request.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// Formato personalizado para mostrar fechas como dd/MM/yy
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'dd/MM/yy',
+  },
+  display: {
+    dateInput: 'dd/MM/yy',
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'dd/MM/yy',
+    monthYearA11yLabel: 'MMMM yyyy',
+  }
+};
 
 
 
 @Component({
   selector: 'app-orden-compra-form',
   standalone: true,
-  providers: [provideNativeDateAdapter()],
+  providers: [
+    provideNativeDateAdapter(),
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }
+  ],
   imports: [FormsModule, HttpClientModule, MaterialModule, TablerIconsModule, RouterLink,CommonModule,
     ReactiveFormsModule,
     MatTableModule,
@@ -65,39 +86,63 @@ export class OrdenCompraFormComponent implements OnInit{
   vatAmount: number = 0;
   grandTotal: number = 0;
 
-  firstControl = new FormControl('');
+  firstControl = new FormControl<string | ProveedorResponse>('');
   proveedores: ProveedorResponse[] = [];
   filteredOptions: Observable<ProveedorResponse[]>;
+  // flags to force showing all options when opening panel
+  private showAllProveedores = false;
+  
+  // Almacenes
+  almacenes: StorageResponse[] = [];
+  filteredAlmacenes: Observable<StorageResponse[]> | undefined;
+  private showAllAlmacenes = false;
   
   productos: ProductoResponse[] = [];
   filteredProductos: Map<number, Observable<ProductoResponse[]>> = new Map();
 
-
+  // Variables para modo edición
+  isEditMode = false;
+  compraId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private proveedorService: ProveedorService,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private almacenService: AlmacenService,
+    private compraService: CompraService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
     this.invoiceForm = this.fb.group({
-      invoiceNumber: [''],
+      invoiceNumber: ['', Validators.required],
       billFrom: [''],
-      billTo: [''],
+      billTo: ['', Validators.required],
       fromAddress: [''],
+      fecha: ['', Validators.required],
       items: this.fb.array([]) 
     });
 
     // Cargar proveedores y productos primero
     this.loadProveedores();
     this.loadProductos();
+    this.loadAlmacenes();
 
-    // Agregar ítem inicial después de un pequeño delay para asegurar carga
-    setTimeout(() => {
-      this.addItem();
-    }, 100);
+    // Verificar si estamos en modo edición
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.compraId = +params['id'];
+        this.loadCompraData(this.compraId);
+      } else {
+        // Solo agregar ítem inicial si no estamos cargando datos
+        setTimeout(() => {
+          this.addItem();
+        }, 100);
+      }
+    });
 
     // Suscribe a los cambios del formulario para recalcular totales
     const itemsControl = this.invoiceForm.get('items') as FormArray | null;
@@ -113,9 +158,26 @@ export class OrdenCompraFormComponent implements OnInit{
     this.filteredOptions = this.firstControl.valueChanges.pipe(
      startWith(''),
      map((value) => {
+       if (this.showAllProveedores) {
+         this.showAllProveedores = false;
+         return this.proveedores;
+       }
        const filterValue = typeof value === 'string' ? value : (value as any)?.nombre || '';
        return this._filter(filterValue);
      })
+    );
+    // Inicializar filtro de almacenes (usa el control 'billTo' del form)
+    const billToControl = this.invoiceForm.get('billTo') as FormControl;
+    this.filteredAlmacenes = billToControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => {
+        if (this.showAllAlmacenes) {
+          this.showAllAlmacenes = false;
+          return this.almacenes;
+        }
+        const filterValue = typeof value === 'string' ? value : (value as any)?.nombre || '';
+        return this._filterAlmacenes(filterValue);
+      })
     );
     
   }
@@ -142,6 +204,45 @@ export class OrdenCompraFormComponent implements OnInit{
 
   displayProveedorFn(proveedor: ProveedorResponse): string {
     return proveedor && proveedor.nombre ? proveedor.nombre : '';
+  }
+
+  // Almacenes
+  loadAlmacenes(): void {
+    this.almacenService.getAll().subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          this.almacenes = response.data;
+        }
+      },
+      error: (err) => console.error('Error cargando almacenes:', err)
+    });
+  }
+
+  private _filterAlmacenes(value: string): StorageResponse[] {
+    if (!this.almacenes || !Array.isArray(this.almacenes)) return [];
+    const filterValue = value.toLowerCase();
+    return this.almacenes.filter(a => a.nombre.toLowerCase().includes(filterValue));
+  }
+
+  displayAlmacenFn(almacen: StorageResponse): string {
+    return almacen && almacen.nombre ? almacen.nombre : '';
+  }
+
+  onAlmacenSelected(almacen: StorageResponse): void {
+    // Guardar el objeto seleccionado en el control 'billTo'
+    const control = this.invoiceForm.get('billTo');
+    control?.setValue(almacen);
+  }
+
+  // Open handlers used from template: set flag to show all and open panel
+  openProveedorPanel(trigger: any) {
+    this.showAllProveedores = true;
+    try { trigger.openPanel(); } catch (e) { }
+  }
+
+  openAlmacenPanel(trigger: any) {
+    this.showAllAlmacenes = true;
+    try { trigger.openPanel(); } catch (e) { }
   }
 
   loadProductos(): void {
@@ -199,10 +300,53 @@ export class OrdenCompraFormComponent implements OnInit{
 
   onProductoSelected(index: number, producto: ProductoResponse): void {
     const itemGroup = this.items.at(index) as FormGroup;
+    // Guardamos temporalmente el producto seleccionado para mostrar nombre
     itemGroup.patchValue({
       producto: producto.id,
       productoControl: producto
     });
+
+    // Llamamos al endpoint que devuelve el producto con precio promedio
+    this.productoService.getByIdWithPrice(producto.id).subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          const prodWithPrice = response.data as ProductoResponse & { precioPromedioPonderado?: number };
+          // Reemplazamos el control por la versión que trae precio
+          itemGroup.patchValue({
+            producto: prodWithPrice.id,
+            productoControl: prodWithPrice
+          });
+          const precioProm = prodWithPrice.precioPromedioPonderado;
+          if (precioProm !== undefined && precioProm !== null) {
+            const precioNum = Number(precioProm);
+            itemGroup.get('precio_unitario')?.setValue(Number(precioNum.toFixed(2)));
+            this.calculateSubtotal(itemGroup);
+            this.updateDataSource();
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Error obteniendo producto con precio:', err);
+      }
+    });
+  }
+
+  // Formatea el precio_unitario del item a 2 decimales y recalcula subtotal/ totales
+  formatPrecio(index: number): void {
+    const itemGroup = this.items.at(index) as FormGroup;
+    const control = itemGroup.get('precio_unitario');
+    if (!control) return;
+    const raw = control.value;
+    const num = parseFloat(raw);
+    if (isNaN(num)) {
+      control.setValue(0, { emitEvent: false });
+    } else {
+      // Guardamos como número con dos decimales
+      const fixed = Number(num.toFixed(2));
+      control.setValue(fixed, { emitEvent: false });
+    }
+    // Recalcular subtotal/totales
+    this.calculateSubtotal(itemGroup);
   }
 
   
@@ -281,11 +425,201 @@ export class OrdenCompraFormComponent implements OnInit{
   }
 
   saveInvoice(): void {
-    if (this.invoiceForm.valid) {
-      console.log('Factura guardada:', this.invoiceForm.value);
-    } else {
-      console.error('El formulario no es válido.');
+    if (!this.invoiceForm.valid) {
+      this.snackBar.open('Por favor completa todos los campos requeridos', 'Cerrar', { duration: 3000 });
+      return;
     }
+
+    // Validar que firstControl (proveedor) tenga valor
+    const proveedorValue = this.firstControl.value;
+    if (!proveedorValue || typeof proveedorValue === 'string') {
+      this.snackBar.open('Selecciona un proveedor válido', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    const proveedorObj = proveedorValue as ProveedorResponse;
+
+    // Validar que billTo (almacén) tenga valor
+    const almacenValue = this.invoiceForm.get('billTo')?.value;
+    if (!almacenValue || typeof almacenValue === 'string') {
+      this.snackBar.open('Selecciona un almacén válido', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    const almacenObj = almacenValue as StorageResponse;
+
+    // Validar que haya al menos un item válido
+    if (this.items.length === 0) {
+      this.snackBar.open('Agrega al menos un producto', 'Cerrar', { duration: 3000 });
+      return;
+    }
+
+    // Construir el payload
+    const detalles: CompraDetalleRequest[] = [];
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items.at(i).value;
+      const productoId = item.producto;
+      
+      if (!productoId) {
+        this.snackBar.open(`Selecciona un producto en la fila ${i + 1}`, 'Cerrar', { duration: 3000 });
+        return;
+      }
+
+      const cantidadOrdenada = Number(item.cantidad) || 0;
+      const precioUnitario = Number(item.precio_unitario) || 0;
+      const cantidadRecibida = Number(item.cantidad_recibida) || 0;
+
+      if (cantidadOrdenada <= 0) {
+        this.snackBar.open(`La cantidad ordenada debe ser mayor a 0 en la fila ${i + 1}`, 'Cerrar', { duration: 3000 });
+        return;
+      }
+
+      const detalle: CompraDetalleRequest = {
+        productoId: productoId,
+        cantidadOrdenada: cantidadOrdenada,
+        precioUnitario: precioUnitario,
+        cantidadRecibida: cantidadRecibida
+      };
+
+      // Solo agregar campos opcionales si tienen valor
+      if (item.lote && item.lote.trim() !== '') {
+        detalle.lote = item.lote.trim();
+      }
+      if (item.fecha_prod && item.fecha_prod !== '') {
+        detalle.fechaProduccion = item.fecha_prod;
+      }
+      if (item.fecha_venc && item.fecha_venc !== '') {
+        detalle.fechaVencimiento = item.fecha_venc;
+      }
+
+      detalles.push(detalle);
+    }
+
+    // Formatear fecha para el backend (yyyy-MM-dd ISO format)
+    const fechaValue = this.invoiceForm.get('fecha')?.value;
+    let fechaFormatted: string | undefined = undefined;
+    if (fechaValue instanceof Date) {
+      const year = fechaValue.getFullYear();
+      const month = String(fechaValue.getMonth() + 1).padStart(2, '0');
+      const day = String(fechaValue.getDate()).padStart(2, '0');
+      fechaFormatted = `${year}-${month}-${day}`;
+    } else if (typeof fechaValue === 'string' && fechaValue.trim() !== '') {
+      fechaFormatted = fechaValue;
+    }
+
+    const payload: CompraRequest = {
+      numeroFactura: this.invoiceForm.get('invoiceNumber')?.value || '',
+      proveedorId: proveedorObj.id,
+      almacenId: almacenObj.id,
+      detalles: detalles
+    };
+
+    // Solo agregar fecha si tiene valor
+    if (fechaFormatted) {
+      payload.fecha = fechaFormatted;
+    }
+
+    console.log('Payload a enviar:', payload);
+
+    // Llamar al servicio para crear o actualizar la orden de compra
+    const request$ = this.isEditMode && this.compraId
+      ? this.compraService.update(this.compraId, payload)
+      : this.compraService.create(payload);
+
+    request$.subscribe({
+      next: (response) => {
+        console.log('Orden de compra guardada:', response);
+        const mensaje = this.isEditMode ? 'Orden de compra actualizada exitosamente' : 'Orden de compra registrada exitosamente';
+        this.snackBar.open(mensaje, 'Cerrar', { duration: 3000 });
+        // Redirigir a la lista de compras
+        setTimeout(() => {
+          this.router.navigate(['/compras/orden-compra-list']);
+        }, 1500);
+      },
+      error: (err) => {
+        console.error('Error al guardar orden de compra:', err);
+        const mensaje = this.isEditMode ? 'Error al actualizar la orden de compra' : 'Error al registrar la orden de compra';
+        this.snackBar.open(mensaje + ': ' + err.message, 'Cerrar', { duration: 5000 });
+      }
+    });
+  }
+
+  loadCompraData(id: number): void {
+    this.compraService.getById(id).subscribe({
+      next: (compra) => {
+        console.log('Datos de compra cargados:', compra);
+        
+        // Llenar los campos del formulario
+        this.invoiceForm.patchValue({
+          invoiceNumber: compra.numero || '',
+          fecha: compra.fecha ? new Date(compra.fecha) : null
+        });
+
+        // Buscar y asignar proveedor
+        if (compra.proveedorId) {
+          setTimeout(() => {
+            const proveedor = this.proveedores.find(p => p.id === compra.proveedorId);
+            console.log('Proveedor encontrado:', proveedor);
+            if (proveedor) {
+              (this.firstControl as any).setValue(proveedor);
+              this.invoiceForm.patchValue({ billFrom: proveedor });
+            }
+          }, 500);
+        }
+
+        // Buscar y asignar almacén
+        if (compra.almacenId) {
+          setTimeout(() => {
+            const almacen = this.almacenes.find(a => a.id === compra.almacenId);
+            if (almacen) {
+              this.invoiceForm.patchValue({ billTo: almacen });
+            }
+          }, 500);
+        }
+
+        // Limpiar items existentes
+        while (this.items.length > 0) {
+          this.items.removeAt(0);
+        }
+
+        // Agregar items de la compra
+        if (compra.detalles && compra.detalles.length > 0) {
+          setTimeout(() => {
+            compra.detalles?.forEach(detalle => {
+              console.log('Detalle cargado:', detalle);
+              // Buscar el producto completo
+              const productoCompleto = this.productos.find(p => p.id === detalle.productoId);
+              
+              const itemGroup = this.fb.group({
+                producto: [detalle.productoId || null],
+                productoControl: [productoCompleto || null],
+                cantidad: [detalle.cantidad || 0],
+                precio_unitario: [detalle.precioUnitario || 0],
+                subtotal: [{ value: detalle.subtotal || 0, disabled: true }],
+                cantidad_recibida: [detalle.cantidad || 0],
+                lote: [detalle.codigoLote || ''],
+                fecha_prod: [detalle.fechaProduccion || ''],
+                fecha_venc: [detalle.fechaVencimiento || '']
+              });
+              console.log('ItemGroup creado con fechas:', itemGroup.value);
+
+              this.items.push(itemGroup);
+              
+              // Calcular subtotal
+              const cantidad = detalle.cantidad || 0;
+              const precio = detalle.precioUnitario || 0;
+              itemGroup.patchValue({ subtotal: cantidad * precio });
+            });
+            
+            this.updateDataSource();
+            this.calculateTotals();
+          }, 800);
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar datos de compra:', err);
+        this.snackBar.open('Error al cargar los datos de la orden de compra', 'Cerrar', { duration: 3000 });
+        this.router.navigate(['/compras/orden-compra-list']);
+      }
+    });
   }
 
   cancelInvoice(): void {

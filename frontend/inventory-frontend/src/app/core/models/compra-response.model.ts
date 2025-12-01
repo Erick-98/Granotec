@@ -20,4 +20,6 @@ export interface CompraDetalleResponse {
   precioUnitario?: number;
   subtotal?: number;
   estado?: string;
+  fechaProduccion?: string;
+  fechaVencimiento?: string;
 }

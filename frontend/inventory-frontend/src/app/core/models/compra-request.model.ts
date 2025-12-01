@@ -1,7 +1,7 @@
 export interface CompraRequest {
-  numeroFactura?: string;
+  numeroFactura: string; // El backend lo requiere con @NotNull
   proveedorId: number;
-  fecha?: string; // ISO date
+  fecha?: string; // ISO date yyyy-MM-dd
   almacenId: number;
   detalles: CompraDetalleRequest[];
 }

@@ -1,10 +1,10 @@
 <div class="invoice-wrapper">
   <div class="page-header">
-    <h2 class="page-title">Añadir Compra</h2>
+    <h2 class="page-title">{{ isEditMode ? 'Editar Compra' : 'Añadir Compra' }}</h2>
     <div class="page-breadcrumb">
       <a class="text-body-color" routerLink="/compras/orden-compra-list" style="text-decoration: none;">Orden de Compra</a>
       <span class="breadcrumb-separator">•</span>
-      <span class="breadcrumb-item active">Nueva Compra</span>
+      <span class="breadcrumb-item active">{{ isEditMode ? 'Editar Compra' : 'Nueva Compra' }}</span>
     </div>
   </div>
 
@@ -21,10 +21,10 @@
         </div>
         <div class="actions">
           <button mat-flat-button color="warn" class="btn-cancel" (click)="cancelInvoice()">
-            Cancel
+            Cancelar
           </button>
           <button mat-flat-button color="primary" class="btn-save" [disabled]="!invoiceForm.valid" (click)="saveInvoice()">
-            Save Invoice
+            Guardar
           </button>
         </div>
       </div>
@@ -36,7 +36,7 @@
           <span class="f-w-600 f-s-15 d-block m-b-8"> Fecha </span>
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Escoge la fecha</mat-label>
-              <input matInput [matDatepicker]="picker" />
+              <input matInput [matDatepicker]="picker" formControlName="fecha" />
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -49,7 +49,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Proveedor</mat-label>
           <input type="text" placeholder="Seleccionar" aria-label="Nombre" matInput [formControl]="firstControl"
-            [matAutocomplete]="auto" />
+            [matAutocomplete]="auto" #provTrigger="matAutocompleteTrigger" (focus)="openProveedorPanel(provTrigger)" (click)="openProveedorPanel(provTrigger)" />
           <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayProveedorFn">
             @for(proveedor of filteredOptions | async; track proveedor.id) {
             <mat-option [value]="proveedor">
@@ -61,7 +61,17 @@
       
         <mat-form-field appearance="outline">
           <mat-label>Almacen de destino</mat-label>
-          <input matInput formControlName="billTo" placeholder="Redq Inc.">
+             <input matInput 
+               formControlName="billTo" 
+               placeholder="Seleccionar"
+               [matAutocomplete]="autoAlmacen" #almTrigger="matAutocompleteTrigger" (focus)="openAlmacenPanel(almTrigger)" (click)="openAlmacenPanel(almTrigger)">
+          <mat-autocomplete #autoAlmacen="matAutocomplete" [displayWith]="displayAlmacenFn" (optionSelected)="onAlmacenSelected($event.option.value)">
+            @for(almacen of filteredAlmacenes | async; track almacen.id) {
+            <mat-option [value]="almacen">
+              {{ almacen.nombre }}
+            </mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
       </div>
       
@@ -112,7 +122,7 @@
             <th mat-header-cell *matHeaderCellDef>Precio Unitario</th>
             <td mat-cell *matCellDef="let row; let i = index">
               <div [formGroupName]="i">
-                <input matInput type="number" min="0" step="0.01" formControlName="precio_unitario" (input)="calculateSubtotal(items.at(i))">
+                <input matInput type="number" min="0" step="0.01" formControlName="precio_unitario" (input)="calculateSubtotal(items.at(i))" (blur)="formatPrecio(i)">
               </div>
             </td>
           </ng-container>

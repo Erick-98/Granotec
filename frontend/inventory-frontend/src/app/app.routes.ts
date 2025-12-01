@@ -66,6 +66,13 @@ export const routes: Routes = [
               ),
           },
           {
+            path: 'orden-compra/view/:id',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra-detail/orden-compra-detail.component').then(
+                (m) => m.OrdenCompraDetailComponent
+              ),
+          },
+          {
             path: 'orden-compra/:id',
             loadComponent: () =>
               import('./pages/ui-components/orden-compra/orden-compra-form.component').then(

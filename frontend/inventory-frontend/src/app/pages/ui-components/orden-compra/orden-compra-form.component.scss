@@ -368,3 +368,13 @@ mat-divider {
   font-weight: bold;
   font-size: 18px;
 }
+
+/* Forzar contraste de opciones del autocomplete (algunas reglas globales dejaban texto muy atenuado) */
+::ng-deep .mat-mdc-autocomplete-panel .mdc-list-item__primary-text {
+  opacity: 1 !important;
+  color: var(--app-text) !important;
+}
+
+::ng-deep .mat-mdc-autocomplete-panel .mat-mdc-option.mdc-list-item--disabled .mdc-list-item__primary-text {
+  opacity: .6 !important;
+}

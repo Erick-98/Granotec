@@ -16,6 +16,7 @@ public class CompraMapperHelper {
 
         CompraResponse dto = new CompraResponse();
 
+        dto.setId(ordenCompra.getId());
         dto.setNumero(ordenCompra.getNumero());
         dto.setFecha(String.valueOf(ordenCompra.getFecha()));
         dto.setTotal(ordenCompra.getTotal());
@@ -57,6 +58,12 @@ public class CompraMapperHelper {
         if(det.getLote() != null){
             d.setLoteId(det.getLote().getId());
             d.setCodigoLote(det.getLote().getCodigoLote());
+            if(det.getLote().getFechaProduccion() != null){
+                d.setFechaProduccion(det.getLote().getFechaProduccion().toString());
+            }
+            if(det.getLote().getFechaVencimiento() != null){
+                d.setFechaVencimiento(det.getLote().getFechaVencimiento().toString());
+            }
         }
 
         return d;

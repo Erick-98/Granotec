@@ -29,4 +29,17 @@ public class CompraController {
     public ResponseEntity<List<CompraResponse>> listarCompras() {
         return ResponseEntity.ok(compraService.listarCompras());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CompraResponse> actualizarCompra(
+            @PathVariable Integer id,
+            @Valid @RequestBody CompraRequest request) {
+        return ResponseEntity.ok(compraService.actualizarCompra(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCompra(@PathVariable Integer id) {
+        compraService.eliminarCompra(id);
+        return ResponseEntity.noContent().build();
+    }
 }

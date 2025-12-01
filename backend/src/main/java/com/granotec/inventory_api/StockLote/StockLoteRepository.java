@@ -51,5 +51,32 @@ public interface StockLoteRepository extends JpaRepository<StockLote, Integer> {
     BigDecimal sumDisponibleByProducto(@Param("productoId") Integer productoId);
 
     Optional<StockLote> findFirstByLoteIdAndIsDeletedFalse(Long loteId);
+
+    /**
+     * Calcula el precio promedio ponderado de un producto en un almacén específico
+     * basándose en los lotes disponibles (con stock > 0)
+     */
+    @Query("SELECT CASE WHEN SUM(s.cantidadDisponible) > 0 " +
+            "THEN SUM(s.cantidadDisponible * s.lote.costoUnitario) / SUM(s.cantidadDisponible) " +
+            "ELSE 0 END " +
+            "FROM StockLote s " +
+            "WHERE s.lote.producto.id = :productoId " +
+            "AND s.almacen.id = :almacenId " +
+            "AND s.cantidadDisponible > 0 " +
+            "AND s.lote.estado = 'DISPONIBLE'")
+    BigDecimal calcularPrecioPromedioPonderado(@Param("productoId") Integer productoId,
+                                                @Param("almacenId") Long almacenId);
+
+    /**
+     * Calcula el precio promedio ponderado de un producto en todos los almacenes
+     */
+    @Query("SELECT CASE WHEN SUM(s.cantidadDisponible) > 0 " +
+            "THEN SUM(s.cantidadDisponible * s.lote.costoUnitario) / SUM(s.cantidadDisponible) " +
+            "ELSE 0 END " +
+            "FROM StockLote s " +
+            "WHERE s.lote.producto.id = :productoId " +
+            "AND s.cantidadDisponible > 0 " +
+            "AND s.lote.estado = 'DISPONIBLE'")
+    BigDecimal calcularPrecioPromedioPonderadoGeneral(@Param("productoId") Integer productoId);
 }
 
