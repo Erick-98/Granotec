@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class KardexRequest {
     private Long almacenId;                // id del almacén (obligatorio)
     private Integer productoId;            // id del producto (obligatorio)
-    private Integer loteId;                // id del lote (opcional)
+    private String lote;                // id del lote (opcional)
     private String numeroOp;               // numero OP (opcional)
     private TipoMovimiento tipoMovimiento; // ENTRADA / SALIDA / AJUSTE
     private TypeOperation tipoOperacion;   // enum de operación

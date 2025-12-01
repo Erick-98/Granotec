@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.Kardex;
 
 import com.granotec.inventory_api.Lote.Lote;
+import com.granotec.inventory_api.OrdenProduccion.OrdenProduccion;
 import com.granotec.inventory_api.common.enums.TipoMovimiento;
 import com.granotec.inventory_api.common.enums.TypeOperation;
 import com.granotec.inventory_api.common.model.BaseEntity;
@@ -54,6 +55,11 @@ public class Kardex extends BaseEntity {
     @JoinColumn(name = "lote_id")
     private Lote lote;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OP", referencedColumnName = "numero", insertable = false, updatable = false)
+    private OrdenProduccion orden;
+
+    @Column(name = "OP")
     private String OP;
 
     @Column(nullable = false,precision = 15, scale = 3)

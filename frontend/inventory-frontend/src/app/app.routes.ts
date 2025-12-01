@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { authGuard } from './core/guards/auth.guard';
+import { KardexComponent } from './pages/kardex/kardex/kardex.component';
 // mantenimiento section is lazy-loaded from its own routes file
 
 export const routes: Routes = [
@@ -27,6 +28,15 @@ export const routes: Routes = [
             (m) => m.MantenimientoRoutes)
       },
       {
+        path: 'inventario',
+        children: [
+          {
+            path: 'kardex',
+            component: KardexComponent
+          }
+        ]
+      },
+      {
         path: 'ui-components',
         loadChildren: () =>
           import('./pages/ui-components/ui-components.routes').then(
@@ -38,6 +48,44 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
       },
+      {
+        path: 'compras',
+        children: [
+          {
+            path: 'orden-compra-list',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra-list/orden-compra-list.component').then(
+                (m) => m.OrdenCompraListComponent
+              ),
+          },
+          {
+            path: 'orden-compra',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra/orden-compra-form.component').then(
+                (m) => m.OrdenCompraFormComponent
+              ),
+          },
+          {
+            path: 'orden-compra/view/:id',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra-detail/orden-compra-detail.component').then(
+                (m) => m.OrdenCompraDetailComponent
+              ),
+          },
+          {
+            path: 'orden-compra/:id',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra/orden-compra-form.component').then(
+                (m) => m.OrdenCompraFormComponent
+              ),
+          },
+          {
+            path: '',
+            redirectTo: 'orden-compra-list',
+            pathMatch: 'full',
+          }
+        ]
+      }
     ],
   },
   {

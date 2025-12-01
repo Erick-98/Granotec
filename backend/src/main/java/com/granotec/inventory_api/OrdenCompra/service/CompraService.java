@@ -9,5 +9,7 @@ public interface CompraService {
     CompraResponse registrarCompra(CompraRequest request);
     CompraResponse obtenerCompra(Integer id);
     List<CompraResponse> listarCompras();
+    CompraResponse actualizarCompra(Integer id, CompraRequest request);
+    void eliminarCompra(Integer id);
 }
 

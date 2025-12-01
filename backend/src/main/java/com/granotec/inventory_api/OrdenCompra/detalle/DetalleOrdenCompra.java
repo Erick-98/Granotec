@@ -5,6 +5,7 @@ import com.granotec.inventory_api.product.Product;
 import com.granotec.inventory_api.Lote.Lote;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import java.math.BigDecimal;
 
@@ -27,22 +28,28 @@ public class DetalleOrdenCompra extends BaseEntity {
     @JoinColumn(name = "producto_id", nullable = false)
     private Product producto;
 
-    @ManyToOne
-    @JoinColumn(name = "lote_id")
-    private Lote lote;
+    @Column(nullable = false)
+    @Positive
+    private BigDecimal cantidadOrdenada;
 
     @Column(nullable = false)
-    private BigDecimal cantidad;
+    @Positive
+    private BigDecimal cantidadRecibida;
 
     @Column(nullable = false)
+    @Positive
     private BigDecimal precioUnitario;
 
     private BigDecimal subtotal;
 
+    @OneToOne
+    @JoinColumn(name = "lote_id")
+    private Lote lote;
+
     @PrePersist
     @PreUpdate
     protected void calcularSubtotal() {
-        this.subtotal = this.cantidad.multiply(this.precioUnitario);
+        this.subtotal = cantidadOrdenada.multiply(precioUnitario);
     }
 }
 

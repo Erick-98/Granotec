@@ -1,0 +1,102 @@
+// Reutilizamos los estilos del componente de formulario
+@import '../orden-compra/orden-compra-form.component.scss';
+
+.invoice-content {
+  padding: 30px;
+}
+
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.info-item {
+  .info-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1b1f;
+  }
+}
+
+.billing-info {
+  .info-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1b1f;
+  }
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th {
+    background-color: #f8f9fa;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #495057;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 14px;
+    color: #1a1b1f;
+  }
+  
+  tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .empty-row {
+    text-align: center;
+    padding: 24px;
+    color: #999;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+// Pills para estados
+.pill {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.pill-success {
+  background-color: #e6f7ed;
+  color: #1b5e20;
+}
+
+.pill-warning {
+  background-color: #fff9e6;
+  color: #f57c00;
+}
+
+.pill-info {
+  background-color: #e3f2fd;
+  color: #0277bd;
+}
+
+.pill-default {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.invoice-number {
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: 4px;
+}

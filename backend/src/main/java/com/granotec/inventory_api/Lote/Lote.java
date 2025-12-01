@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.Lote;
 
 import com.granotec.inventory_api.OrdenProduccion.OrdenProduccion;
+import com.granotec.inventory_api.StockLote.StockLote;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.product.Product;
 import jakarta.persistence.*;
@@ -35,7 +36,6 @@ public class Lote extends BaseEntity {
     @Column(nullable = false, unique = true, length = 50)
     private String codigoLote;
 
-    @Column(nullable = false)
     private LocalDate fechaProduccion;
 
     private LocalDate fechaVencimiento;
@@ -52,7 +52,11 @@ public class Lote extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal precioVentaUnitario;
 
+    @OneToOne(mappedBy = "lote", cascade = CascadeType.ALL)
+    private StockLote stock;
+
     @Column(nullable = false, length = 30)
     private String estado;
+
 
 }

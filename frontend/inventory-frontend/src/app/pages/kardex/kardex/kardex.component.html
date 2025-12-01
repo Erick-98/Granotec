@@ -1,0 +1,261 @@
+
+<mat-card class="cardWithShadow">
+  <mat-card-content class="kardex-container"> <!-- 👈 CONTENEDOR PRINCIPAL -->
+    
+    <mat-card-title>CONTROL DE KARDEX</mat-card-title>
+    <mat-card-subtitle class="m-b-24">GRANOTEC S.A — Fecha: {{ today | date:'dd/MM/yyyy' }}</mat-card-subtitle>
+
+    <!-- Filtros (se mantienen igual) -->
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Fecha Inicio</mat-label>
+          <input matInput formControlName="fechaInicio" type="date">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Fecha Fin</mat-label>
+          <input matInput formControlName="fechaFin" type="date">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Almacén</mat-label>
+          <mat-select formControlName="almacenId">
+            <mat-option value="">Todos</mat-option>
+            <mat-option *ngFor="let almacen of almacenes" [value]="almacen.id">
+              {{ almacen.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Producto</mat-label>
+          <mat-select formControlName="productoId">
+            <mat-option value="">Todos</mat-option>
+            <mat-option *ngFor="let producto of productos" [value]="producto.id">
+              {{ producto.nombreComercial }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Lote</mat-label>
+          <input matInput formControlName="lote" placeholder="Filtrar por lote">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Tipo Operación</mat-label>
+          <mat-select formControlName="tipoOperacion">
+            <mat-option value="">Todos</mat-option>
+            <mat-option *ngFor="let tipo of tiposOperacion" [value]="tipo">
+              {{ tipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Proveedor</mat-label>
+          <mat-select formControlName="proveedorId">
+            <mat-option value="">Todos</mat-option>
+            <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
+              {{ proveedor.razonSocial }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="filter-actions">
+          <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="isLoading">
+            <mat-icon>search</mat-icon>
+            Buscar
+          </button>
+          <button mat-button (click)="clearFilters()">
+            <mat-icon>clear</mat-icon>
+            Limpiar
+          </button>
+          <button mat-button color="accent" (click)="exportToExcel()">
+            <mat-icon>download</mat-icon>
+            Excel
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Búsqueda rápida -->
+    <div class="search-bar">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Buscar en kardex</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Filtrar por producto, código, lote, proveedor..."
+          (keyup)="applyFilter($event)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- CONTENEDOR DE TABLA MEJORADO CON SCROLL DUAL -->
+    <div class="table-container mat-elevation-z2">
+      
+      <!-- WRAPPER CON SCROLL HORIZONTAL Y VERTICAL -->
+      <div class="kardex-table-wrapper">
+        <table mat-table [dataSource]="dataSource" matSort class="kardex-table">
+
+          <!-- Mantener todas las columnas igual que antes -->
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Doc</th>
+            <td mat-cell *matCellDef="let item">{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="almacen">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Almacén</th>
+            <td mat-cell *matCellDef="let item">{{ item.almacen }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="movimiento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Movimiento</th>
+            <td mat-cell *matCellDef="let item">
+              <span [class.entrada]="item.movimiento === 'ENTRADA'" 
+                    [class.salida]="item.movimiento === 'SALIDA'">
+                {{ item.movimiento }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tipoOperacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo Operación</th>
+            <td mat-cell *matCellDef="let item">{{ item.tipoOperacion }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="numeroDocumento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header># Documento</th>
+            <td mat-cell *matCellDef="let item">{{ item.numeroDocumento }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nombreComercial">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Comercial</th>
+            <td mat-cell *matCellDef="let item">{{ item.nombreComercial }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="codigo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+            <td mat-cell *matCellDef="let item">{{ item.codigo }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="lote">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Lote</th>
+            <td mat-cell *matCellDef="let item">{{ item.lote }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="op">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>OP</th>
+            <td mat-cell *matCellDef="let item">{{ item.op }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fechaIng">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Ing</th>
+            <td mat-cell *matCellDef="let item">{{ item.fechaIng | date:'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fechaProd">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Prod</th>
+            <td mat-cell *matCellDef="let item">{{ item.fechaProd | date:'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fechaVcto">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Vcto</th>
+            <td mat-cell *matCellDef="let item">{{ item.fechaVcto | date:'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="presentacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Presentación</th>
+            <td mat-cell *matCellDef="let item">{{ item.presentacion }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="proveedor">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Proveedor</th>
+            <td mat-cell *matCellDef="let item">{{ item.proveedor }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="destinoCliente">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Destino Cliente</th>
+            <td mat-cell *matCellDef="let item">{{ item.destinoCliente }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cant</th>
+            <td mat-cell *matCellDef="let item" 
+                [class.negative]="item.cantidad < 0"
+                [class.positive]="item.cantidad > 0">
+              {{ item.cantidad | number:'1.3-3' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cuSoles">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>CU Soles</th>
+            <td mat-cell *matCellDef="let item">{{ item.cuSoles | number:'1.4-4' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalSoles">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Soles</th>
+            <td mat-cell *matCellDef="let item" 
+                [class.negative]="item.totalSoles < 0"
+                [class.positive]="item.totalSoles > 0">
+              {{ item.totalSoles | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cuDolares">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>CU Dolares</th>
+            <td mat-cell *matCellDef="let item">{{ item.cuDolares | number:'1.4-4' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalDolares">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Dolares</th>
+            <td mat-cell *matCellDef="let item" 
+                [class.negative]="item.totalDolares < 0"
+                [class.positive]="item.totalDolares > 0">
+              {{ item.totalDolares | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="saldoCantidad">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Saldo Cant.</th>
+            <td mat-cell *matCellDef="let item">{{ item.saldoCantidad | number:'1.3-3' }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <!-- INDICADOR DE SCROLL -->
+      <div class="scroll-hint" *ngIf="dataSource.data.length > 0">
+        <mat-icon>swap_horiz</mat-icon>
+        <span>Desliza horizontalmente para ver más columnas</span>
+        <mat-icon>swap_vert</mat-icon>
+        <span>Desliza verticalmente para ver más registros</span>
+      </div>
+
+      <mat-paginator 
+        [pageSizeOptions]="[10, 25, 50, 100]" 
+        showFirstLastButtons
+        [pageSize]="25">
+      </mat-paginator>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando movimientos de kardex...</p>
+    </div>
+
+    <!-- Información -->
+    <div class="demo-notice" *ngIf="!isLoading">
+      <mat-icon>info</mat-icon>
+      <span>Mostrando {{ dataSource.data.length }} movimientos - Datos de demostración</span>
+    </div>
+
+  </mat-card-content>
+</mat-card>

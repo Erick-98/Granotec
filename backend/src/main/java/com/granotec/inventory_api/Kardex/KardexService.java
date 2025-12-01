@@ -56,8 +56,8 @@ public class KardexService {
                 .orElseThrow(()-> new BadRequestException("Producto no encontrado"));
 
         Lote lote = null;
-        if(request.getLoteId() != null){
-            lote = loteRepo.findById(request.getLoteId())
+        if(request.getLote() != null){
+            lote = loteRepo.findByCodigoLote(request.getLote())
                     .orElseThrow(()-> new BadRequestException("Lote no encontrado"));
         }
 
@@ -159,30 +159,42 @@ public class KardexService {
         KardexResponse r = new KardexResponse();
         r.setId(k.getId());
         r.setFechaMovimiento(k.getFechaMovimiento());
-        r.setAlmacenId(k.getAlmacen().getId());
-        r.setAlmacenNombre(k.getAlmacen().getNombre());
+
+        if(k.getAlmacen() != null){
+            r.setAlmacenId(k.getAlmacen().getId());
+            r.setAlmacenNombre(k.getAlmacen().getNombre());
+        }
+
         r.setTipoMovimiento(k.getTipoMovimiento());
         r.setTipoOperacion(k.getTipoOperacion());
         r.setReferencia(k.getReferencia());
-        r.setProductoId(k.getProducto().getId());
-        r.setProductoCodigo(k.getProducto().getCode());
-        r.setProductoNombre(k.getProducto().getNombreComercial());
-        r.setFamiliaProducto(k.getProducto().getFamilia() != null ? k.getProducto().getFamilia() : null);
-        r.setTipoProducto(k.getProducto().getTipoProducto());
+
+        if(k.getProducto() != null ){
+            r.setProductoId(k.getProducto().getId());
+            r.setProductoCodigo(k.getProducto().getCode());
+            r.setProductoNombre(k.getProducto().getNombreComercial());
+            r.setFamiliaProducto(k.getProducto().getFamilia() != null ? k.getProducto().getFamilia() : null);
+            r.setTipoProducto(k.getProducto().getTipoProducto());
+            r.setPresentacion(k.getProducto().getTipoPresentacion());
+
+            if(k.getProducto().getProveedor() != null){
+                r.setProveedor(k.getProducto().getProveedor().getRazonSocial());
+            }
+        }
+
+
         if (k.getLote() != null) {
             r.setLoteId(k.getLote().getId());
             r.setLoteCodigo(k.getLote().getCodigoLote());
             r.setFechaProduccion(k.getLote().getFechaProduccion());
-            // si tienes campo fechaVencimiento en Lote
-            // r.setFechaVencimiento(k.getLote().getFechaVencimiento());
-            // setea costo desde lote si quieres
+            r.setFechaVencimiento(k.getLote().getFechaVencimiento());
         }
         r.setNumeroOp(k.getOP());
-        if (k.getOP() != null) {
-            ordenRepo.findByNumero(k.getOP()).ifPresent(op -> r.setFechaIngresoOp(op.getFechaInicio()));
+        if (k.getOrden() != null) {
+             r.setFechaIngresoOp(k.getOrden().getFechaFin());
         }
-        r.setPresentacion(k.getProducto().getTipoPresentacion());
-        r.setProveedor(k.getProducto().getProveedor() != null ? k.getProducto().getProveedor().getRazonSocial() : null);
+
+
         r.setDestinoCliente(null);
         r.setCantidad(k.getCantidad().setScale(SCALE_CANTIDAD, RoundingMode.HALF_UP));
         r.setCostoUnitarioSoles(k.getCostoUnitarioSoles());

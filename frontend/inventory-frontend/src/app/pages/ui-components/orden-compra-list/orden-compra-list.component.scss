@@ -1,0 +1,127 @@
+.invoice-page {
+    padding: 16px;
+  }
+  
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  
+  .search-box {
+    flex: 1;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 6px 14px;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+    border: 1px solid #e5e7eb;
+  
+    .search-icon {
+      font-size: 20px;
+      margin-right: 8px;
+      color: #9ca3af;
+    }
+  
+    input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 0.95rem;
+      background: transparent;
+    }
+  }
+  
+  .add-btn {
+    border-radius: 999px;
+    padding: 8px 22px;
+    font-weight: 500;
+  }
+  
+  .invoice-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 12px 20px 20px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  }
+  
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    thead {
+      th {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-align: left;
+        color: #4b5563;
+        border-bottom: 1px solid #e5e7eb;
+      }
+    }
+  
+    tbody {
+      td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+      }
+  
+      tr:last-child td {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  .th-actions,
+  .td-actions {
+    text-align: center;
+    width: 130px;
+  }
+  
+  .td-actions button {
+    margin: 0 2px;
+  }
+  
+  .empty-row {
+    text-align: center;
+    color: #9ca3af;
+    padding: 20px 8px;
+  }
+  
+  /* Pills de estado */
+  
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  .pill-info {
+    background-color: #e0edff;
+    color: #1d4ed8;
+  }
+  
+  .pill-success {
+    background-color: #d1fae5;
+    color: #047857;
+  }
+  
+  .pill-warning {
+    background-color: #fef3c7;
+    color: #b45309;
+  }
+  
+  .pill-default {
+    background-color: #e5e7eb;
+    color: #374151;
+  }
+  

@@ -1,6 +1,7 @@
 package com.granotec.inventory_api.product;
 
 import com.granotec.inventory_api.common.dto.ApiResponse;
+import com.granotec.inventory_api.product.dto.ProductPriceResponse;
 import com.granotec.inventory_api.product.dto.ProductRequest;
 import com.granotec.inventory_api.product.dto.ProductResponse;
 import com.granotec.inventory_api.product.dto.ProductStockDetailsResponse;
@@ -34,6 +35,53 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> get(@PathVariable Integer id){
         return ResponseEntity.ok(new ApiResponse<>("Producto encontrado", productService.getById(id)));
+    }
+
+    /**
+     * Obtiene un producto con su precio promedio ponderado global incluido
+     * Calcula el precio considerando todos los almacenes donde el producto tenga stock
+     * No requiere especificar almacenId - siempre devuelve el precio global
+     */
+    @PreAuthorize("@permissionService.has('product:read')")
+    @GetMapping("/{id}/with-price")
+    public ResponseEntity<ApiResponse<ProductResponse>> getWithPrice(@PathVariable Integer id) {
+        return ResponseEntity.ok(new ApiResponse<>("Producto encontrado con precio",
+                productService.getByIdWithPrice(id, null)));
+    }
+
+    /**
+     * Calcula el precio promedio ponderado de un producto en un almacén específico
+     * Este endpoint es útil para el frontend al crear órdenes de compra
+     */
+    @PreAuthorize("@permissionService.has('product:read')")
+    @GetMapping("/{id}/precio-promedio")
+    public ResponseEntity<ApiResponse<ProductPriceResponse>> getPrecioPromedio(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Long almacenId) {
+
+        ProductPriceResponse response;
+        if (almacenId != null) {
+            response = productService.calcularPrecioPromedio(id, almacenId);
+        } else {
+            response = productService.calcularPrecioPromedioGeneral(id);
+        }
+
+        return ResponseEntity.ok(new ApiResponse<>("Precio promedio calculado", response));
+    }
+
+    /**
+     * Calcula el precio promedio ponderado global de un producto
+     * Considera todos los almacenes donde el producto tenga stock disponible
+     * Endpoint simplificado: solo requiere el ID del producto
+     */
+    @PreAuthorize("@permissionService.has('product:read')")
+    @GetMapping("/{id}/precio-ponderado-global")
+    public ResponseEntity<ApiResponse<ProductPriceResponse>> getPrecioPonderadoGlobal(
+            @PathVariable Integer id) {
+
+        ProductPriceResponse response = productService.calcularPrecioPromedioGeneral(id);
+
+        return ResponseEntity.ok(new ApiResponse<>("Precio ponderado global calculado", response));
     }
 
     @PreAuthorize("@permissionService.has('product:stock:view')")

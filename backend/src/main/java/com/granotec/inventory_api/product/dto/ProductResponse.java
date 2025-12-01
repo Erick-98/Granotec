@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,4 +23,8 @@ public class ProductResponse {
     private String proveedor;
     private String familia;
     private Boolean isLocked;
+
+    // Precio promedio ponderado (opcional, se calcula bajo demanda)
+    private BigDecimal precioPromedioPonderado;
+    private BigDecimal stockTotal;
 }
