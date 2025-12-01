@@ -48,6 +48,37 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
       },
+      {
+        path: 'compras',
+        children: [
+          {
+            path: 'orden-compra-list',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra-list/orden-compra-list.component').then(
+                (m) => m.OrdenCompraListComponent
+              ),
+          },
+          {
+            path: 'orden-compra',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra/orden-compra-form.component').then(
+                (m) => m.OrdenCompraFormComponent
+              ),
+          },
+          {
+            path: 'orden-compra/:id',
+            loadComponent: () =>
+              import('./pages/ui-components/orden-compra/orden-compra-form.component').then(
+                (m) => m.OrdenCompraFormComponent
+              ),
+          },
+          {
+            path: '',
+            redirectTo: 'orden-compra-list',
+            pathMatch: 'full',
+          }
+        ]
+      }
     ],
   },
   {

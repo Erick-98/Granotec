@@ -480,51 +480,54 @@ export const navItems: NavItem[] = [
     route: '/inventario/kardex',
   },
   {
-    displayName: 'Saldo de Stock',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
-  },
-   {
-    displayName: 'Vencidos',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
-  },
-    {
-    displayName: 'Eliminación',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
-  },
-    {
-    displayName: 'Cierre de inventario',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
-  },
-
-  {
-    navCap: 'Producción',
+    navCap: 'Entradas de Inventario',
     divider: true
   },
   {
     displayName: 'Orden de Compra',
     iconName: 'solar:cart-large-minimalistic-line-duotone',
-    route: '/ui-components/orden-compra-list',
+    route: '/compras/orden-compra-list',
+  },
+  {
+    displayName: 'Laboratorio',
+    iconName: 'solar:test-tube-line-duotone',
+  },
+  {
+    displayName: 'Devoluciones',
+    iconName: 'solar:planet-3-line-duotone',
+  },
+  {
+    navCap: 'Salidas de Inventario',
+    divider: true
+  },
+  {
+    displayName: 'Orden de Venta',
+    iconName: 'solar:planet-3-line-duotone',
+  },
+  {
+    displayName: 'Despacho',
+    iconName: 'solar:planet-3-line-duotone',
+  },
+  {
+    displayName: 'Eliminación',
+    iconName: 'solar:planet-3-line-duotone',
+  },
+  {
+    displayName: 'Mermas',
+    iconName: 'solar:planet-3-line-duotone',
+  },
+  {
+    navCap: 'Movimientos Internos',
+    divider: true
+  },
+  {
+    displayName: 'Transferencias',
+    iconName: 'solar:cart-large-minimalistic-line-duotone'
   },
   {
     displayName: 'Orden de Producción',
-    iconName: 'solar:sticker-smile-circle-2-line-duotone',
-    route: '/extra/icons',
+    iconName: 'solar:sticker-smile-circle-2-line-duotone'
   },
-  {
-    displayName: 'Control de Producción',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
-  },
-   {
-    displayName: 'Control de rendimiento',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
-  },
-
 /*
   {
     divider: true,
