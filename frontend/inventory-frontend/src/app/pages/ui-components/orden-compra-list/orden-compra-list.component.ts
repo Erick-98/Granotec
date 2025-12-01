@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
+import { CompraService } from 'src/app/core/services/compra.service';
+import { CompraResponse } from 'src/app/core/models/compra-response.model';
+import { A11yModule } from '@angular/cdk/a11y';
+import { TablerIconComponent } from "angular-tabler-icons";
 
 @Component({
   selector: 'app-orden-compra-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule, MaterialModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, MaterialModule, A11yModule, TablerIconComponent],
   templateUrl: './orden-compra-list.component.html',
   styleUrls: ['./orden-compra-list.component.scss'],
 })
@@ -17,22 +21,21 @@ export class OrdenCompraListComponent implements OnInit {
   searchTerm = '';
 
   // lista que viene del backend
-  compras: any[] = [];
+  compras: CompraResponse[] = [];
   // lista filtrada para mostrar
   comprasFiltradas: any[] = [];
 
-  private readonly apiUrl = 'http://localhost:8080/compras';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private compraService: CompraService, private router: Router) {}
 
   ngOnInit(): void {
     this.cargarCompras();
   }
 
   cargarCompras() {
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    this.compraService.getAll().subscribe({
       next: (data) => {
-        this.compras = data;
+        this.compras = data ?? [];
         this.aplicarFiltro();
       },
       error: (err) => {
@@ -63,7 +66,7 @@ export class OrdenCompraListComponent implements OnInit {
 
   // navegación al formulario que ya hicimos
   agregarOrden() {
-    this.router.navigate(['/ui-components/orden-compra']);
+    this.router.navigate(['/compras/orden-compra']);
   }
 
   editar(compra: any) {
