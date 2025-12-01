@@ -62,7 +62,7 @@ public class ProduccionServiceImpl implements ProduccionService {
                     throw new BadRequestException("Cantidad de insumo debe ser mayor a cero");
                 }
                 // Obtener stock total disponible del insumo (sumatoria de todos los almacenes)
-                BigDecimal totalInsumo = stockLoteRepository.findByLoteProductoId(insumo.getId()).stream()
+                BigDecimal totalInsumo = stockLoteRepository.findByLoteProductoIdAndIsDeletedFalse(insumo.getId()).stream()
                         .map(StockLote::getCantidadDisponible)
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                 if (totalInsumo.compareTo(requerido) < 0) {

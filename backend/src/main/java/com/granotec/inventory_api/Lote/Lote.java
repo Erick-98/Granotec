@@ -1,7 +1,6 @@
 package com.granotec.inventory_api.Lote;
 
 import com.granotec.inventory_api.OrdenProduccion.OrdenProduccion;
-import com.granotec.inventory_api.StockLote.StockLote;
 import com.granotec.inventory_api.common.model.BaseEntity;
 import com.granotec.inventory_api.product.Product;
 import jakarta.persistence.*;
@@ -52,8 +51,10 @@ public class Lote extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal precioVentaUnitario;
 
-    @OneToOne(mappedBy = "lote", cascade = CascadeType.ALL)
-    private StockLote stock;
+    // COMENTADO: Esta relación OneToOne es incorrecta porque un lote puede estar en múltiples almacenes
+    // Causa duplicación de cantidades al consultar stock por lote
+    // @OneToOne(mappedBy = "lote", cascade = CascadeType.ALL)
+    // private StockLote stock;
 
     @Column(nullable = false, length = 30)
     private String estado;
