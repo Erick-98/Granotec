@@ -522,11 +522,27 @@ export const navItems: NavItem[] = [
   },
   {
     displayName: 'Transferencias',
-    iconName: 'solar:cart-large-minimalistic-line-duotone'
+    iconName: 'solar:cart-large-minimalistic-line-duotone',
+    route: '/transferencias'
   },
   {
-    displayName: 'Orden de Producción',
-    iconName: 'solar:sticker-smile-circle-2-line-duotone'
+    displayName: 'Producción',
+    iconName: 'solar:sticker-smile-circle-2-line-duotone',
+    route: '/produccion',
+    children: [
+      {
+        displayName: 'Lista de Órdenes',
+        subItemIcon: true,
+        iconName: 'solar:round-alt-arrow-right-line-duotone',
+        route: '/produccion'
+      },
+      {
+        displayName: 'Crear Orden',
+        subItemIcon: true,
+        iconName: 'solar:round-alt-arrow-right-line-duotone',
+        route: '/produccion/crear'
+      }
+    ]
   },
 /*
   {

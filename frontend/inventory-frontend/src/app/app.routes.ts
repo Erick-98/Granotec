@@ -47,10 +47,18 @@ export const routes: Routes = [
         path: 'extra',
         loadChildren: () =>
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
-      },{
+      },
+      {
         path: 'produccion',
         loadChildren: () =>
           import('./produccion/produccion.module').then(m => m.ProduccionModule),
+      },
+      {
+        path: 'transferencias',
+        loadComponent: () =>
+          import('./pages/ui-components/transferencias/transferencias.component').then(
+            (m) => m.TransferenciasComponent
+          ),
       },
       {
         path: 'compras',

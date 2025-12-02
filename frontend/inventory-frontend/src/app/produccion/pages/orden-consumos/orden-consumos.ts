@@ -4,8 +4,9 @@ import { ProduccionService } from '../../services/produccion.service';
 
 @Component({
   selector: 'app-orden-consumos',
-  templateUrl: './orden-consumos.component.html',
-  styleUrls: ['./orden-consumos.component.scss']
+  standalone: false,
+  templateUrl: './orden-consumos.html',
+  styleUrls: ['./orden-consumos.scss']
 })
 export class OrdenConsumosComponent {
   model: any = { insumoId: null, cantidad: null, stockLoteOrigenId: null };

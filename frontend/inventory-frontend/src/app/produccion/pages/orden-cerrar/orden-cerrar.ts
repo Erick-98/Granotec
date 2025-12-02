@@ -4,8 +4,9 @@ import { ProduccionService } from '../../services/produccion.service';
 
 @Component({
   selector: 'app-orden-cerrar',
-  templateUrl: './orden-cerrar.component.html',
-  styleUrls: ['./orden-cerrar.component.scss']
+  standalone: false,
+  templateUrl: './orden-cerrar.html',
+  styleUrls: ['./orden-cerrar.scss']
 })
 export class OrdenCerrarComponent {
   ordenId!: number;

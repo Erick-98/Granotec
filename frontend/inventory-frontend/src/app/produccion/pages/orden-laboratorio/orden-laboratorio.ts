@@ -4,8 +4,9 @@ import { ProduccionService } from '../../services/produccion.service';
 
 @Component({
   selector: 'app-orden-laboratorio',
-  templateUrl: './orden-laboratorio.component.html',
-  styleUrls: ['./orden-laboratorio.component.scss']
+  standalone: false,
+  templateUrl: './orden-laboratorio.html',
+  styleUrls: ['./orden-laboratorio.scss']
 })
 export class OrdenLaboratorioComponent {
   aprobado = true;

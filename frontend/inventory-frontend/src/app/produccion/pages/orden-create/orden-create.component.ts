@@ -4,6 +4,7 @@ import { ProduccionService } from '../../services/produccion.service';
 
 @Component({
   selector: 'app-orden-create',
+  standalone: false,
   templateUrl: './orden-create.component.html',
   styleUrls: ['./orden-create.component.scss']
 })

@@ -38,4 +38,15 @@ export const PagesRoutes: Routes = [
       ],
     },
   },
+  {
+    path: 'transferencias',
+    loadComponent: () => import('./ui-components/transferencias/transferencias.component').then(m => m.TransferenciasComponent),
+    data: {
+      title: 'Transferencias',
+      urls: [
+        { title: 'Dashboard', url: '/dashboard' },
+        { title: 'Transferencias' },
+      ],
+    },
+  },
 ];
