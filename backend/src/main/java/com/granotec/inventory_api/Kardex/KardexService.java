@@ -124,14 +124,18 @@ public class KardexService {
 
         k = kardexRepository.save(k);
 
-        actualizarStockAlmacen(almacen, producto, cantidad, request.getTipoMovimiento());
+            actualizarStockAlmacen(almacen, producto, cantidad, request.getTipoMovimiento());
 
+        // COMENTADO: Esta lógica duplicaba las cantidades porque CompraServiceImpl ya crea/actualiza el StockLote
+        // El Kardex solo debe registrar el movimiento, no modificar el stock directamente
+        /*
         if(lote != null){
             stockLoteRepo.findFirstByLoteIdAndIsDeletedFalse(Long.valueOf(lote.getId())).ifPresent(stockLote -> {
                 stockLote.setCantidadDisponible(stockLote.getCantidadDisponible().add(cantidad));
                 stockLoteRepo.save(stockLote);
             });
         }
+        */
 
         return buildKardexResponse(k);
     }

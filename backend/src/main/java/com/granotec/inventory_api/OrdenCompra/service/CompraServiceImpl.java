@@ -193,8 +193,8 @@ public class CompraServiceImpl implements CompraService {
                 kardexService.registrarMovimientos(kardexReversion);
 
                 // Actualizar o eliminar el StockLote
-                StockLote stockLote = stockLoteRepository.findByLoteIdAndAlmacenId(
-                        detalleAntiguo.getLote().getId().longValue(), 
+                StockLote stockLote = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(
+                        detalleAntiguo.getLote().getId().longValue(),
                         ordenCompra.getAlmacen().getId()
                 ).orElse(null);
                 if (stockLote != null) {
@@ -254,8 +254,8 @@ public class CompraServiceImpl implements CompraService {
                 detalle.setLote(lote);
 
                 // Actualizar o crear StockLote
-                StockLote stockLote = stockLoteRepository.findByLoteIdAndAlmacenId(
-                        lote.getId().longValue(), 
+                StockLote stockLote = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(
+                        lote.getId().longValue(),
                         almacen.getId()
                 ).orElseGet(() -> {
                             StockLote nuevoStock = new StockLote();
@@ -328,8 +328,8 @@ public class CompraServiceImpl implements CompraService {
                 kardexService.registrarMovimientos(kardexReversion);
 
                 // Actualizar o eliminar el StockLote
-                StockLote stockLote = stockLoteRepository.findByLoteIdAndAlmacenId(
-                        detalle.getLote().getId().longValue(), 
+                StockLote stockLote = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(
+                        detalle.getLote().getId().longValue(),
                         ordenCompra.getAlmacen().getId()
                 ).orElse(null);
                 

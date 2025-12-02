@@ -1,0 +1,27 @@
+<div class="page-header">
+    <h2>Órdenes de Producción</h2>
+    <button (click)="crear()" class="btn-primary">+ Nueva Orden</button>
+  </div>
+  
+  <div class="card">
+    <div *ngIf="loading" class="loader">Cargando...</div>
+    <table *ngIf="!loading && ordenes.length">
+      <thead>
+        <tr>
+          <th>Número</th><th>Producto</th><th>Cant. Programada</th><th>Estado</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let o of ordenes">
+          <td>{{o.numero}}</td>
+          <td>{{o.productoNombre || (o.producto?.nombreComercial)}}</td>
+          <td>{{o.cantidadProgramada}}</td>
+          <td>{{o.estado}}</td>
+          <td><button (click)="ver(o.id)">Ver</button></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div *ngIf="!loading && ordenes.length===0" class="empty">No hay órdenes todavía.</div>
+  </div>
+  

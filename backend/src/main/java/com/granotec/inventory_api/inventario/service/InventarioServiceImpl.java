@@ -58,7 +58,7 @@ public class InventarioServiceImpl implements InventarioService {
         // StockLote (si corresponde)
         com.granotec.inventory_api.StockLote.StockLote stockLote = null;
         if (request.getLoteId() != null) {
-            var optStockLote = stockLoteRepository.findByLoteIdAndAlmacenId(request.getLoteId(), request.getAlmacenId());
+            var optStockLote = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(request.getLoteId(), request.getAlmacenId());
             if (optStockLote.isPresent()) {
                 stockLote = optStockLote.get();
                 stockLote.setCantidadDisponible(stockLote.getCantidadDisponible().add(cantidad));
@@ -208,7 +208,7 @@ public class InventarioServiceImpl implements InventarioService {
 
     @Override
     public List<StockLoteResponse> obtenerStockPorLote(Integer productoId, Long almacenId) {
-        var stockLotes = stockLoteRepository.findByLoteProductoIdAndAlmacenId(productoId, almacenId);
+        var stockLotes = stockLoteRepository.findByLoteProductoIdAndAlmacenIdAndIsDeletedFalse(productoId, almacenId);
         return stockLotes.stream()
                 .map(stockLoteMapper::toDto)
                 .toList();
@@ -216,7 +216,7 @@ public class InventarioServiceImpl implements InventarioService {
 
     @Override
     public List<StockDisponibleResponse> obtenerStockDisponible(Integer productoId) {
-        var stockLotes = stockLoteRepository.findByLoteProductoId(productoId);
+        var stockLotes = stockLoteRepository.findByLoteProductoIdAndIsDeletedFalse(productoId);
         return stockLotes.stream()
                 .filter(s -> s.getCantidadDisponible().compareTo(java.math.BigDecimal.ZERO) > 0)
                 .map(lote -> {
@@ -233,110 +233,228 @@ public class InventarioServiceImpl implements InventarioService {
     @Override
     @Transactional
     public MovimientoInventarioResponse transferir(TransferenciaRequest request) {
-        // Validaciones básicas
+        // ===== VALIDACIONES BÁSICAS =====
         if (request.getAlmacenOrigenId().equals(request.getAlmacenDestinoId())) {
             throw new IllegalArgumentException("El almacén origen y destino no pueden ser iguales");
         }
+
         var almacenOrigen = storageRepository.findById(request.getAlmacenOrigenId())
                 .orElseThrow(() -> new IllegalArgumentException("Almacén origen no encontrado"));
+
         var almacenDestino = storageRepository.findById(request.getAlmacenDestinoId())
                 .orElseThrow(() -> new IllegalArgumentException("Almacén destino no encontrado"));
+
         var producto = productRepository.findById(request.getProductoId().intValue())
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-        var cantidad = request.getCantidad();
-        if (cantidad == null || cantidad.compareTo(java.math.BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Cantidad debe ser mayor a cero");
-        }
-        // Lock FIFO de lotes disponibles en origen
-        var lotesFIFO = stockLoteRepository.findAvailableByProductoAndAlmacenForUpdate(request.getProductoId(), request.getAlmacenOrigenId());
-        java.math.BigDecimal restante = cantidad;
+
+        // Determinar si es transferencia manual por lotes o FIFO automático
+        boolean esTransferenciaManual = request.getLotes() != null && !request.getLotes().isEmpty();
+
+        java.math.BigDecimal cantidadTotal;
         java.util.List<com.granotec.inventory_api.StockLote.StockLote> lotesUsados = new java.util.ArrayList<>();
-        for (var stockLote : lotesFIFO) {
-            if (restante.compareTo(java.math.BigDecimal.ZERO) <= 0) break;
-            var disponible = stockLote.getCantidadDisponible();
-            var aTransferir = disponible.min(restante);
-            // Descontar en origen
-            stockLote.setCantidadDisponible(disponible.subtract(aTransferir));
-            stockLoteRepository.save(stockLote);
-            // Sumar en destino (StockLote)
-            var optDestino = stockLoteRepository.findByLoteIdAndAlmacenId(stockLote.getLote().getId().longValue(), request.getAlmacenDestinoId());
-            com.granotec.inventory_api.StockLote.StockLote destinoLote;
-            if (optDestino.isPresent()) {
-                destinoLote = optDestino.get();
-                destinoLote.setCantidadDisponible(destinoLote.getCantidadDisponible().add(aTransferir));
-            } else {
-                destinoLote = new com.granotec.inventory_api.StockLote.StockLote();
-                destinoLote.setLote(stockLote.getLote());
-                destinoLote.setAlmacen(almacenDestino);
-                destinoLote.setCantidadDisponible(aTransferir);
+
+        if (esTransferenciaManual) {
+            // ===== MODO: TRANSFERENCIA MANUAL POR LOTES =====
+            cantidadTotal = java.math.BigDecimal.ZERO;
+
+            for (var loteDTO : request.getLotes()) {
+                // Buscar el stock del lote en el almacén origen
+                var stockLote = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(
+                        loteDTO.getLoteId(),
+                        request.getAlmacenOrigenId()
+                ).orElseThrow(() -> new IllegalArgumentException(
+                        "Lote ID " + loteDTO.getLoteId() + " no encontrado en almacén origen"
+                ));
+
+                // Validar que pertenezca al producto seleccionado
+                if (!stockLote.getLote().getProducto().getId().equals(request.getProductoId())) {
+                    throw new IllegalArgumentException(
+                            "El lote " + stockLote.getLote().getCodigoLote() + " no pertenece al producto seleccionado"
+                    );
+                }
+
+                // Validar que esté disponible
+                if (!"DISPONIBLE".equals(stockLote.getLote().getEstado())) {
+                    throw new IllegalArgumentException(
+                            "El lote " + stockLote.getLote().getCodigoLote() + " no está disponible"
+                    );
+                }
+
+                // Validar cantidad disponible
+                if (stockLote.getCantidadDisponible().compareTo(loteDTO.getCantidad()) < 0) {
+                    throw new IllegalArgumentException(
+                            "Cantidad insuficiente en lote " + stockLote.getLote().getCodigoLote() +
+                            ". Disponible: " + stockLote.getCantidadDisponible() +
+                            ", Solicitado: " + loteDTO.getCantidad()
+                    );
+                }
+
+                // Descontar del origen
+                stockLote.setCantidadDisponible(stockLote.getCantidadDisponible().subtract(loteDTO.getCantidad()));
+                stockLoteRepository.save(stockLote);
+
+                // Agregar o actualizar en destino
+                var optDestino = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(
+                        loteDTO.getLoteId(),
+                        request.getAlmacenDestinoId()
+                );
+
+                com.granotec.inventory_api.StockLote.StockLote destinoLote;
+                if (optDestino.isPresent()) {
+                    destinoLote = optDestino.get();
+                    destinoLote.setCantidadDisponible(destinoLote.getCantidadDisponible().add(loteDTO.getCantidad()));
+                } else {
+                    destinoLote = new com.granotec.inventory_api.StockLote.StockLote();
+                    destinoLote.setLote(stockLote.getLote());
+                    destinoLote.setAlmacen(almacenDestino);
+                    destinoLote.setCantidadDisponible(loteDTO.getCantidad());
+                    destinoLote.setCantidadReservada(java.math.BigDecimal.ZERO);
+                }
+                stockLoteRepository.save(destinoLote);
+
+                lotesUsados.add(stockLote);
+                cantidadTotal = cantidadTotal.add(loteDTO.getCantidad());
             }
-            stockLoteRepository.save(destinoLote);
-            lotesUsados.add(stockLote);
-            restante = restante.subtract(aTransferir);
+
+        } else {
+            // ===== MODO: TRANSFERENCIA FIFO AUTOMÁTICA =====
+            cantidadTotal = request.getCantidad();
+
+            if (cantidadTotal == null || cantidadTotal.compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Cantidad debe ser mayor a cero");
+            }
+
+            // Lock FIFO de lotes disponibles en origen
+            var lotesFIFO = stockLoteRepository.findAvailableByProductoAndAlmacenForUpdate(
+                    request.getProductoId(),
+                    request.getAlmacenOrigenId()
+            );
+
+            java.math.BigDecimal restante = cantidadTotal;
+
+            for (var stockLote : lotesFIFO) {
+                if (restante.compareTo(java.math.BigDecimal.ZERO) <= 0) break;
+
+                var disponible = stockLote.getCantidadDisponible();
+                var aTransferir = disponible.min(restante);
+
+                // Descontar en origen
+                stockLote.setCantidadDisponible(disponible.subtract(aTransferir));
+                stockLoteRepository.save(stockLote);
+
+                // Sumar en destino
+                var optDestino = stockLoteRepository.findByLoteIdAndAlmacenIdAndIsDeletedFalse(
+                        stockLote.getLote().getId().longValue(),
+                        request.getAlmacenDestinoId()
+                );
+
+                com.granotec.inventory_api.StockLote.StockLote destinoLote;
+                if (optDestino.isPresent()) {
+                    destinoLote = optDestino.get();
+                    destinoLote.setCantidadDisponible(destinoLote.getCantidadDisponible().add(aTransferir));
+                } else {
+                    destinoLote = new com.granotec.inventory_api.StockLote.StockLote();
+                    destinoLote.setLote(stockLote.getLote());
+                    destinoLote.setAlmacen(almacenDestino);
+                    destinoLote.setCantidadDisponible(aTransferir);
+                    destinoLote.setCantidadReservada(java.math.BigDecimal.ZERO);
+                }
+                stockLoteRepository.save(destinoLote);
+
+                lotesUsados.add(stockLote);
+                restante = restante.subtract(aTransferir);
+            }
+
+            if (restante.compareTo(java.math.BigDecimal.ZERO) > 0) {
+                throw new IllegalArgumentException(
+                        "Stock insuficiente para transferir. Faltante: " + restante
+                );
+            }
         }
-        if (restante.compareTo(java.math.BigDecimal.ZERO) > 0) {
-            throw new IllegalArgumentException("Stock insuficiente para transferir");
-        }
+
+        // ===== ACTUALIZAR STOCK_ALMACEN =====
+
         // StockAlmacen origen
-        var stockAlmacenOrigenList = stockAlmacenRepository.findByProductoIdAndAlmacenId(request.getProductoId(), request.getAlmacenOrigenId());
-        var stockAlmacenOrigen = stockAlmacenOrigenList.isEmpty() ? null : stockAlmacenOrigenList.get(0);
-        if (stockAlmacenOrigen == null || stockAlmacenOrigen.getCantidad().compareTo(cantidad) < 0) {
+        var stockAlmacenOrigenList = stockAlmacenRepository.findByProductoIdAndAlmacenId(
+                request.getProductoId(),
+                request.getAlmacenOrigenId()
+        );
+        var stockAlmacenOrigen = stockAlmacenOrigenList.isEmpty() ? null : stockAlmacenOrigenList.getFirst();
+
+        if (stockAlmacenOrigen == null || stockAlmacenOrigen.getCantidad().compareTo(cantidadTotal) < 0) {
             throw new IllegalArgumentException("Stock insuficiente en almacén origen");
         }
+
         var stockAnteriorOrigen = stockAlmacenOrigen.getCantidad();
-        var nuevoStockOrigen = stockAnteriorOrigen.subtract(cantidad);
+        var nuevoStockOrigen = stockAnteriorOrigen.subtract(cantidadTotal);
         stockAlmacenOrigen.setCantidad(nuevoStockOrigen);
         stockAlmacenRepository.save(stockAlmacenOrigen);
+
         // StockAlmacen destino
-        var stockAlmacenDestinoList = stockAlmacenRepository.findByProductoIdAndAlmacenId(request.getProductoId(), request.getAlmacenDestinoId());
-        var stockAlmacenDestino = stockAlmacenDestinoList.isEmpty() ? null : stockAlmacenDestinoList.get(0);
+        var stockAlmacenDestinoList = stockAlmacenRepository.findByProductoIdAndAlmacenId(
+                request.getProductoId(),
+                request.getAlmacenDestinoId()
+        );
+        var stockAlmacenDestino = stockAlmacenDestinoList.isEmpty() ? null : stockAlmacenDestinoList.getFirst();
+
         if (stockAlmacenDestino == null) {
             stockAlmacenDestino = new com.granotec.inventory_api.Stock_Almacen.StockAlmacen();
             stockAlmacenDestino.setAlmacen(almacenDestino);
             stockAlmacenDestino.setProducto(producto);
             stockAlmacenDestino.setCantidad(java.math.BigDecimal.ZERO);
         }
+
         var stockAnteriorDestino = stockAlmacenDestino.getCantidad();
-        var nuevoStockDestino = stockAnteriorDestino.add(cantidad);
+        var nuevoStockDestino = stockAnteriorDestino.add(cantidadTotal);
         stockAlmacenDestino.setCantidad(nuevoStockDestino);
         stockAlmacenRepository.save(stockAlmacenDestino);
-        // Registrar en Kardex (salida origen)
+
+        // ===== REGISTRAR EN KARDEX =====
+
+        // Salida del origen
         var kardexSalida = new com.granotec.inventory_api.Kardex.Kardex();
         kardexSalida.setAlmacen(almacenOrigen);
         kardexSalida.setProducto(producto);
-        kardexSalida.setCantidad(cantidad);
+        kardexSalida.setCantidad(cantidadTotal.negate()); // Negativo para salida
         kardexSalida.setTipoMovimiento(com.granotec.inventory_api.common.enums.TipoMovimiento.SALIDA);
         kardexSalida.setTipoOperacion(com.granotec.inventory_api.common.enums.TypeOperation.TRANSFERENCIA_ENTRE_ALMACENES);
         kardexSalida.setStockAnterior(stockAnteriorOrigen);
         kardexSalida.setStockActual(nuevoStockOrigen);
-        kardexSalida.setObservacion("Transferencia a almacén " + almacenDestino.getNombre());
+        kardexSalida.setObservacion(request.getMotivo() != null ? request.getMotivo() :
+                "Transferencia a almacén " + almacenDestino.getNombre());
+        kardexSalida.setReferencia("TRANSFER-" + almacenOrigen.getId() + "-" + almacenDestino.getId());
         kardexSalida.setFechaMovimiento(java.time.LocalDate.now());
         kardexRepository.save(kardexSalida);
-        // Registrar en Kardex (entrada destino)
+
+        // Entrada al destino
         var kardexEntrada = new com.granotec.inventory_api.Kardex.Kardex();
         kardexEntrada.setAlmacen(almacenDestino);
         kardexEntrada.setProducto(producto);
-        kardexEntrada.setCantidad(cantidad);
+        kardexEntrada.setCantidad(cantidadTotal);
         kardexEntrada.setTipoMovimiento(com.granotec.inventory_api.common.enums.TipoMovimiento.ENTRADA);
         kardexEntrada.setTipoOperacion(com.granotec.inventory_api.common.enums.TypeOperation.TRANSFERENCIA_ENTRE_ALMACENES);
         kardexEntrada.setStockAnterior(stockAnteriorDestino);
         kardexEntrada.setStockActual(nuevoStockDestino);
-        kardexEntrada.setObservacion("Transferencia desde almacén " + almacenOrigen.getNombre());
+        kardexEntrada.setObservacion(request.getMotivo() != null ? request.getMotivo() :
+                "Transferencia desde almacén " + almacenOrigen.getNombre());
+        kardexEntrada.setReferencia("TRANSFER-" + almacenOrigen.getId() + "-" + almacenDestino.getId());
         kardexEntrada.setFechaMovimiento(java.time.LocalDate.now());
         kardexRepository.save(kardexEntrada);
-        // Respuesta
+
+        // ===== RESPUESTA =====
         var response = new MovimientoInventarioResponse();
         response.setIdMovimiento(kardexEntrada.getId());
         response.setTipoMovimiento("TRANSFERENCIA");
         response.setTipoOperacion("TRANSFERENCIA_ENTRE_ALMACENES");
         response.setAlmacenId(almacenDestino.getId());
         response.setProductoId(producto.getId().longValue());
-        response.setCantidad(cantidad);
+        response.setCantidad(cantidadTotal);
         response.setFechaMovimiento(java.time.LocalDate.now().toString());
-        response.setObservacion("Transferencia desde almacén " + almacenOrigen.getNombre());
+        response.setObservacion(kardexEntrada.getObservacion());
         response.setStockAnterior(stockAnteriorDestino);
         response.setStockActual(nuevoStockDestino);
         response.setUsuario(request.getUsuarioId() != null ? request.getUsuarioId().toString() : null);
+
         return response;
     }
 }

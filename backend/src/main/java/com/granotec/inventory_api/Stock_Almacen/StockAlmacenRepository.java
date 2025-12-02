@@ -26,9 +26,9 @@ public interface StockAlmacenRepository extends JpaRepository<StockAlmacen, Long
     Optional<StockAlmacen> findByAlmacenAndProducto(Storage almacen, Product producto);
 
     // Métodos de paginación
-    Page<StockAlmacen> findByProductoIdAndAlmacenId(Integer productoId, Long almacenId, Pageable pageable);
-    Page<StockAlmacen> findByProductoId(Integer productoId, Pageable pageable);
-    Page<StockAlmacen> findByAlmacenId(Long almacenId, Pageable pageable);
+    Page<StockAlmacen> findByProductoIdAndAlmacenIdAndIsDeletedFalse(Integer productoId, Long almacenId, Pageable pageable);
+    Page<StockAlmacen> findByProductoIdAndIsDeletedFalse(Integer productoId, Pageable pageable);
+    Page<StockAlmacen> findByAlmacenIdAndIsDeletedFalse(Long almacenId, Pageable pageable);
 
 
 }
