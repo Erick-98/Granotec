@@ -1,0 +1,44 @@
+# Canonical permissions and role mapping
+permissions:
+  - product:read
+  - product:adjust
+  - product:lock
+  - product:stock:view
+  - stock:view
+  - stock:adjust
+  - role:create
+  - role:assign
+  - role:view
+  - role:delete
+  - permission:create
+  - permission:view
+  - permission:delete
+  - user:view
+  - user:assign_role
+  - movement:view
+
+roles:
+  ADMIN:
+    description: "Super admin — tiene todos los permisos"
+    permissions: ["*"]
+  MANAGER:
+    description: "Manager con permisos operativos"
+    permissions: [
+      "product:read",
+      "product:adjust",
+      "stock:view",
+      "stock:adjust",
+      "movement:view",
+      "permission:view",
+      "role:view",
+      "user:view",
+      "user:assign_role"
+    ]
+  VIEWER:
+    description: "Solo lectura"
+    permissions: [
+      "product:read",
+      "product:stock:view",
+      "stock:view",
+      "movement:view"
+    ]

@@ -1,0 +1,10 @@
+<div class="page-content container-fluid">
+  <app-crud-list
+    [title]="'Almacenes'"
+    [items]="items"
+    [columns]="columns"
+    (add)="onAdd()"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)">
+  </app-crud-list>
+</div>

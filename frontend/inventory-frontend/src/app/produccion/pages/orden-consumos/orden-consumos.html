@@ -1,0 +1,20 @@
+<div class="page-header">
+    <h2>Registrar Consumo</h2>
+  </div>
+  
+  <div class="card">
+    <label>Insumo (id)</label>
+    <input type="number" [(ngModel)]="model.insumoId" />
+  
+    <label>Cantidad</label>
+    <input type="number" [(ngModel)]="model.cantidad" />
+  
+    <label>Stock Lote Origen (id) - opcional</label>
+    <input [(ngModel)]="model.stockLoteOrigenId" />
+  
+    <div class="actions">
+      <button (click)="agregar()" class="btn-primary">Agregar</button>
+      <button (click)="cancelar()" class="btn-ghost">Cancelar</button>
+    </div>
+  </div>
+  

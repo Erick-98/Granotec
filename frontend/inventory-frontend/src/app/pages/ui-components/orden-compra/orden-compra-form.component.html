@@ -1,0 +1,222 @@
+<div class="invoice-wrapper">
+  <div class="page-header">
+    <h2 class="page-title">{{ isEditMode ? 'Editar Compra' : 'Añadir Compra' }}</h2>
+    <div class="page-breadcrumb">
+      <a class="text-body-color" routerLink="/compras/orden-compra-list" style="text-decoration: none;">Orden de Compra</a>
+      <span class="breadcrumb-separator">•</span>
+      <span class="breadcrumb-item active">{{ isEditMode ? 'Editar Compra' : 'Nueva Compra' }}</span>
+    </div>
+  </div>
+
+  <mat-card class="invoice-card">
+    <form [formGroup]="invoiceForm" (ngSubmit)="$event.preventDefault()">
+
+      <div class="card-header-row">
+        <!-- <h3 class="invoice-id"># {{ invoiceNumber }}</h3> -->
+        <div class="invoice-number-wrapper">
+          <span class="hash-symbol">#</span>
+          <mat-form-field appearance="outline" class="invoice-number-field">
+            <input matInput type="text" formControlName="invoiceNumber" placeholder="Factura">
+          </mat-form-field>
+        </div>
+        <div class="actions">
+          <button mat-flat-button color="warn" class="btn-cancel" (click)="cancelInvoice()">
+            Cancelar
+          </button>
+          <button mat-flat-button color="primary" class="btn-save" [disabled]="!invoiceForm.valid" (click)="saveInvoice()">
+            Guardar
+          </button>
+        </div>
+      </div>
+      
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+      
+      <div class="row p-y-24 ">
+        <div class="date-section">
+          <span class="f-w-600 f-s-15 d-block m-b-8"> Fecha </span>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Escoge la fecha</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="fecha" />
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+      </div>
+      
+      <mat-divider class="section-divider"></mat-divider>
+      
+      <div class="billing-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Proveedor</mat-label>
+          <input type="text" placeholder="Seleccionar" aria-label="Nombre" matInput [formControl]="firstControl"
+            [matAutocomplete]="auto" #provTrigger="matAutocompleteTrigger" (focus)="openProveedorPanel(provTrigger)" (click)="openProveedorPanel(provTrigger)" />
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayProveedorFn">
+            @for(proveedor of filteredOptions | async; track proveedor.id) {
+            <mat-option [value]="proveedor">
+              {{ proveedor.nombre }}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      
+        <mat-form-field appearance="outline">
+          <mat-label>Almacen de destino</mat-label>
+             <input matInput 
+               formControlName="billTo" 
+               placeholder="Seleccionar"
+               [matAutocomplete]="autoAlmacen" #almTrigger="matAutocompleteTrigger" (focus)="openAlmacenPanel(almTrigger)" (click)="openAlmacenPanel(almTrigger)">
+          <mat-autocomplete #autoAlmacen="matAutocomplete" [displayWith]="displayAlmacenFn" (optionSelected)="onAlmacenSelected($event.option.value)">
+            @for(almacen of filteredAlmacenes | async; track almacen.id) {
+            <mat-option [value]="almacen">
+              {{ almacen.nombre }}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      
+      <div class="table-container mat-elevation-z2">
+      
+        <table mat-table [dataSource]="dataSource" class="oc-table" matSort formArrayName="items">
+      
+          <!-- Índice -->
+          <ng-container matColumnDef="#">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let row; let i = index">{{ i + 1 }}</td>
+          </ng-container>
+      
+          <!-- Producto -->
+          <ng-container matColumnDef="producto">
+            <th mat-header-cell *matHeaderCellDef>Producto</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput 
+                       formControlName="productoControl" 
+                       [matAutocomplete]="autoProducto"
+                       placeholder="Buscar producto...">
+                <mat-autocomplete #autoProducto="matAutocomplete" 
+                                  [displayWith]="displayProductoFn"
+                                  (optionSelected)="onProductoSelected(i, $event.option.value)">
+                  @for(producto of getFilteredProductos(i) | async; track producto.id) {
+                  <mat-option [value]="producto">
+                    {{ producto.name }}
+                  </mat-option>
+                  }
+                </mat-autocomplete>
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Cantidad -->
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput type="number" min="0" formControlName="cantidad" (input)="calculateSubtotal(items.at(i))">
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Precio Unitario -->
+          <ng-container matColumnDef="precio_unitario">
+            <th mat-header-cell *matHeaderCellDef>Precio Unitario</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput type="number" min="0" step="0.01" formControlName="precio_unitario" (input)="calculateSubtotal(items.at(i))" (blur)="formatPrecio(i)">
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Subtotal -->
+          <ng-container matColumnDef="subtotal">
+            <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput formControlName="subtotal" readonly>
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Cantidad Recibida -->
+          <ng-container matColumnDef="cantidad_recibida">
+            <th mat-header-cell *matHeaderCellDef>Recibido</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput type="number" min="0" formControlName="cantidad_recibida">
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Lote -->
+          <ng-container matColumnDef="lote">
+            <th mat-header-cell *matHeaderCellDef>Lote</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput formControlName="lote">
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Fecha Producción -->
+          <ng-container matColumnDef="fecha_prod">
+            <th mat-header-cell *matHeaderCellDef>F.Prod</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput type="date" formControlName="fecha_prod">
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Fecha Vencimiento -->
+          <ng-container matColumnDef="fecha_venc">
+            <th mat-header-cell *matHeaderCellDef>F.Venc</th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div [formGroupName]="i">
+                <input matInput type="date" formControlName="fecha_venc">
+              </div>
+            </td>
+          </ng-container>
+      
+          <!-- Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row; let i = index">
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <button mat-icon-button color="primary" (click)="addItem()">
+                  <i-tabler name="circle-plus"></i-tabler>
+                </button>
+                <button mat-icon-button color="warn" (click)="removeItem(i)" *ngIf="items.length > 1">
+                  <i-tabler name="trash"></i-tabler>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+
+
+      <div class="totals-section">
+        <div class="totals-row">
+          <span>Sub total:</span>
+          <strong>{{ subTotal | number:'1.2-2' }}</strong>
+        </div>
+        <div class="totals-row">
+          <span>Total Vat ({{ vatPercentage }}%):</span>
+          <strong>{{ vatAmount | number:'1.2-2' }}</strong>
+        </div>
+
+        <mat-divider class="total-divider"></mat-divider>
+
+        <div class="grand-total-row">
+          <span>Grand Total:</span>
+          <strong>{{ grandTotal | number:'1.2-2' }}</strong>
+        </div>
+      </div>
+
+    </form>
+  </mat-card>
+</div>

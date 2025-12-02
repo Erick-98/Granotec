@@ -1,0 +1,163 @@
+:host {
+  display: block;
+  padding: 32px;
+  background: #f5f6fa;
+  min-height: 100vh;
+  font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+/* ----- Tarjeta principal ----- */
+.cardWithShadow {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 40px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  mat-card-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #1e3a8a;
+  }
+
+  mat-card-subtitle {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ----- Formulario en grid ----- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px 28px;
+  align-items: flex-start;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ----- Botones ----- */
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+
+  button {
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 8px;
+  }
+}
+
+/* ----- Mensaje de éxito ----- */
+.mensaje-exito {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+/* ----- Tabla ----- */
+.table-container {
+  margin-top: 28px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+  padding: 12px;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.95rem;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.9rem;
+    }
+
+    tr:hover {
+      background-color: #eff6ff;
+      transition: background-color 0.25s ease;
+    }
+  }
+}
+
+/* ----- Estado visual ----- */
+.badge-activo {
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.badge-inactivo {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* ----- Animación ----- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 768px) {
+  :host {
+    padding: 20px;
+  }
+
+  .cardWithShadow {
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+}

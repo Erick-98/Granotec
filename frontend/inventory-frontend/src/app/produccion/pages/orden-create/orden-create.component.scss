@@ -1,0 +1,7 @@
+.form-card{ display:flex; flex-direction:column; gap:12px; padding:20px; border-radius:12px; }
+label{ font-weight:600; color:#3b3b3b; }
+input{ padding:8px 10px; border-radius:8px; border:1px solid #e2e8f0; }
+.actions{ margin-top:8px; display:flex; gap:8px;
+  .btn-primary{ background:#004e8a; color:white; border:none; padding:8px 12px; border-radius:8px; }
+  .btn-ghost{ background:transparent; border:1px solid #d1d5db; padding:8px 12px; border-radius:8px; }
+}

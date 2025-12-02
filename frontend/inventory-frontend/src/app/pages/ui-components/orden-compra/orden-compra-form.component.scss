@@ -1,0 +1,380 @@
+// .cardWithShadow {
+//     margin-bottom: 16px;
+//   }
+  
+//   .form-grid {
+//     display: grid;
+//     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+//     gap: 16px;
+//     margin-top: 16px;
+//   }
+  
+//   .actions {
+//     display: flex;
+//     align-items: center;
+//     gap: 12px;
+//     justify-content: flex-end;
+//   }
+  
+//   .mensaje-exito {
+//     margin-top: 12px;
+//     padding: 10px 14px;
+//     border-radius: 6px;
+//     background-color: #e6ffed;
+//     color: #1b5e20;
+//     font-size: 0.95rem;
+//     border: 1px solid #a5d6a7;
+//   }
+  
+//   .mt-3 {
+//     margin-top: 24px;
+//   }
+  
+//   .detalle-header {
+//     display: flex;
+//     align-items: center;
+//     gap: 8px;
+//     margin: 12px 0 16px 0;
+  
+//     span {
+//       font-size: 0.95rem;
+//       font-weight: 500;
+//     }
+//   }
+  
+//   .table-container {
+//     width: 100%;
+//     overflow-x: auto;
+//   }
+  
+//   .detalles-table {
+//     width: 100%;
+//     border-collapse: collapse;
+  
+//     thead {
+//       background-color: #f5f5f5;
+//     }
+  
+//     th,
+//     td {
+//       padding: 8px;
+//       text-align: left;
+//       vertical-align: top;
+//     }
+  
+//     th {
+//       font-weight: 600;
+//       font-size: 0.9rem;
+//     }
+  
+//     tbody tr:nth-child(even) {
+//       background-color: #fafafa;
+//     }
+  
+//     mat-form-field {
+//       width: 100%;
+//     }
+//   }
+  
+//   .subtotal-cell {
+//     min-width: 90px;
+//   }
+  
+//   .acciones-cell {
+//     text-align: center;
+//     min-width: 70px;
+//   }
+  
+//   .total-resumen {
+//     margin-top: 16px;
+//     display: flex;
+//     justify-content: flex-end;
+//     gap: 8px;
+//     font-size: 1.05rem;
+//     align-items: center;
+  
+//     span {
+//       font-weight: 500;
+//     }
+  
+//     strong {
+//       font-size: 1.1rem;
+//     }
+//   }
+  
+// MaterialM Invoice Component Styles
+// Basado en el template MaterialM de WrapPixel - Valores exactos del inspector
+
+
+// MaterialM Invoice Component Styles
+// Basado en el template MaterialM de WrapPixel
+
+// MaterialM Invoice Component Styles
+//PRUEBA
+.invoice-wrapper {
+  padding: 24px;
+  background-color: #fafbfd; // Fondo gris claro de la imagen
+  min-height: 100vh;
+  font-family: Inter, sans-serif;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  background: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  
+  .page-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .page-breadcrumb {
+    font-size: 14px;
+    
+    .breadcrumb-separator { margin: 0 8px; color: #ccc; }
+    
+    .active { 
+      background-color: #e8f7ff; 
+      color: #0085db;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-weight: 500;
+    }
+  }
+}
+
+.invoice-card {
+  padding: 0 !important; 
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
+  
+  form {
+    padding: 30px;
+  }
+}
+
+// Header Row (#101 y Botones)
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  .invoice-id {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+
+    button {
+      border-radius: 20px; // Estilo "Pill" redondeado
+      padding: 0 24px;
+      height: 40px;
+      font-weight: 500;
+    }
+
+    .btn-cancel {
+      background-color: #ff6b81 !important; // Rosa/Rojo de la imagen
+      color: white !important;
+    }
+    
+    .btn-save {
+      background-color: #009efb !important; // Azul de la imagen
+      color: white !important;
+    }
+  }
+}
+
+// Meta Data (Status y Fecha)
+.meta-data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24px 0;
+
+  .field-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #1a1b1f;
+  }
+
+  .status-section {
+    .status-dropdown {
+      width: 200px;
+    }
+  }
+
+  .date-section {
+    text-align: right;
+    .date-value {
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+}
+
+// Billing Grid (2x2)
+.billing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+// Table Container
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 24px 0;
+  border-radius: 8px;
+  
+  table {
+    width: 100%;
+    
+    th {
+      background-color: #f8f9fa;
+      padding: 12px 8px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #495057;
+      text-align: left;
+      white-space: nowrap;
+    }
+    
+    td {
+      padding: 8px;
+      vertical-align: middle;
+      
+      div[formGroupName] {
+        display: block;
+      }
+      
+      input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        font-size: 13px;
+        
+        &:focus {
+          outline: none;
+          border-color: #009efb;
+          box-shadow: 0 0 0 2px rgba(0, 158, 251, 0.1);
+        }
+        
+        &[readonly] {
+          background-color: #f8f9fa;
+          cursor: not-allowed;
+        }
+      }
+    }
+    
+    // Ajustar anchos de columnas
+    th:nth-child(1), td:nth-child(1) { width: 40px; text-align: center; } // #
+    th:nth-child(2), td:nth-child(2) { min-width: 150px; } // Producto
+    th:nth-child(3), td:nth-child(3) { width: 100px; } // Cantidad
+    th:nth-child(4), td:nth-child(4) { width: 120px; } // Precio
+    th:nth-child(5), td:nth-child(5) { width: 100px; } // Subtotal
+    th:nth-child(6), td:nth-child(6) { width: 100px; } // Recibido
+    th:nth-child(7), td:nth-child(7) { width: 100px; } // Lote
+    th:nth-child(8), td:nth-child(8) { width: 120px; } // F.Prod
+    th:nth-child(9), td:nth-child(9) { width: 120px; } // F.Venc
+    th:nth-child(10), td:nth-child(10) { width: 100px; text-align: center; } // Acciones
+    
+    .mat-mdc-icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 6px;
+    }
+  }
+}
+
+// Items Table (legacy - mantener por si acaso)
+.items-table {
+  width: 100%;
+  border-collapse: separate; 
+  border-spacing: 0 12px; 
+
+  th {
+    text-align: left;
+    font-weight: 700;
+    padding-bottom: 12px;
+    color: #1a1b1f;
+  }
+
+  td {
+    vertical-align: middle;
+    padding-right: 16px;
+    
+    &:first-child {
+      padding-left: 8px;
+      color: #666;
+    }
+  }
+
+  .table-input {
+    width: 100%;
+    margin-bottom: 0;
+  }
+}
+
+// Totals Section
+.totals-section {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+
+  .totals-row, .grand-total-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    min-width: 250px;
+
+    span { color: #666; }
+    strong { color: #1a1b1f; font-weight: 700; }
+  }
+
+  .total-divider {
+    width: 250px;
+    margin: 8px 0;
+  }
+
+  .grand-total-row {
+    font-size: 16px;
+  }
+}
+
+// Dividers
+mat-divider {
+  border-top-color: #eee !important;
+  &.section-divider { margin: 24px 0; border-top-style: dashed !important; }
+}
+
+.invoice-number-field input::placeholder {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Forzar contraste de opciones del autocomplete (algunas reglas globales dejaban texto muy atenuado) */
+::ng-deep .mat-mdc-autocomplete-panel .mdc-list-item__primary-text {
+  opacity: 1 !important;
+  color: var(--app-text) !important;
+}
+
+::ng-deep .mat-mdc-autocomplete-panel .mat-mdc-option.mdc-list-item--disabled .mdc-list-item__primary-text {
+  opacity: .6 !important;
+}

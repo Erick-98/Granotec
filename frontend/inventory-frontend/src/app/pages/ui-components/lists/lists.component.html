@@ -1,0 +1,166 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <mat-card-title>Ficha del Cliente</mat-card-title>
+    <mat-card-subtitle>Registro y gestión de clientes</mat-card-subtitle>
+
+    <form class="cliente-form" autocomplete="off">
+      <!-- 🧾 Identificación -->
+      <section class="section">
+        <h3>Identificación</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Código</mat-label>
+            <input matInput [(ngModel)]="cliente.codigo" name="codigo" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>RUC</mat-label>
+            <input matInput [(ngModel)]="cliente.ruc" name="ruc" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Razón Social</mat-label>
+            <input matInput [(ngModel)]="cliente.razonSocial" name="razonSocial" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Representante</mat-label>
+            <input matInput [(ngModel)]="cliente.representante" name="representante" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- ☎️ Contacto -->
+      <section class="section">
+        <h3>Contacto</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Teléfono</mat-label>
+            <input matInput [(ngModel)]="cliente.telefono" name="telefono" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="cliente.email" name="email" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 📍 Ubicación -->
+      <section class="section">
+        <h3>Ubicación</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="col-span-2">
+            <mat-label>Dirección</mat-label>
+            <input matInput [(ngModel)]="cliente.direccion" name="direccion" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Zona / Sector</mat-label>
+            <input matInput [(ngModel)]="cliente.zona" name="zona" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Departamento</mat-label>
+            <input matInput [(ngModel)]="cliente.departamento" name="departamento" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Provincia</mat-label>
+            <input matInput [(ngModel)]="cliente.provincia" name="provincia" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Distrito</mat-label>
+            <input matInput [(ngModel)]="cliente.distrito" name="distrito" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 🏷️ Clasificación -->
+      <section class="section">
+        <h3>Clasificación</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de cliente</mat-label>
+            <mat-select [(ngModel)]="cliente.tipoCliente" name="tipoCliente">
+              <mat-option value="Minorista">Minorista</mat-option>
+              <mat-option value="Mayorista">Mayorista</mat-option>
+              <mat-option value="Industrial">Industrial</mat-option>
+              <mat-option value="Distribuidor">Distribuidor</mat-option>
+              <mat-option value="Otro">Otro</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Rubro / Sector</mat-label>
+            <input matInput [(ngModel)]="cliente.rubro" name="rubro" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Condiciones de pago</mat-label>
+            <mat-select [(ngModel)]="cliente.condicionesPago" name="condicionesPago">
+              <mat-option value="Contado">Contado</mat-option>
+              <mat-option value="Crédito 15d">Crédito 15 días</mat-option>
+              <mat-option value="Crédito 30d">Crédito 30 días</mat-option>
+              <mat-option value="Crédito 45d">Crédito 45 días</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Límite de crédito (S/)</mat-label>
+            <input matInput type="number" [(ngModel)]="cliente.limiteCredito" name="limiteCredito" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 🗓️ Fechas y estado -->
+      <section class="section">
+        <h3>Estado y Fechas</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <mat-select [(ngModel)]="cliente.estado" name="estado">
+              <mat-option value="Activo">Activo</mat-option>
+              <mat-option value="Inactivo">Inactivo</mat-option>
+              <mat-option value="Bloqueado">Bloqueado</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha de registro</mat-label>
+            <input matInput [matDatepicker]="regPicker" [(ngModel)]="cliente.fechaRegistro" name="fechaRegistro" />
+            <mat-datepicker-toggle matIconSuffix [for]="regPicker"></mat-datepicker-toggle>
+            <mat-datepicker #regPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Última compra</mat-label>
+            <input matInput [matDatepicker]="ultPicker" [(ngModel)]="cliente.ultimaCompra" name="ultimaCompra" />
+            <mat-datepicker-toggle matIconSuffix [for]="ultPicker"></mat-datepicker-toggle>
+            <mat-datepicker #ultPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 📝 Notas -->
+      <section class="section">
+        <h3>Notas</h3>
+        <mat-form-field appearance="outline" class="descripcion">
+          <mat-label>Observaciones</mat-label>
+          <textarea matInput rows="3" [(ngModel)]="cliente.notas" name="notas"></textarea>
+        </mat-form-field>
+      </section>
+
+      <!-- ⚙️ Acciones -->
+      <div class="actions">
+        <button mat-stroked-button color="primary" (click)="guardar()">
+          <mat-icon>save</mat-icon> Guardar
+        </button>
+        <button mat-flat-button color="accent" (click)="verKardexCompras()">
+          <mat-icon>history</mat-icon> Historial de compras
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

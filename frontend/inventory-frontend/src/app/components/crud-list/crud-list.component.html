@@ -1,0 +1,123 @@
+<!-- CARD 1: Título + Breadcrumb -->
+<div class="cardWithShadow section-card">
+  <div class="page-header">
+    <div class="title">{{ title }}</div>
+    <div class="breadcrumbs">
+      Dashboard • <span>{{ title }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- CARD 2: Buscador + Botón -->
+<div class="cardWithShadow section-card">
+  <div class="toolbar-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Search..." [formControl]="search">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="add.emit()">
+      Add {{ title }}
+    </button>
+  </div>
+</div>
+
+<!-- CARD 3: Tabla + Paginación -->
+<div class="cardWithShadow section-card content-card">
+  <div class="card-body">
+    <table mat-table [dataSource]="displayed()" class="mat-elevation-z0" [trackBy]="trackByFn">
+
+      <!-- Columna de selección -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="selectAllOnPage()"></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox
+            (change)="toggleSelect(element)"
+            [checked]="selected.has(element)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Columnas dinámicas -->
+      <ng-container *ngFor="let col of columns" [matColumnDef]="col.field">
+        <th mat-header-cell *matHeaderCellDef>{{ col.label || col.field }}</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container [ngSwitch]="col.type">
+            
+            <!-- Imagen -->
+            <ng-container *ngSwitchCase="'image'">
+              <img *ngIf="element[col.field]"
+                   [src]="element[col.field]"
+                   width="48"
+                   height="48"
+                   loading="lazy"
+                   class="thumb" />
+            </ng-container>
+
+            <!-- Fecha -->
+            <ng-container *ngSwitchCase="'date'">
+              {{ element[col.field] | date:'EEE, MMM d y' }}
+            </ng-container>
+
+            <!-- Badge -->
+            <ng-container *ngSwitchCase="'badge'">
+              <span class="badge"
+                    [ngClass]="(element[col.field] || '').toString().toLowerCase().split(' ').join('')">
+                {{ element[col.field] }}
+              </span>
+            </ng-container>
+
+            <!-- Precio -->
+            <ng-container *ngSwitchCase="'price'">
+              {{ element[col.field] | currency }}
+            </ng-container>
+
+            <!-- Texto por defecto -->
+            <ng-container *ngSwitchDefault>
+              <div *ngIf="col.subField">
+                <div class="name">{{ element[col.field] }}</div>
+                <div class="subtitle">{{ element[col.subField] }}</div>
+              </div>
+              <div *ngIf="!col.subField">
+                {{ element[col.field] }}
+              </div>
+            </ng-container>
+
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- Columna de acciones -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Acción</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let a of actions" (click)="triggerAction(a.value, element)">
+              <mat-icon *ngIf="a.icon">{{ a.icon }}</mat-icon>
+              <span>{{ a.label }}</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <!-- Filas -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <mat-paginator
+      [length]="serverSide ? length : items.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPage($event)">
+    </mat-paginator>
+  </div>
+</div>

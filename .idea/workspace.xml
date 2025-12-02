@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="225deb70-c020-4600-8845-fffdb83ae8c2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/despacho/Despacho.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/lote/Lote.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/lote/LoteRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/lote/inventarioLote/InventarioLote.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/lote/inventarioLote/InventarioLoteRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/Movimiento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/MovimientoRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/MovimientoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/movimientoDetalle/MovimientoDetalle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/movimientoDetalle/MovimientoDetalleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/movimientoDetalle/dto/MovimientoDetalleDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/movimiento/movimientoDetalle/dto/MovimientoRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenCompra/OrdenCompra.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenCompra/OrdenCompraRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenCompra/ordenCompraDetalles/OCDetalle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenCompra/ordenCompraDetalles/OCDetalleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/DetalleConsumo/OPDetalleConsumo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/DetalleProduccion/OPDetalleProduccion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/OrdenProduccion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/OrdenProduccionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/dto/ConsumoDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/dto/OrdenProduccionEjecutarDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenProduccion/dto/ReservaResultDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/OrdenVenta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/OrdenVentaController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/OrdenVentaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/OrdenVentaService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/dto/ConfirmOrderRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/ordenVentaDetalles/OVDetalle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/ordenVenta/ordenVentaDetalles/OVDetalleRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Cierre/Cierre.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Cierre/detalles/Cierre_Detalles.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/Despacho.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/DespachoController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/DespachoRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/DespachoService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/detalles/Despacho_detalles.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/dto/DespachoLineRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Despacho/dto/DespachoRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/Movimiento.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/MovimientoController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/MovimientoRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/MovimientoService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/detalle/MovimientoDetalleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/detalle/Movimiento_Detalle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/dto/MovimientoLineRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/dto/MovimientoLineResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/dto/MovimientoRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Movimientos/dto/MovimientoResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Recojo/Recojo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Recojo/RecojoController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Recojo/RecojoRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Recojo/RecojoService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Recojo/detalle/RecojoDetalle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/Recojo/detalle/RecojoDetalleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/product/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/product/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/product/costo/Costo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/vendor/Vendor.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/granotec/inventory_api/vendor/Vendor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/inventory-frontend/src/app/components/crud-list/crud-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/inventory-frontend/src/app/components/crud-list/crud-list.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/inventory-frontend/src/app/components/crud-list/crud-list.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/inventory-frontend/src/app/components/crud-list/crud-list.component.scss" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Erick-98"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Erick-98/Granotec.git",
+    "accountId": "289967fa-07b8-4f40-ab1f-606b68a8708c"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="35nZs79cMbE4lXo8jWTsT8Ebs8J" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/front-erick",
+    "last_opened_file_path": "C:/Users/erick/Documents/Proyectos/Web/Granotec"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="225deb70-c020-4600-8845-fffdb83ae8c2" name="Changes" comment="" />
+      <created>1763747999423</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763747999423</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

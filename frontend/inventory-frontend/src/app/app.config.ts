@@ -1,13 +1,53 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  importProvidersFrom,
+} from '@angular/core';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withInMemoryScrolling,
+} from '@angular/router';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideClientHydration } from '@angular/platform-browser';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
+
+// icons
+import { TablerIconsModule } from 'angular-tabler-icons';
+import * as TablerIcons from 'angular-tabler-icons/icons';
+
+// perfect scrollbar
+import { NgScrollbarModule } from 'ngx-scrollbar';
+
+//Import all material modules
+import { MaterialModule } from './material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes), provideClientHydration(withEventReplay())
-  ]
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled',
+      }),
+      withComponentInputBinding()
+    ),
+  // Registramos el interceptor JWT de forma funcional.
+  provideHttpClient(withInterceptors([jwtInterceptor])),
+  // Removed provideClientHydration() because this project doesn't serialize
+  // server-side state for hydration. Keeping it here triggers NG0505 in
+  // the browser console when no server serialized payload is present.
+  provideAnimationsAsync(),
+    importProvidersFrom(
+      FormsModule,
+      ReactiveFormsModule,
+      MaterialModule,
+      TablerIconsModule.pick(TablerIcons),
+      NgScrollbarModule,
+    ),
+  ],
 };

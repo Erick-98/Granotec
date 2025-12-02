@@ -1,0 +1,12 @@
+.page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;
+    h2{ color:#004e8a; }
+    .btn-primary{ background:#004e8a; color:white; padding:8px 14px; border-radius:8px; border:none; cursor:pointer; }
+  }
+  .card{ background:#fff; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+  table{ width:100%; border-collapse:collapse;
+    th{ text-align:left; padding:10px 8px; color:#2a2a2a; font-weight:600; }
+    td{ padding:10px 8px; border-top:1px solid #f0f4f8; }
+  }
+  .empty{ padding:20px; color:#6b7280; }
+  .loader{ padding:20px; color:#6b7280; }
+  

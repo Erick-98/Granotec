@@ -1,0 +1,143 @@
+:host {
+  display: block;
+  padding: 28px; /* un poco más de espacio general */
+  background: #f3f4f6;
+  min-height: 100vh;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  line-height: 1.5; /* mejora legibilidad de textos */
+}
+
+/* ----- Tarjeta principal ----- */
+.cardWithShadow {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 24px; /* separa si hay más de una card */
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  mat-card-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #1e40af;
+    margin-bottom: 0.5rem; /* más separación con el subtítulo */
+  }
+
+  mat-card-subtitle {
+    color: #6b7280;
+    margin-bottom: 2rem; /* más aire antes del contenido */
+  }
+}
+
+/* ----- Buscador (barra superior) ----- */
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 22px;
+
+  mat-form-field {
+    width: 340px;
+    background: #f9fafb;
+    border-radius: 10px;
+    margin-left: auto;
+
+    .mat-mdc-text-field-wrapper {
+      border-radius: 10px;
+    }
+
+    input {
+      font-size: 1rem;
+      padding: 4px 0;
+      letter-spacing: 0.2px;
+    }
+
+    mat-icon {
+      color: #2563eb;
+    }
+  }
+}
+
+/* ----- Tabla ----- */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin-top: 8px; /* pequeña separación respecto al buscador */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    padding: 14px 12px; /* más alto */
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  td {
+    text-align: center;
+    padding: 12px 10px; /* más espacio vertical */
+    font-size: 0.92rem;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    line-height: 1.4;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9fafb;
+  }
+
+  tr:hover {
+    background-color: #e8f0ff;
+    transition: background-color 0.25s ease;
+  }
+}
+
+/* ----- Espaciado adicional entre elementos Material (por si usas inputs, selects, etc.) ----- */
+.mat-mdc-form-field {
+  margin-bottom: 16px;
+
+  .mat-mdc-text-field-wrapper {
+    min-height: 50px;
+  }
+
+  .mdc-floating-label,
+  .mdc-floating-label--float-above {
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+  }
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 768px) {
+  :host {
+    padding: 18px;
+  }
+
+  .cardWithShadow {
+    padding: 18px;
+  }
+
+  table th,
+  table td {
+    font-size: 0.82rem;
+    padding: 8px 6px;
+  }
+
+  .search-bar mat-form-field {
+    width: 100%;
+  }
+}

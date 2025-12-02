@@ -1,0 +1,87 @@
+// Estilos del modal
+::ng-deep .mat-mdc-dialog-container {
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+.modal-header {
+  padding: 32px 32px 24px 32px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f0f0f0;
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-align: left;
+  }
+}
+
+.storage-form {
+  width: 100%;
+  background-color: #ffffff;
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  // Estilos para inputs
+  input, textarea {
+    color: #000000 !important;
+  }
+
+  ::ng-deep .mat-mdc-input-element {
+    color: #000000 !important;
+  }
+
+  ::ng-deep .mat-mdc-form-field-label,
+  ::ng-deep .mat-mdc-floating-label {
+    color: #000000 !important;
+  }
+
+  ::ng-deep .mat-mdc-form-field-hint {
+    color: #666666 !important;
+  }
+}
+
+mat-dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 32px;
+  background-color: #ffffff;
+}
+
+mat-dialog-actions {
+  padding: 20px 32px;
+  background-color: #fafafa;
+  border-top: 1px solid #e8e8e8;
+  gap: 12px;
+
+  button {
+    min-width: 100px;
+    height: 42px;
+    font-weight: 500;
+    border-radius: 6px;
+    text-transform: none;
+    font-size: 15px;
+  }
+
+  .mat-mdc-button {
+    color: #666666;
+    
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .mat-mdc-raised-button {
+    box-shadow: none;
+    
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+}

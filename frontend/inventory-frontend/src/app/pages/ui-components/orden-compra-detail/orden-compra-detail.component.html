@@ -1,0 +1,114 @@
+<div class="invoice-wrapper" *ngIf="!loading && compra">
+  <div class="page-header">
+    <h2 class="page-title">Ver Orden de Compra</h2>
+    <div class="page-breadcrumb">
+      <a class="text-body-color" routerLink="/compras/orden-compra-list" style="text-decoration: none;">Orden de Compra</a>
+      <span class="breadcrumb-separator">•</span>
+      <span class="breadcrumb-item active">Detalle</span>
+    </div>
+  </div>
+
+  <mat-card class="invoice-card">
+    <div class="invoice-content">
+
+      <div class="card-header-row">
+        <div class="invoice-number-wrapper">
+          <span class="hash-symbol">#</span>
+          <span class="invoice-number">{{ compra.numero || 'N/A' }}</span>
+        </div>
+        <div class="actions">
+          <button mat-flat-button color="warn" class="btn-cancel" (click)="goBack()">
+            Volver
+          </button>
+        </div>
+      </div>
+
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+
+      <!-- Información de la orden -->
+      <div class="row p-y-24">
+        <div class="info-section">
+          <div class="info-item">
+            <span class="f-w-600 f-s-15 d-block m-b-8">Estado</span>
+            <span [ngClass]="getEstadoClase(compra.estado)">
+              {{ compra.estado || 'Sin estado' }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="f-w-600 f-s-15 d-block m-b-8">Fecha</span>
+            <span class="info-value">{{ compra.fecha || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="section-divider"></mat-divider>
+
+      <!-- Proveedor y Almacén -->
+      <div class="billing-grid">
+        <div class="billing-info">
+          <span class="f-w-600 f-s-15 d-block m-b-8">Proveedor</span>
+          <span class="info-value">{{ compra.proveedorNombre || 'N/A' }}</span>
+        </div>
+        <div class="billing-info">
+          <span class="f-w-600 f-s-15 d-block m-b-8">Almacén de destino</span>
+          <span class="info-value">{{ compra.almacenNombre || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <!-- Tabla de productos -->
+      <div class="table-container mat-elevation-z2">
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Producto</th>
+              <th>Precio Unitario</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detalle of compra.detalles; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ detalle.productoNombre || 'N/A' }}</td>
+              <td>{{ detalle.precioUnitario | number:'1.2-2' }}</td>
+              <td>{{ detalle.cantidad || 0 }}</td>
+              <td>{{ detalle.subtotal | number:'1.2-2' }}</td>
+            </tr>
+
+            <tr *ngIf="!compra.detalles || compra.detalles.length === 0">
+              <td colspan="5" class="empty-row">
+                No hay detalles para mostrar
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Totales -->
+      <div class="totals-section">
+        <div class="totals-row">
+          <span>Sub total:</span>
+          <strong>{{ subTotal | number:'1.2-2' }}</strong>
+        </div>
+        <div class="totals-row">
+          <span>IGV ({{ vatPercentage }}%):</span>
+          <strong>{{ vatAmount | number:'1.2-2' }}</strong>
+        </div>
+
+        <mat-divider class="total-divider"></mat-divider>
+
+        <div class="grand-total-row">
+          <span>Total:</span>
+          <strong>{{ grandTotal | number:'1.2-2' }}</strong>
+        </div>
+      </div>
+
+    </div>
+  </mat-card>
+</div>
+
+<!-- Loading spinner -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+</div>

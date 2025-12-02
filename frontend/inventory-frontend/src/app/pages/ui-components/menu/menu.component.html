@@ -1,0 +1,147 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <mat-card-title>Ficha del Producto</mat-card-title>
+    <mat-card-subtitle>Gestión de información del catálogo</mat-card-subtitle>
+
+    <form class="product-form" autocomplete="off">
+      <!-- 🧾 Sección: Datos generales -->
+      <section class="section">
+        <h3>Datos Generales</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Código</mat-label>
+            <input matInput [(ngModel)]="producto.codigo" name="codigo" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre comercial</mat-label>
+            <input matInput [(ngModel)]="producto.nombreComercial" name="nombreComercial" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Categoría</mat-label>
+            <mat-select [(ngModel)]="producto.categoria" name="categoria">
+              <mat-option value="Aditivo alimentario">Aditivo alimentario</mat-option>
+              <mat-option value="Emulsionante">Emulsionante</mat-option>
+              <mat-option value="Preservante">Preservante</mat-option>
+              <mat-option value="Saborizante">Saborizante</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Presentación</mat-label>
+            <input matInput [(ngModel)]="producto.presentacion" name="presentacion" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Unidad de medida</mat-label>
+            <mat-select [(ngModel)]="producto.unidadMedida" name="unidadMedida">
+              <mat-option value="kg">kg</mat-option>
+              <mat-option value="unidad">unidad</mat-option>
+              <mat-option value="litro">litro</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Lote</mat-label>
+            <input matInput [(ngModel)]="producto.lote" name="lote" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 📦 Sección: Stock y almacén -->
+      <section class="section">
+        <h3>Stock y Almacén</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Stock actual</mat-label>
+            <input matInput type="number" [(ngModel)]="producto.stockActual" name="stockActual" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Stock mínimo</mat-label>
+            <input matInput type="number" [(ngModel)]="producto.stockMinimo" name="stockMinimo" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Ubicación en almacén</mat-label>
+            <input matInput [(ngModel)]="producto.ubicacion" name="ubicacion" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 💰 Sección: Costos -->
+      <section class="section">
+        <h3>Costos</h3>
+        <div class="currency-fields">
+          <mat-form-field appearance="outline">
+            <mat-label>Costo unitario (S/)</mat-label>
+            <input matInput type="number" step="0.01" [(ngModel)]="producto.costoSoles" name="costoSoles" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Costo unitario ($)</mat-label>
+            <input matInput type="number" step="0.01" [(ngModel)]="producto.costoDolares" name="costoDolares" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 🧑‍💼 Sección: Proveedor -->
+      <section class="section">
+        <h3>Proveedor</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Proveedor habitual</mat-label>
+            <input matInput [(ngModel)]="producto.proveedor" name="proveedor" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha de registro</mat-label>
+            <input matInput [matDatepicker]="regPicker" [(ngModel)]="producto.fechaRegistro" name="fechaRegistro" />
+            <mat-datepicker-toggle matIconSuffix [for]="regPicker"></mat-datepicker-toggle>
+            <mat-datepicker #regPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Última actualización</mat-label>
+            <input matInput [matDatepicker]="updPicker" [(ngModel)]="producto.fechaActualizacion" name="fechaActualizacion" />
+            <mat-datepicker-toggle matIconSuffix [for]="updPicker"></mat-datepicker-toggle>
+            <mat-datepicker #updPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 📝 Descripción -->
+      <section class="section">
+        <h3>Descripción</h3>
+        <mat-form-field appearance="outline" class="descripcion">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput rows="3" [(ngModel)]="producto.descripcion" name="descripcion"></textarea>
+        </mat-form-field>
+      </section>
+
+      <!-- ⚙️ Estado y acciones -->
+      <section class="section">
+        <h3>Estado</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <mat-select [(ngModel)]="producto.estado" name="estado">
+              <mat-option value="Activo">Activo</mat-option>
+              <mat-option value="Inactivo">Inactivo</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="actions">
+          <button mat-stroked-button color="primary" (click)="guardarCambios()">
+            <mat-icon>save</mat-icon> Guardar cambios
+          </button>
+          <button mat-flat-button color="accent" (click)="verKardexHistorico()">
+            <mat-icon>history</mat-icon> Ver Kardex histórico
+          </button>
+        </div>
+      </section>
+    </form>
+  </mat-card-content>
+</mat-card>
