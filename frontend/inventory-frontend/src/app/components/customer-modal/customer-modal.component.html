@@ -1,6 +1,8 @@
-<h2 mat-dialog-title>
-  {{ isEdit ? 'Editar Cliente' : 'Nuevo Cliente' }}
-</h2>
+<div class="modal-header">
+  <h2 mat-dialog-title>
+    {{ isEdit ? 'Editar Cliente' : 'Nuevo Cliente' }}
+  </h2>
+</div>
 
 <mat-dialog-content>
   <form [formGroup]="customerForm" class="customer-form">
@@ -171,11 +173,10 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
   <button mat-raised-button color="primary" 
           (click)="onSubmit()" 
           [disabled]="!customerForm.valid">
     {{ isEdit ? 'Actualizar' : 'Guardar' }}
   </button>
-
-  <button mat-button (click)="onCancel()">Cancelar</button>
 </mat-dialog-actions>

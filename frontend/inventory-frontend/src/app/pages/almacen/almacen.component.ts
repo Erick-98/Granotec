@@ -52,7 +52,7 @@ export class AlmacenComponent implements OnInit {
 
   onAdd(): void {
     const dialogRef = this.dialog.open(StorageModalComponent, {
-      width: '500px',
+      width: '700px',
       data: { storage: null }
     });
 
@@ -65,7 +65,7 @@ export class AlmacenComponent implements OnInit {
 
   onEdit(storage: StorageResponse): void {
     const dialogRef = this.dialog.open(StorageModalComponent, {
-      width: '500px',
+      width: '700px',
       data: { storage }
     });
 

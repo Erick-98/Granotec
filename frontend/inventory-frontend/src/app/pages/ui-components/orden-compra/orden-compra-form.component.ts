@@ -17,12 +17,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
-	import {map, startWith} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import { ProveedorService } from 'src/app/core/services/proveedor.service';
 import { ProveedorResponse } from 'src/app/core/models/proveedor-response.model';
 import { ProductoService } from 'src/app/core/services/producto.service';
 import { ProductoResponse } from 'src/app/core/models/producto-response.model';
-import { AlmacenService } from 'src/app/core/services/almacen.service';
+import { StorageService } from 'src/app/core/services/almacen.service';
 import { StorageResponse } from 'src/app/core/models/storage-response.model';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {provideNativeDateAdapter, MAT_DATE_FORMATS} from '@angular/material/core';
@@ -110,7 +110,7 @@ export class OrdenCompraFormComponent implements OnInit{
     private route: ActivatedRoute,
     private proveedorService: ProveedorService,
     private productoService: ProductoService,
-    private almacenService: AlmacenService,
+    private almacenService: StorageService,
     private compraService: CompraService,
     private snackBar: MatSnackBar
   ) { }

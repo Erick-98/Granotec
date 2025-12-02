@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { KardexService } from 'src/app/core/services/kardex.service';
-import { AlmacenService } from 'src/app/core/services/almacen.service';
+import { StorageService } from 'src/app/core/services/almacen.service';
 import { ProductoService } from 'src/app/core/services/producto.service';
 import { KardexItem } from 'src/app/core/models/kardex.model';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -105,7 +105,7 @@ export class KardexComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private kardexService: KardexService,
-    private almacenService: AlmacenService,
+    private almacenService: StorageService,
     private productoService: ProductoService,
     private cdr: ChangeDetectorRef
   ) {

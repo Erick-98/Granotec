@@ -43,7 +43,9 @@ export class ProveedorComponent implements OnInit {
   }
 
   onAdd(): void {
-    const dialogRef = this.dialog.open(ProveedorDialogComponent);
+    const dialogRef = this.dialog.open(ProveedorDialogComponent, {
+      width: '700px'
+    });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) this.getProveedores();
     });
@@ -51,6 +53,7 @@ export class ProveedorComponent implements OnInit {
 
   onEdit(proveedor: ProveedorResponse): void {
     const dialogRef = this.dialog.open(ProveedorDialogComponent, {
+      width: '700px',
       data: proveedor,
     });
     dialogRef.afterClosed().subscribe((result: any) => {
