@@ -1,0 +1,181 @@
+<h2 mat-dialog-title>
+  {{ isEdit ? 'Editar Cliente' : 'Nuevo Cliente' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="customerForm" class="customer-form">
+    
+    <!-- Sección: Tipo de Documento -->
+    <div class="form-section">
+      <h3 class="section-title">Información del Documento</h3>
+      
+      <div class="row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Tipo de Documento *</mat-label>
+          <mat-select formControlName="tipoDocumento" (selectionChange)="onDocumentTypeChange()">
+            <mat-option *ngFor="let docType of documentTypes" [value]="docType.value">
+              {{ docType.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="customerForm.get('tipoDocumento')?.hasError('required')">
+            Tipo de documento es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Número de Documento *</mat-label>
+          <input matInput formControlName="nroDocumento" 
+                 [placeholder]="customerForm.get('tipoDocumento')?.value === 'DNI' ? '8 dígitos' : '11 dígitos'">
+          <mat-error *ngIf="customerForm.get('nroDocumento')?.hasError('required')">
+            Número de documento es requerido
+          </mat-error>
+          <mat-error *ngIf="customerForm.get('nroDocumento')?.hasError('pattern')">
+            Formato inválido (8 dígitos para DNI o 11 para RUC)
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Sección: Información Personal/Empresa -->
+    <div class="form-section">
+      <h3 class="section-title" *ngIf="customerForm.get('tipoDocumento')?.value === 'DNI'">
+        Información Personal
+      </h3>
+      <h3 class="section-title" *ngIf="customerForm.get('tipoDocumento')?.value === 'RUC'">
+        Información de la Empresa
+      </h3>
+      
+      <div class="row" *ngIf="customerForm.get('tipoDocumento')?.value === 'DNI'">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Nombres *</mat-label>
+          <input matInput formControlName="nombre">
+          <mat-error *ngIf="customerForm.get('nombre')?.hasError('required')">
+            Nombres son requeridos para DNI
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Apellidos *</mat-label>
+          <input matInput formControlName="apellidos">
+          <mat-error *ngIf="customerForm.get('apellidos')?.hasError('required')">
+            Apellidos son requeridos para DNI
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="row" *ngIf="customerForm.get('tipoDocumento')?.value === 'RUC'">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Razón Social *</mat-label>
+          <input matInput formControlName="razonSocial">
+          <mat-error *ngIf="customerForm.get('razonSocial')?.hasError('required')">
+            Razón social es requerida para RUC
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Sección: Contacto -->
+    <div class="form-section">
+      <h3 class="section-title">Información de Contacto</h3>
+      
+      <div class="row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="telefono" maxlength="9">
+          <mat-hint>Máximo 9 caracteres</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-error *ngIf="customerForm.get('email')?.hasError('email')">
+            Formato de email inválido
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="direccion">
+      </mat-form-field>
+    </div>
+
+    <!-- Sección: Información Comercial -->
+    <div class="form-section">
+      <h3 class="section-title">Información Comercial</h3>
+      
+      <div class="row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Tipo de Cliente *</mat-label>
+          <mat-select formControlName="tipoClienteId">
+            <mat-option *ngIf="isLoading" disabled>Cargando tipos de cliente...</mat-option>
+            <mat-option *ngIf="!hasTypeCustomers && !isLoading" disabled>No hay datos</mat-option>
+            <mat-option *ngFor="let type of typeCustomers" [value]="type.id">
+              {{ type.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="customerForm.get('tipoClienteId')?.hasError('required')">
+            Tipo de cliente es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Condición de Pago *</mat-label>
+          <mat-select formControlName="condicionPago">
+            <mat-option *ngFor="let condition of paymentConditions" [value]="condition.value">
+              {{ condition.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Límite en Dólares ($)</mat-label>
+          <input matInput formControlName="limiteDolares" type="number" min="0" step="0.01">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Límite en Soles (S/)</mat-label>
+          <input matInput formControlName="limiteCreditoSoles" type="number" min="0" step="0.01">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Rubro</mat-label>
+        <input matInput formControlName="rubro" maxlength="100">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Zona</mat-label>
+        <input matInput formControlName="zona" maxlength="150">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Distrito ID *</mat-label>
+        <input matInput formControlName="distritoId" type="number">
+      </mat-form-field>
+    </div>
+
+    <!-- Sección: Notas -->
+    <div class="form-section">
+      <h3 class="section-title">Información Adicional</h3>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Notas</mat-label>
+        <textarea matInput formControlName="notas" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" 
+          (click)="onSubmit()" 
+          [disabled]="!customerForm.valid">
+    {{ isEdit ? 'Actualizar' : 'Guardar' }}
+  </button>
+
+  <button mat-button (click)="onCancel()">Cancelar</button>
+</mat-dialog-actions>

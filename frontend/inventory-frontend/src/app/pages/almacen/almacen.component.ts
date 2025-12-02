@@ -1,45 +1,90 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+// src/app/pages/almacen/almacen.component.ts
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
+import { StorageService } from 'src/app/core/services/almacen.service';
+import { StorageResponse } from 'src/app/core/models/storage-response.model';
+
 import { CrudListComponent, CrudColumn } from 'src/app/components/crud-list/crud-list.component';
-import { MaterialModule } from '../../material.module';
-import { AlmacenService } from 'src/app/core/services/almacen.service';
+import { StorageModalComponent } from 'src/app/components/storage-modal/storage-modal.component';
 
 @Component({
   selector: 'app-almacen',
   templateUrl: './almacen.component.html',
   styleUrls: ['./almacen.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  imports: [MaterialModule, CrudListComponent]
+  standalone: true,
+  imports: [
+    CommonModule,
+    CrudListComponent,
+    MatDialogModule
+  ]
 })
-export class AlmacenComponent {
-  items: any[] = [];
+export class AlmacenComponent implements OnInit {
+
+  items: StorageResponse[] = [];
+
   columns: CrudColumn[] = [
-    { field: 'nombre', label: 'Nombre', type: 'text', subField: 'text' },
+    { field: 'nombre', label: 'Nombre', type: 'text' },
     { field: 'descripcion', label: 'Descripción', type: 'text' }
   ];
 
-  constructor(private almacenService: AlmacenService) {
-    this.load();
+  constructor(
+    private storageService: StorageService,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit(): void {
+    this.loadStorages();
   }
 
-  load() {
-    this.almacenService.getAll().subscribe({
-      next: res => {
-        this.items = (res.data ?? res) as any[];
+  loadStorages(): void {
+    this.storageService.getAll().subscribe({
+      next: (response) => {
+        this.items = response?.data || [];
       },
-      error: err => console.error('Almacen load error', err)
+      error: (err) => {
+        console.error('Error cargando almacenes', err);
+        this.items = [];
+      }
     });
   }
 
-  onAdd() {
-    // navigate or open create dialog
-    console.log('Add almacen');
+  onAdd(): void {
+    const dialogRef = this.dialog.open(StorageModalComponent, {
+      width: '500px',
+      data: { storage: null }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadStorages();
+      }
+    });
   }
 
-  onEdit(item: any) {
-    console.log('Edit', item);
+  onEdit(storage: StorageResponse): void {
+    const dialogRef = this.dialog.open(StorageModalComponent, {
+      width: '500px',
+      data: { storage }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadStorages();
+      }
+    });
   }
 
-  onDelete(item: any) {
-    console.log('Delete', item);
+  onDelete(storage: StorageResponse): void {
+    if (confirm(`¿Seguro que deseas eliminar el almacén "${storage.nombre}"?`)) {
+      this.storageService.deleteStorage(storage.id).subscribe({
+        next: () => this.loadStorages(),
+        error: (error) => {
+          console.error('Error eliminando almacén:', error);
+          alert('Error al eliminar almacén: ' + (error.error?.message || error.message));
+        }
+      });
+    }
   }
 }
